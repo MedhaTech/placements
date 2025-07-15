@@ -9,7 +9,7 @@ class Honeypot extends BaseConfig
     /**
      * Makes Honeypot visible or not to human
      */
-    public bool $hidden = true;
+    public bool $hidden = true; 
 
     /**
      * Honeypot Label Content
