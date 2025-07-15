@@ -26,10 +26,10 @@ class Database extends Config
      */
     public array $default = [
         'DSN'          => '',
-        'hostname'     => 'localhost',
-        'username'     => 'root',
-        'password'     => '',
-        'database'     => 'placements',
+        'hostname'     => '192.185.129.71',
+        'username'     => 'medha_placements',
+        'password'     => '@}S3cI?2S26$',
+        'database'     => 'medha_placements-Tool',
         'DBDriver'     => 'MySQLi',
         'DBPrefix'     => '',
         'pConnect'     => false, 
