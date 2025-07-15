@@ -67,7 +67,7 @@
 <div class="login-box">
     <form method="POST" action="<?= base_url('login-user') ?>">
         <img src="<?= base_url('assets/img/mycare.png') ?>" alt="Logo" class="img-fluid">
-        <h4 class="text-center mb-4">Sign in</h4> 
+        <h4 class="text-center mb-4">Sign in to dashboard</h4> 
 
         <?php if (session()->getFlashdata('error')): ?>
             <div class="alert alert-danger"><?= session()->getFlashdata('error') ?></div>
