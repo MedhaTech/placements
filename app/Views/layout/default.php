@@ -54,5 +54,5 @@
     <script src="<?= base_url('assets/js/template.js') ?>"></script>
     <script src="<?= base_url('assets/js/custom.js') ?>"></script>
 </body>
-
+ <?= view('layout/footer') ?>
 </html>
