@@ -98,6 +98,29 @@
         toggle.classList.toggle('fa-eye');
         toggle.classList.toggle('fa-eye-slash');
     });
+    <script>
+    const toggle = document.getElementById('togglePassword');
+    const password = document.getElementById('password');
+
+    toggle.addEventListener('click', function () {
+        const isHidden = password.type === 'password';
+        password.type = isHidden ? 'text' : 'password';
+        toggle.classList.toggle('fa-eye');
+        toggle.classList.toggle('fa-eye-slash');
+    });
+
+    // ✅ Store email in localStorage/sessionStorage on submit
+    const form = document.querySelector("form");
+    if (form) {
+        form.addEventListener("submit", function () {
+            const email = document.querySelector("input[name='email']").value;
+
+            // Choose one:
+            localStorage.setItem("user_email", email);      // persists after tab closes
+            // sessionStorage.setItem("user_email", email); // clears when tab closes
+        });
+    }
+</script>
 </script>
 
 </body>
