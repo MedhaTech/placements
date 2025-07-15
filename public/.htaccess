@@ -1,12 +1,15 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Redirect to HTTPS
+    # Force HTTPS
     RewriteCond %{HTTPS} off
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-    # Send everything else to the CI4 index.php
+    # Send everything else to index.php
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^ index.php [L]
 </IfModule>
+
+# Set index file explicitly
+DirectoryIndex index.php
