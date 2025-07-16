@@ -31,10 +31,10 @@
     <div id="wrapper" class="wrapper">
 
         <!-- TOP NAVBAR -->
-        <?= view('layout/navbar') ?>
+        <?= view('admin/layout/navbar') ?>
 
         <!-- SIDEBAR -->
-        <?= view('layout/sidebar') ?>
+        <?= view('admin/layout/sidebar') ?>
 
         <!-- MAIN CONTENT -->
         <div class="content-wrapper">
@@ -54,5 +54,5 @@
     <script src="<?= base_url('assets/js/template.js') ?>"></script>
     <script src="<?= base_url('assets/js/custom.js') ?>"></script>
 </body>
- <?= view('layout/footer') ?>
+<?= view('admin/layout/footer') ?>
 </html>

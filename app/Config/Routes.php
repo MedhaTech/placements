@@ -25,5 +25,6 @@ $routes->get('/admin/logout', 'Admin::logout');
 $routes->get('/preview', function () {
     return view('student_profile_preview');
 });
+$routes->get('/student/profile-preview', 'Student::profilePreview');
 
 

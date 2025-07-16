@@ -1,12 +1,17 @@
  <nav class="navbar">
             <div class="container px-0 align-items-stretch">
                 <!-- Logo Area -->
-                <div class="navbar-header">
-                    <a href="index.html" class="navbar-brand">
-                        <img class="logo-expand" alt="" src="<?= base_url('assets/img/logo-dark.png') ?>">
-                        <img class="logo-collapse" alt="" src="<?= base_url('assets/img/logo-collapse.png') ?>">
-                    </a>
-                </div>
+                <div class="navbar-header d-flex align-items-center">
+    <a href="index.html" class="navbar-brand d-flex align-items-center">
+        <img class="logo-expand" alt="" src="<?= base_url('assets/img/logo-dark.png') ?>">
+        <img class="logo-collapse" alt="" src="<?= base_url('assets/img/logo-collapse.png') ?>">
+    </a>
+
+    <a href="<?= base_url('dashboard') ?>" class="ml-2" title="Go to Dashboard">
+        <i class="material-icons list-icon" style="color: white; font-size: 24px;">home</i>
+    </a>
+</div>
+
                 <!-- /.navbar-header -->
                 <!-- Left Menu & Sidebar Toggle -->
                 <ul class="nav navbar-nav">
@@ -51,26 +56,34 @@
                 </ul>
                 <!-- /.navbar-right -->
                 <!-- User Image with Dropdown -->
-                <ul class="nav navbar-nav">
-                    <li class="dropdown"><a href="javascript:void(0);" class="dropdown-toggle dropdown-toggle-user ripple" data-toggle="dropdown"><span class="avatar thumb-xs2"><img src="<?= base_url('assets/demo/users/user1.jpg') ?>" class="rounded-circle" alt=""> <i class="material-icons list-icon">expand_more</i></span></a>
-                        <div
-                        class="dropdown-menu dropdown-left dropdown-card dropdown-card-profile animated flipInY">
-                            <div class="card">
-                                <header class="card-header d-flex mb-0"><a href="javascript:void(0);" class="col-md-4 text-center"><i class="material-icons md-24 align-middle">person_add</i> </a><a href="javascript:void(0);" class="col-md-4 text-center"><i class="material-icons md-24 align-middle">settings</i> </a>
-                                    <a
-                                    href="javascript:void(0);" class="col-md-4 text-center"><i class="material-icons md-24 align-middle">power_settings_new</i>
-                                        </a>
-                                </header>
-                                <ul class="list-unstyled card-body">
-                                    <li><a href="#"><span><span class="align-middle">Manage Accounts</span></span></a>
-                                    </li>
-                                    <li><a href="#"><span><span class="align-middle">Change Password</span></span></a>
-                                    </li>
-                                    <li><a href="#"><span><span class="align-middle">Check Inbox</span></span></a>
-                                    </li>
-                                    <li><a href="<?= base_url('logout') ?>"><span><span class="align-middle">Sign Out</span></span></a></li>
-                                    </li>
-                                </ul>
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown">
+                            <a href="javascript:void(0);" class="dropdown-toggle dropdown-toggle-user ripple" data-toggle="dropdown">
+                                <span class="avatar thumb-xs2">
+                                    <img src="<?= base_url('assets/demo/users/user1.jpg') ?>" class="rounded-circle" alt="">
+                                    <i class="material-icons list-icon">expand_more</i>
+                                </span>
+                            </a>
+
+                            <div class="dropdown-menu dropdown-left dropdown-card dropdown-card-profile animated flipInY">
+                                <div class="card">
+                                    <ul class="list-unstyled card-body">
+                                        <li>
+                                            <a href="#"><span class="align-middle">Change Password</span></a>
+                                        </li>
+                                        <li>
+                                            <a href="<?= base_url('student/profile-preview') ?>">
+                                                <span class="align-middle">Manage Account</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="<?= base_url('student/logout') ?>"><span class="align-middle">Sign Out</span></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                                 <!-- /.card-body -->
                             </div>
                             <!-- /.card -->

@@ -68,7 +68,7 @@
                                     </li>
                                     <li><a href="#"><span><span class="align-middle">Check Inbox</span></span></a>
                                     </li>
-                                    <li><a href="<?= base_url('logout') ?>"><span><span class="align-middle">Sign Out</span></span></a></li>
+                                    <li><a href="<?= base_url('admin/logout') ?>"><span class="align-middle">Sign Out</span></a></li>
                                     </li>
                                 </ul>
                                 <!-- /.card-body -->
