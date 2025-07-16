@@ -51,8 +51,19 @@ abstract class BaseController extends Controller
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
 
-        // Preload any models, libraries, etc, here.
+        // Start session
+        $this->session = service('session');
 
-        // E.g.: $this->session = service('session');
+        // Check if user is logged in
+        if (!$this->session->get('isLoggedIn')) {
+            $current = current_url();
+            $loginPage = base_url('login');
+
+            // Avoid redirect loop
+            if ($current !== $loginPage) {
+                header('Location: ' . $loginPage);
+                exit;
+            }
+        }
     }
 }

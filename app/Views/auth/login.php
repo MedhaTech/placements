@@ -98,30 +98,37 @@
         toggle.classList.toggle('fa-eye');
         toggle.classList.toggle('fa-eye-slash');
     });
-    <script>
-    const toggle = document.getElementById('togglePassword');
-    const password = document.getElementById('password');
 
-    toggle.addEventListener('click', function () {
-        const isHidden = password.type === 'password';
-        password.type = isHidden ? 'text' : 'password';
-        toggle.classList.toggle('fa-eye');
-        toggle.classList.toggle('fa-eye-slash');
-    });
-
-    // ✅ Store email in localStorage/sessionStorage on submit
+    // ✅ Store email and login time on form submit
     const form = document.querySelector("form");
     if (form) {
         form.addEventListener("submit", function () {
             const email = document.querySelector("input[name='email']").value;
-
-            // Choose one:
-            localStorage.setItem("user_email", email);      // persists after tab closes
-            // sessionStorage.setItem("user_email", email); // clears when tab closes
+            localStorage.setItem("user_email", email);           // optional for display
+            localStorage.setItem("login_time", Date.now());      // store login timestamp
         });
     }
+
+    // ✅ Auto logout after 15 mins (only applies if login_time exists)
+    const timeout = 15 * 60 * 1000; // 15 minutes
+    const loginTime = localStorage.getItem("login_time");
+
+    if (loginTime) {
+        const elapsed = Date.now() - parseInt(loginTime);
+        const remaining = timeout - elapsed;
+
+        if (remaining <= 0) {
+            alert("Your session has expired. You will be logged out.");
+            window.location.href = "<?= base_url('logout') ?>";
+        } else {
+            setTimeout(() => {
+                alert("Session expired. Logging you out.");
+                window.location.href = "<?= base_url('logout') ?>";
+            }, remaining);
+        }
+    }
 </script>
-</script>
+
 
 </body>
 </html>
