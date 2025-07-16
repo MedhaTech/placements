@@ -65,7 +65,7 @@
 <body>
 
 <div class="login-box">
-    <form method="POST" action="<?= base_url('login-user') ?>">
+    <form method="POST" action="<?= base_url('student-login') ?>">
         <img src="<?= base_url('assets/img/mycare.png') ?>" alt="Logo" class="img-fluid">
         <h4 class="text-center mb-4">Sign in </h4> 
 
@@ -98,7 +98,18 @@
         toggle.classList.toggle('fa-eye');
         toggle.classList.toggle('fa-eye-slash');
     });
+
+    // ✅ Store email and login time on form submit
+    const form = document.querySelector("form");
+    if (form) {
+        form.addEventListener("submit", function () {
+            const email = document.querySelector("input[name='email']").value;
+            localStorage.setItem("user_email", email);           // optional for display
+            localStorage.setItem("login_time", Date.now());      // store login timestamp
+        });
+    }
 </script>
+
 
 </body>
 </html>

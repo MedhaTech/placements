@@ -4,18 +4,18 @@ namespace App\Controllers;
 use App\Models\UserModel;
 use CodeIgniter\Controller;
 
-class Auth extends Controller
+class Admin extends Controller
 {
     public function login()
     {
-        helper(['form']);  
-        return view('auth/login'); // You used `echo`, better to return it
+        return view('admin/login');
     }
 
     public function loginUser()
     {
         $session = session();
-        $model = new UserModel();
+       $model = new \App\Models\AdminModel();
+
 
         $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
@@ -24,17 +24,18 @@ class Auth extends Controller
 
         if ($user) {
             if (password_verify($password, $user['password'])) {
-                // Set session
+                if ($user['role'] !== 'admin') {
+                    return redirect()->back()->withInput()->with('error', 'Access denied.');
+                }
+
                 $session->set([
                     'user_id' => $user['id'],
-                    'email'   => $user['email'],
+                    'email' => $user['email'],
+                    'role' => $user['role'],
                     'isLoggedIn' => true,
                 ]);
 
-                // Optional: Set flashdata
-                $session->setFlashdata('success', 'Welcome back!');
-
-                return redirect()->to('/dashboard');
+                return redirect()->to('/admin/dashboard');
             } else {
                 return redirect()->back()->withInput()->with('error', 'Wrong password.');
             }
@@ -43,9 +44,18 @@ class Auth extends Controller
         }
     }
 
+    public function dashboard()
+    {
+        if (!session()->get('isLoggedIn') || session()->get('role') !== 'admin') {
+            return redirect()->to('/admin');
+        }
+
+        return view('admin/dashboard');
+    }
+
     public function logout()
     {
         session()->destroy();
-        return redirect()->to('/login')->with('success', 'You have been logged out.');
+        return redirect()->to('/admin')->with('success', 'Logged out.');
     }
 }
