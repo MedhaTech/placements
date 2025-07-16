@@ -2209,7 +2209,7 @@
 
       var dark_blue = context.createLinearGradient(0, 100, 0, 200);
       dark_blue.addColorStop(0, '#63a3e2');
-      dark_blue.addColorStop(1, '#1976d2');
+      dark_blue.addColorStop(1, '#003362');
 
       var sky_blue = context.createLinearGradient(0, 100, 0, 200);
       sky_blue.addColorStop(0, '#89ddf5');
@@ -3119,7 +3119,7 @@
             data: [32, 51, 98, 87, 125, 140, 173],
             backgroundColor: gradient,
             hoverBackgroundColor: gradient,
-            borderColor: '#1976d2',
+            borderColor: '#003362',
             borderWidth: 2,
             pointRadius: 4,
             pointHoverRadius: 4,

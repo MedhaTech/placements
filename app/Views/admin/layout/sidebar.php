@@ -1,6 +1,6 @@
         <!-- SIDEBAR -->
         <aside class="site-sidebar clearfix">
-            <div class="container">
+            <div class="container-fluid">
                 <nav class="sidebar-nav">
                     <ul class="nav in side-menu">
                         <li class="current-page menu-item-has-children"><a href="index.html"><i class="list-icon material-icons">home</i> <span class="hide-menu">Dashboard</span></a>
