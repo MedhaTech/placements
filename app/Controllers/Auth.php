@@ -8,7 +8,7 @@ class Auth extends Controller
 {
     public function login()
     {
-        helper(['form']);
+        helper(['form']);  
         return view('auth/login'); // You used `echo`, better to return it
     }
 
