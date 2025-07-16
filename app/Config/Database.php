@@ -24,12 +24,12 @@ class Database extends Config
      *
      * @var array<string, mixed>
      */
-    public array $default = [
+    /*public array $default = [
         'DSN'          => '',
-        'hostname'     => '192.185.129.71',
-        'username'     => 'medha_placements',
-        'password'     => '@}S3cI?2S26$',
-        'database'     => 'medha_placements-Tool',
+        'hostname'     => 'localhost',
+        'username'     => 'root',
+        'password'     => '',
+        'database'     => 'placements',
         'DBDriver'     => 'MySQLi',
         'DBPrefix'     => '',
         'pConnect'     => false, 
@@ -49,6 +49,29 @@ class Database extends Config
             'datetime' => 'Y-m-d H:i:s',
             'time'     => 'H:i:s',
         ],
+    ];
+*/
+    #for live server, you can use the following database settings.
+    public array $default = [
+        'DSN'        => '',
+        'hostname'   => '192.185.129.71',
+        'username'   => 'medha_placements',
+        'password'   => '@}S3cI?2S26$',
+        'database'   => 'medha_placements-Tool',
+        'DBDriver'   => 'MySQLi',
+         'DBPrefix'   => '',
+         'pConnect'   => false,
+         'DBDebug'    => true,
+         'charset'    => 'utf8mb4',
+         'DBCollat'   => 'utf8mb4_general_ci',
+         'swapPre'    => '',
+         'failover'   => [],
+         'port'       => 3306,
+         'dateFormat' => [
+        'date'     => 'Y-m-d',
+        'datetime' => 'Y-m-d H:i:s',
+        'time'     => 'H:i:s',
+         ],
     ];
 
     //    /**
