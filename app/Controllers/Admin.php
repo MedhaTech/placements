@@ -20,7 +20,11 @@ class Admin extends Controller
         $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
 
-        $user = $model->where('email', $email)->first();
+        $user = $model
+        ->where('email', $email)
+        ->where('role', 'admin') // ✅ Restrict to admins only
+        ->first();
+
 
         if ($user) {
             if (password_verify($password, $user['password'])) {
@@ -44,15 +48,18 @@ class Admin extends Controller
         }
     }
 
-    public function dashboard()
+        public function dashboard()
     {
-        if (!session()->get('isLoggedIn') || session()->get('role') !== 'admin') {
+        if (!session()->get('isLoggedIn')) {
             return redirect()->to('/admin');
         }
 
-        return view('admin/dashboard');
-    }
+        $data = [
+            'title' => 'Admin Dashboard'
+        ];
 
+        return view('admin/dashboard', $data); // ✅ Make sure this is the admin view
+    }
     public function logout()
     {
         session()->destroy();

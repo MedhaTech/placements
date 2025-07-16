@@ -10,10 +10,10 @@
 </head>
 <body>
     <!-- HEADER -->
-    <?= $this->include('layout/header') ?>
+    <?= $this->include('student/layout/header') ?>
 
     <!-- SIDEBAR -->
-    <?= $this->include('layout/sidebar') ?>
+    <?= $this->include('student/layout/sidebar') ?>
 
     <!-- MAIN CONTENT -->
     <main>
@@ -21,7 +21,7 @@
     </main>
 
     <!-- FOOTER -->
-    <?= $this->include('layout/footer') ?>
+    <?= $this->include('student/layout/footer') ?>
 
     <!-- JS -->
     <script src="<?= base_url('assets/js/script.js') ?>"></script>
