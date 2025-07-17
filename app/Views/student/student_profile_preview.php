@@ -181,7 +181,12 @@
         <p>Give recruiters a brief overview of your career goals, strengths, and profile interests.</p>
       </div>
       <div id="personal-info" class="section-card"><h5>Personal Information <a href="#">Add</a></h5></div>
-      <div id="family-details" class="section-card"><h5>Family Details <a href="#">Add</a></h5></div>
+      <div id="family-details" class="section-card">
+        <h5>Family Details 
+          <a href="#" data-bs-toggle="modal" data-bs-target="#familyDetailsModal">Add</a>
+        </h5>
+         <div id="familyDetailsList" class="mt-3"></div>
+      </div>
       <div id="experience" class="section-card"><h5>Experience Details <a href="#">Add</a></h5></div>
       <div id="skills" class="section-card"><h5>Key Skills <a href="#">Add</a></h5></div>
       <div id="education" class="section-card"><h5>Education Details <a href="#">Add</a></h5></div>
@@ -217,7 +222,118 @@
     </div>
   </div>
 </div>
+<!-- Family Details Modal -->
+<div class="modal fade" id="familyDetailsModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" style="border-radius: 16px;">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">Family Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted">Add details of your family members below.</p>
+        <form id="familyForm">
+          <div id="familyInputs">
+            <div class="row g-3 family-entry mb-3">
+              <div class="col-md-4">
+                <label class="form-label">Relation</label>
+                <select class="form-select" name="relation[]">
+                  <option value="">Select</option>
+                  <?php foreach ($relationTypes as $relation): ?>
+                    <option value="<?= esc($relation) ?>"><?= esc($relation) ?></option>
+                  <?php endforeach; ?>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-control" name="name[]" placeholder="Full Name">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Occupation</label>
+                <input type="text" class="form-control" name="occupation[]" placeholder="Occupation">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Contact</label>
+                <input type="text" class="form-control" name="contact[]" placeholder="Contact Number">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Mobile</label>
+                <input type="text" class="form-control" name="mobile[]" placeholder="Mobile Number">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" name="email[]" placeholder="Email ID">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Salary</label>
+                <input type="text" class="form-control" name="salary[]" placeholder="Salary">
+              </div>
+            </div>
+          </div>
+
+          <div class="text-end">
+            <button type="button" class="btn btn-sm btn-outline-primary" onclick="addFamilyEntry()">+ Add More</button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer border-0">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function addFamilyEntry() {
+  const container = document.getElementById("familyInputs");
+  const entry = container.querySelector(".family-entry").cloneNode(true);
+  
+  // Clear all input values in the new entry
+  entry.querySelectorAll("input, select").forEach(el => el.value = "");
+  container.appendChild(entry);
+}
+
+document.querySelector("#familyDetailsModal .btn.btn-primary").addEventListener("click", function () {
+  const form = document.getElementById("familyForm");
+  const entries = form.querySelectorAll(".family-entry");
+  const output = document.getElementById("familyDetailsList");
+
+  entries.forEach(entry => {
+    const relation = entry.querySelector("select[name='relation[]']").value;
+    const name = entry.querySelector("input[name='name[]']").value;
+    const occupation = entry.querySelector("input[name='occupation[]']").value;
+    const contact = entry.querySelector("input[name='contact[]']").value;
+    const mobile = entry.querySelector("input[name='mobile[]']").value;
+    const email = entry.querySelector("input[name='email[]']").value;
+    const salary = entry.querySelector("input[name='salary[]']").value;
+
+    // Only add if at least one field is filled
+    if (relation || name || occupation || contact || mobile || email || salary) {
+      const card = document.createElement("div");
+      card.className = "p-3 mb-2 border rounded bg-light";
+
+      card.innerHTML = `
+        <strong>${relation || 'Relation'}:</strong> ${name || 'N/A'}<br>
+        <small>Occupation: ${occupation || 'N/A'}, Contact: ${contact || 'N/A'}</small><br>
+        <small>Mobile: ${mobile || 'N/A'}, Email: ${email || 'N/A'}</small><br>
+        <small>Salary: ${salary || 'N/A'}</small>
+      `;
+
+      output.appendChild(card);
+    }
+  });
+
+  // Clear form after save
+  document.getElementById("familyInputs").innerHTML = document.querySelector(".family-entry").outerHTML;
+  form.reset();
+
+  // Close the modal
+  const modal = bootstrap.Modal.getInstance(document.getElementById('familyDetailsModal'));
+  modal.hide();
+});
+</script>
 </body>
 </html>

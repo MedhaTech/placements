@@ -45,6 +45,6 @@
         <?= view('layout/navbar') ?>
 
         <!-- SIDEBAR -->
-        <?= // view('layout/sidebar') ?>
+        < // view('layout/sidebar')?>
 
         <div class="content-wrapper">

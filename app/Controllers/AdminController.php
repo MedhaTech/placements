@@ -1,30 +1,26 @@
 <?php
 
 namespace App\Controllers;
-use App\Models\UserModel;
+
+use App\Models\AdminModel;
 use CodeIgniter\Controller;
 
-class Admin extends Controller
+class AdminController extends Controller
 {
-    public function login()
+    public function adminLogin()
     {
         return view('admin/login');
     }
 
-    public function loginUser()
+    public function loginAdminUser()
     {
         $session = session();
-       $model = new \App\Models\AdminModel();
-
+        $model = new AdminModel();
 
         $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
 
-        $user = $model
-        ->where('email', $email)
-        ->where('role', 'admin') // ✅ Restrict to admins only
-        ->first();
-
+        $user = $model->where('email', $email)->first();
 
         if ($user) {
             if (password_verify($password, $user['password'])) {
@@ -48,19 +44,16 @@ class Admin extends Controller
         }
     }
 
-        public function dashboard()
+    public function adminDashboard()
     {
-        if (!session()->get('isLoggedIn')) {
+        if (!session()->get('isLoggedIn') || session()->get('role') !== 'admin') {
             return redirect()->to('/admin');
         }
 
-        $data = [
-            'title' => 'Admin Dashboard'
-        ];
-
-        return view('admin/dashboard', $data); // ✅ Make sure this is the admin view
+        return view('admin/dashboard');
     }
-    public function logout()
+
+    public function adminLogout()
     {
         session()->destroy();
         return redirect()->to('/admin')->with('success', 'Logged out.');

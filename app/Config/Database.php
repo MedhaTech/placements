@@ -24,7 +24,7 @@ class Database extends Config
      *
      * @var array<string, mixed>
      */
-    /*public array $default = [
+     public array $default = [
         'DSN'          => '',
         'hostname'     => 'localhost',
         'username'     => 'root',
@@ -50,9 +50,9 @@ class Database extends Config
             'time'     => 'H:i:s',
         ],
     ];
-*/
+
     #for live server, you can use the following database settings.
-    public array $default = [
+    /*public array $default = [
         'DSN'        => '',
         'hostname'   => '192.185.129.71',
         'username'   => 'medha_placements',
@@ -73,7 +73,7 @@ class Database extends Config
         'time'     => 'H:i:s',
          ],
     ];
-
+*/
     //    /**
     //     * Sample database connection for SQLite3.
     //     *
