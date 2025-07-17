@@ -6,9 +6,10 @@ use CodeIgniter\Model;
 class StudentModel extends Model
 {
     // 🔹 Used for login (users table)
-    protected $table = 'users';
+    protected $table = 'students';
+    protected $allowedFields = ['official_email', 'password']; // only needed if you're using `save()`, not raw query
+
     protected $primaryKey = 'id';
-    protected $allowedFields = ['email', 'password', 'role'];
 
     // 🔹 Handle profile summary from 'students' table
     public function getStudentById($id)
