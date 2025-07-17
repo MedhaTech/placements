@@ -2,8 +2,6 @@
 
 namespace App\Libraries;
 
-use PhpParser\Node\Stmt\Global_;
-
 class GlobalData
 {
     public function getRelationTypes()
@@ -56,7 +54,6 @@ class GlobalData
         return ['Through Management', 'Through Entrance', 'Others'];
     }
 
-    // ✅ Reusable Yes/No Dropdown
     public function getYesNoOptions()
     {
         return ['Yes', 'No'];
@@ -77,6 +74,7 @@ class GlobalData
             ]
         ];
     }
+
     public function getApplicationStatuses()
     {
         return ['Eligible', 'Applied', 'In Process', 'Selected', 'Rejected', 'Waiting for Results'];
@@ -85,5 +83,86 @@ class GlobalData
     public function getOfferStatuses()
     {
         return ['Accepted', 'Rejected', 'On Hold'];
+    }
+
+    // ✅ Below are reusable dropdown generators
+
+    public function renderSelect($name, $options, $selected = null, $class = 'form-select')
+{
+    $html = "<select name='$name' class='$class'>\n";
+    $html .= "<option value=''>Select</option>\n"; // 🔥 Added this line
+    foreach ($options as $opt) {
+        $isSelected = $selected === $opt ? 'selected' : '';
+        $html .= "<option value='" . esc($opt) . "' $isSelected>" . esc($opt) . "</option>\n";
+    }
+    $html .= "</select>";
+    return $html;
+}
+
+
+    // Individual renderers
+    public function renderRelationTypeDropdown($name = 'relation', $selected = null)
+    {
+        return $this->renderSelect($name, $this->getRelationTypes(), $selected);
+    }
+
+    public function renderEmploymentTypeDropdown($name = 'employment_type', $selected = null)
+    {
+        return $this->renderSelect($name, $this->getEmploymentTypes(), $selected);
+    }
+
+    public function renderLocationTypeDropdown($name = 'location', $selected = null)
+    {
+        return $this->renderSelect($name, $this->getLocationTypes(), $selected);
+    }
+
+    public function renderCourseTypeDropdown($name = 'course_type', $selected = null)
+    {
+        return $this->renderSelect($name, $this->getCourseTypes(), $selected);
+    }
+
+    public function renderResultStatusDropdown($name = 'result_status', $selected = null)
+    {
+        return $this->renderSelect($name, $this->getResultStatuses(), $selected);
+    }
+
+    public function renderQualificationTypeDropdown($name = 'qualification', $selected = null)
+    {
+        return $this->renderSelect($name, $this->getQualificationTypes(), $selected);
+    }
+
+    public function renderProficiencyLevelDropdown($name = 'proficiency', $selected = null)
+    {
+        return $this->renderSelect($name, $this->getProficiencyLevels(), $selected);
+    }
+
+    public function renderPursuingDegreeDropdown($name = 'pursuing_degree', $selected = null)
+    {
+        return $this->renderSelect($name, $this->getPursuingDegrees(), $selected);
+    }
+
+    public function renderEntryTypeDropdown($name = 'entry_type', $selected = null)
+    {
+        return $this->renderSelect($name, $this->getEntryTypes(), $selected);
+    }
+
+    public function renderAdmissionModeDropdown($name = 'admission_mode', $selected = null)
+    {
+        return $this->renderSelect($name, $this->getAdmissionModes(), $selected);
+    }
+
+    public function renderYesNoDropdown($name = 'yes_no', $selected = null)
+    {
+        return $this->renderSelect($name, $this->getYesNoOptions(), $selected);
+    }
+
+    public function renderApplicationStatusDropdown($name = 'application_status', $selected = null)
+    {
+        return $this->renderSelect($name, $this->getApplicationStatuses(), $selected);
+    }
+
+    public function renderOfferStatusDropdown($name = 'offer_status', $selected = null)
+    {
+        return $this->renderSelect($name, $this->getOfferStatuses(), $selected);
     }
 }

@@ -27,4 +27,20 @@ $routes->get('/preview', function () {
 });
 $routes->get('/student/profile-preview', 'Student::profilePreview');
 
+//profile summary
+$routes->get('/student/profile', 'Student::profilePreview');
+$routes->post('/student/update-profile-summary', 'Student::updateProfileSummary');
 
+//personal information
+$routes->post('/student/update-personal-info', 'Student::updatePersonalInfo');
+
+//key skills
+$routes->post('/student/update-skills', 'Student::updateSkills');
+$routes->post('/student/delete-skill', 'Student::deleteSkill');
+$routes->post('/student/add-skill', 'Student::addSkill');
+
+//Academics info
+$routes->post('/student/update-academic-info', 'Student::updateAcademicInfo');
+
+//placement preferences
+$routes->post('student/update-placement-preferences', 'Student::updatePlacementPreferences');
