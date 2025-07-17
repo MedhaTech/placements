@@ -120,8 +120,6 @@ public function savePlacementPreferences($studentId, $data)
 }
 
 
-}
-
 public function getAcademicInfo($studentId)
 {
     return $this->db->table('students_academics sa')
