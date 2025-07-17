@@ -58,7 +58,7 @@ class Database extends Config
         'hostname'   => '192.185.129.71',
         'username'   => 'medha_placements',
         'password'   => '@}S3cI?2S26$',
-        'database'   => 'medha_placements-Tool',
+        'database'   => 'medha_placements',
         'DBDriver'   => 'MySQLi',
          'DBPrefix'   => '',
          'pConnect'   => false,
