@@ -16,7 +16,10 @@ class App extends BaseConfig
      *
      * E.g., http://example.com/
      */
+
     //public string $baseURL = 'http://localhost/placement/placements/public/';
+    #public string $baseURL = 'http://localhost/placement-tool/placements/public/';
+
     // For live server, you can use the following baseURL.
     public string $baseURL = 'https://medhatech.in/placements/';
 

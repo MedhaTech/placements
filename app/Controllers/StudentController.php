@@ -245,6 +245,7 @@ public function updatePlacementPreferences()
         return redirect()->to('/student/profile')->with('success', 'Placement preferences updated successfully.');
     }
 
+
     public function changePasswordForm()
     {
         return view('student/student_pwd', [
@@ -313,3 +314,8 @@ public function updatePlacementPreferences()
         ->with('success', 'Password changed successfully.');
 }
 }
+
+}
+
+
+

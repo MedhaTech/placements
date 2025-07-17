@@ -74,6 +74,7 @@ public function adminDashboard()
         return redirect()->to('/admin')->with('success', 'Logged out.');
     }
 
+
     public function changePasswordForm()
     {
         return view('admin/change_pwd', [
@@ -140,3 +141,6 @@ public function adminDashboard()
         ->with('success', 'Password changed successfully.');
 }
 }
+
+}
+
