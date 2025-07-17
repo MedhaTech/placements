@@ -73,4 +73,74 @@ public function adminDashboard()
         session()->destroy();
         return redirect()->to('/admin')->with('success', 'Logged out.');
     }
+
+
+    public function changePasswordForm()
+    {
+        return view('admin/change_pwd', [
+            'title' => 'Change Password',
+            'errors' => [],
+            'values' => [],
+        ]);
+    }
+
+    public function updatePassword()
+{
+    $session = session();
+    $userId = $session->get('user_id'); // ✅ Use session instead of hardcoded ID
+    $Model = new \App\Models\AdminModel(); // ✅ Ensure correct model
+
+    $current = $this->request->getPost('current_password');
+    $new = $this->request->getPost('new_password');
+    $confirm = $this->request->getPost('confirm_password');
+
+    $errors = [];
+
+    // 1️⃣ Empty field validation
+    if (empty($current)) {
+        $errors['current_password'] = 'Current password is required.';
+    }
+    if (empty($new)) {
+        $errors['new_password'] = 'New password is required.';
+    }
+    if (empty($confirm)) {
+        $errors['confirm_password'] = 'Please confirm the new password.';
+    }
+
+    // 2️⃣ Additional checks only if no empty field errors
+    if (empty($errors)) {
+        $dbUser = $Model->find($userId);
+
+        if (!$dbUser || !password_verify($current, $dbUser['password'])) {
+            $errors['current_password'] = 'Current password is incorrect.';
+        }
+        if ($new === $current) {
+            $errors['new_password'] = 'New password must be different from the current password.';
+        }
+        if ($new !== $confirm) {
+            $errors['confirm_password'] = 'Passwords do not match.';
+        }
+    }
+
+    // 3️⃣ If any errors, return view with error messages + form values
+    if (!empty($errors)) {
+        return view('admin/change_pwd', [
+            'title' => 'Change Password',
+            'errors' => $errors,
+            'values' => $this->request->getPost()
+        ]);
+    }
+
+    // 4️⃣ Hash password and update
+    $hashedPassword = password_hash($new, PASSWORD_DEFAULT);
+    $Model->update($userId, ['password' => $hashedPassword]);
+
+    // ✅ 5. Flash success message and redirect
+    return redirect()
+        ->to('admin/dashboard')
+        ->with('success', 'Password changed successfully.');
 }
+}
+
+}
+

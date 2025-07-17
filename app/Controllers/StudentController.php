@@ -244,6 +244,78 @@ public function updatePlacementPreferences()
 
         return redirect()->to('/student/profile')->with('success', 'Placement preferences updated successfully.');
     }
+
+
+    public function changePasswordForm()
+    {
+        return view('student/student_pwd', [
+            'errors' => [],
+            'values' => [],
+        ]);
+    }
+
+    public function updatePassword()
+{
+    $session = session();
+    $studentId = $session->get('student_id'); // ✅ assuming session has student_id
+    $Model = new \App\Models\StudentModel(); // ✅ updated model
+
+    $current = $this->request->getPost('current_password');
+    $new = $this->request->getPost('new_password');
+    $confirm = $this->request->getPost('confirm_password');
+
+    $errors = [];
+
+    // 1️⃣ Empty field validation
+    if (empty($current)) {
+        $errors['current_password'] = 'Current password is required.';
+    }
+
+    if (empty($new)) {
+        $errors['new_password'] = 'New password is required.';
+    }
+
+    if (empty($confirm)) {
+        $errors['confirm_password'] = 'Please confirm the new password.';
+    }
+
+    // 2️⃣ Additional validations
+    if (empty($errors)) {
+        $dbUser = $Model->find($studentId);
+
+        if (!$dbUser || !password_verify($current, $dbUser['password'])) {
+            $errors['current_password'] = 'Current password is incorrect.';
+        }
+
+        if ($new === $current) {
+            $errors['new_password'] = 'New password must be different from the current password.';
+        }
+
+        if ($new !== $confirm) {
+            $errors['confirm_password'] = 'Passwords do not match.';
+        }
+    }
+
+    // 3️⃣ Return if errors
+    if (!empty($errors)) {
+        return view('student/student_pwd', [
+            'errors' => $errors,
+            'values' => $this->request->getPost()
+        ]);
+    }
+
+    // 4️⃣ Hash and update password
+    $hashedPassword = password_hash($new, PASSWORD_DEFAULT);
+    $Model->update($studentId, ['password' => $hashedPassword]);
+
+    // 5️⃣ Redirect with toaster success
+    return redirect()
+        ->to('student/dashboard')
+        ->with('success', 'Password changed successfully.');
 }
+}
+
+}
+
 
 

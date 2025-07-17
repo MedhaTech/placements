@@ -64,7 +64,7 @@
                          <ul class="list-unstyled card-body">
                              <li><a href="#"><span><span class="align-middle">Manage Accounts</span></span></a>
                              </li>
-                             <li><a href="#"><span><span class="align-middle">Change Password</span></span></a>
+                             <li><a href="<?= base_url('admin/change_pwd') ?>"><span><span class="align-middle">Change Password</span></span></a>
                              </li>
                              <li><a href="#"><span><span class="align-middle">Check Inbox</span></span></a>
                              </li>
