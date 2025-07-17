@@ -142,5 +142,4 @@ public function adminDashboard()
 }
 }
 
-}
 
