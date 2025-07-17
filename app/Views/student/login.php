@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Login - Placements</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+    <link rel="icon" type="image/png" href="assets/img/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg" />
+    <link rel="shortcut icon" href="assets/img/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png" />
+    <link rel="manifest" href="assets/img/site.webmanifest" />
+    <title>PlacementSuite</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Styles -->
@@ -66,7 +73,7 @@
 
 <div class="login-box">
     <form method="POST" action="<?= base_url('student-login') ?>">
-        <img src="<?= base_url('assets/img/mycare.png') ?>" alt="Logo" class="img-fluid">
+        <img src="<?= base_url('assets/img/logo-dark.png') ?>" alt="Logo" class="img-fluid">
         <h4 class="text-center mb-4">Student Login</h4>
 
         <?php if (session()->getFlashdata('error')): ?>

@@ -5,21 +5,16 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
+
 // Default route for student login
-$routes->get('/', 'Student::login');
-$routes->get('/student', 'Student::login');
-$routes->get('/placements', 'Student::login');
+$routes->get('/', 'StudentController::studentLogin');
+$routes->get('/student', 'StudentController::studentLogin');
+$routes->get('/placements', 'StudentController::studentLogin');
 
 // Student login and dashboard
-$routes->post('/student-login', 'Student::loginUser');
-$routes->get('/student/dashboard', 'Student::dashboard');
-$routes->get('/student/logout', 'Student::logout');
-
-// Admin login and dashboard
-$routes->get('/admin', 'Admin::login');
-$routes->post('/admin-login', 'Admin::loginUser');
-$routes->get('/admin/dashboard', 'Admin::dashboard');
-$routes->get('/admin/logout', 'Admin::logout');
+$routes->post('/student-login', 'StudentController::loginStudentUser');
+$routes->get('/student/dashboard', 'StudentController::studentDashboard');
+$routes->get('/student/logout', 'StudentController::studentLogout');
 
 // Static preview page
 $routes->get('/preview', function () {
@@ -44,3 +39,10 @@ $routes->post('/student/update-academic-info', 'Student::updateAcademicInfo');
 
 //placement preferences
 $routes->post('student/update-placement-preferences', 'Student::updatePlacementPreferences');
+$routes->get('/preview', 'StudentController::studentProfilePreview');
+
+// Admin login and dashboard
+$routes->get('/admin', 'AdminController::adminLogin');
+$routes->post('/admin-login', 'AdminController::loginAdminUser');
+$routes->get('/admin/dashboard', 'AdminController::adminDashboard');
+$routes->get('/admin/logout', 'AdminController::adminLogout');
