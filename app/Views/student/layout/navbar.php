@@ -69,7 +69,7 @@
                      <div class="card">
                          <ul class="list-unstyled card-body">
                              <li>
-                                 <a href="#"><span class="align-middle">Change Password</span></a>
+                                 <a href="<?= base_url('student/student_pwd') ?>"><span class="align-middle">Change Password</span></a>
                              </li>
                              <li>
                                  <a href="<?= base_url('student/profile-preview') ?>">

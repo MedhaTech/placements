@@ -26,6 +26,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css" rel="stylesheet">
     <link href="<?= base_url('assets/css/style.css') ?>" rel="stylesheet">
 
+    <!-- ✅ Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css" />
+
     <!-- Head Libs -->
     <script src="<?= base_url('assets/js/modernizr.min.js') ?>"></script>
     <script data-pace-options='{ "ajax": false, "selectors": [ "img" ]}' src="<?= base_url('assets/js/pace.min.js') ?>"></script>
@@ -45,8 +48,6 @@
             <?= $this->renderSection('content') ?>
         </div>
 
-       
-
     </div> <!-- /#wrapper -->
 
     <!-- SCRIPTS -->
@@ -57,6 +58,39 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/1.4.0/perfect-scrollbar.min.js"></script>
     <script src="<?= base_url('assets/js/template.js') ?>"></script>
     <script src="<?= base_url('assets/js/custom.js') ?>"></script>
+
+    <!-- ✅ Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
+
+    <!-- ✅ Show Toast if Flash Exists -->
+    <?php if (session()->getFlashdata('success')): ?>
+        <script>
+            setTimeout(() => {
+                $.toast({
+                    heading: 'Success',
+                    text: '<?= session()->getFlashdata('success') ?>',
+                    icon: 'success',
+                    position: 'top-right',
+                    showHideTransition: 'slide'
+                });
+            }, 300);
+        </script>
+    <?php endif; ?>
+
+    <?php if (session()->getFlashdata('error')): ?>
+        <script>
+            setTimeout(() => {
+                $.toast({
+                    heading: 'Error',
+                    text: '<?= session()->getFlashdata('error') ?>',
+                    icon: 'error',
+                    position: 'top-right',
+                    showHideTransition: 'fade'
+                });
+            }, 300);
+        </script>
+    <?php endif; ?>
 </body>
- <?= view('student/layout/footer') ?>
+
+<?= view('student/layout/footer') ?>
 </html>
