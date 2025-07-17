@@ -323,7 +323,12 @@
 
       </div>
 
-      <div id="family-details" class="section-card"><h5>Family Details <a href="#">Add</a></h5></div>
+      <div id="family-details" class="section-card">
+        <h5>Family Details 
+          <a href="#" data-bs-toggle="modal" data-bs-target="#familyDetailsModal">Add</a>
+        </h5>
+         <div id="familyDetailsList" class="mt-3"></div>
+      </div>
       <div id="experience" class="section-card"><h5>Experience Details <a href="#">Add</a></h5></div>
       <div id="skills" class="section-card">
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -786,6 +791,68 @@
     </div>
   </div>
 </div>
+<!-- Family Details Modal -->
+<div class="modal fade" id="familyDetailsModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" style="border-radius: 16px;">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">Family Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted">Add details of your family members below.</p>
+        <form id="familyForm">
+          <div id="familyInputs">
+            <div class="row g-3 family-entry mb-3">
+              <div class="col-md-4">
+                <label class="form-label">Relation</label>
+                <select class="form-select" name="relation[]">
+                  <option value="">Select</option>
+                  <?php foreach ($relationTypes as $relation): ?>
+                    <option value="<?= esc($relation) ?>"><?= esc($relation) ?></option>
+                  <?php endforeach; ?>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-control" name="name[]" placeholder="Full Name">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Occupation</label>
+                <input type="text" class="form-control" name="occupation[]" placeholder="Occupation">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Contact</label>
+                <input type="text" class="form-control" name="contact[]" placeholder="Contact Number">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Mobile</label>
+                <input type="text" class="form-control" name="mobile[]" placeholder="Mobile Number">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" name="email[]" placeholder="Email ID">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Salary</label>
+                <input type="text" class="form-control" name="salary[]" placeholder="Salary">
+              </div>
+            </div>
+          </div>
+
+          <div class="text-end">
+            <button type="button" class="btn btn-sm btn-outline-primary" onclick="addFamilyEntry()">+ Add More</button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer border-0">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
 <script>
@@ -928,6 +995,5 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-
-
+</body>
+</html>
