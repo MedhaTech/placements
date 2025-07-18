@@ -9989,7 +9989,7 @@ dd {
   left: 0;
   color: #999;
   padding: 20px 30px;
-  position: absolute;
+  position: relative;
   right: 0;
   background: #fff;
   border-top: 1px solid #eef1f2; }

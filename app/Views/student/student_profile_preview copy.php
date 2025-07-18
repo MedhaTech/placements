@@ -1,146 +1,138 @@
-<?= $this->extend('student/layout/default') ?>
-<?= $this->section('content') ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Profile </title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-<style>
-  .container-custom {
-    max-width: 1240px;
-    margin: 30px auto;
-  }
 
-  .profile-card {
-    background: #fff;
-    padding: 24px;
-    border-radius: 16px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 30px;
-  }
-
-  .profile-info {
-    display: flex;
-    gap: 20px;
-  }
-
-  .profile-photo {
-    width: 90px;
-    height: 90px;
-    background: #ddd;
-    border-radius: 50%;
-    position: relative;
-  }
-
-  .progress-circle {
-    position: absolute;
-    bottom: -10px;
-    left: 20px;
-    background: #fff;
-    border-radius: 12px;
-    padding: 4px 10px;
-    font-size: 13px;
-    font-weight: bold;
-    color: red;
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .details h5 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-  }
-
-  .details small {
-    font-size: 13px;
-    color: #666;
-  }
-
-  .details p {
-    font-size: 14px;
-    margin: 4px 0;
-  }
-
-  .prompt-box {
-    width: 320px;
-    background: #fff4ef;
-    border-radius: 12px;
-    padding: 20px;
-  }
-
-  .prompt-box li {
-    font-size: 14px;
-    margin-bottom: 8px;
-  }
-
-  .prompt-box .btn {
-    background: #f43f20;
-    color: #fff;
-    border-radius: 20px;
-    padding: 6px 20px;
-    font-size: 14px;
-    border: none;
-  }
-
-  .main-body {
-    display: flex;
-    gap: 24px;
-  }
-
-  .quick-links {
-    width: 260px;
-    background: #fff;
-    border-radius: 14px;
-    padding: 24px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-    height: fit-content;
-  }
-
-  .quick-links h6 {
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 16px;
-  }
-
-  .quick-links a {
-    display: block;
-    font-size: 14px;
-    color: #0059b3;
-    text-decoration: none;
-    margin-bottom: 10px;
-  }
-
-  .profile-section {
-    flex: 1;
-  }
-
-  .section-card {
-    background: #fff;
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.03);
-  }
-
-  .section-card h5 {
-    font-size: 16px;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .section-card a {
-    font-size: 14px;
-    color: #0073e6;
-    text-decoration: none;
-  }
-
-  .modal textarea {
-    border-radius: 12px;
-  }
-
-  .modal-content {
-    border-radius: 16px;
-    background-color: #fff;
-  }
+  <style>
+    body {
+      background-color: #f4f5f7;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .container-custom {
+      max-width: 1240px;
+      margin: 30px auto;
+    }
+    .profile-card {
+      background: #fff;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 30px;
+    }
+    .profile-info {
+      display: flex;
+      gap: 20px;
+    }
+    .profile-photo {
+      width: 90px;
+      height: 90px;
+      background: #ddd;
+      border-radius: 50%;
+      position: relative;
+    }
+    .progress-circle {
+      position: absolute;
+      bottom: -10px;
+      left: 20px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 4px 10px;
+      font-size: 13px;
+      font-weight: bold;
+      color: red;
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+    }
+    .details h5 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .details small {
+      font-size: 13px;
+      color: #666;
+    }
+    .details p {
+      font-size: 14px;
+      margin: 4px 0;
+    }
+    .prompt-box {
+      width: 320px;
+      background: #fff4ef;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .prompt-box li {
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    .prompt-box .btn {
+      background: #f43f20;
+      color: #fff;
+      border-radius: 20px;
+      padding: 6px 20px;
+      font-size: 14px;
+      border: none;
+    }
+    .main-body {
+      display: flex;
+      gap: 24px;
+    }
+    .quick-links {
+      width: 260px;
+      background: #fff;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      height: fit-content;
+    }
+    .quick-links h6 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .quick-links a {
+      display: block;
+      font-size: 14px;
+      color: #0059b3;
+      text-decoration: none;
+      margin-bottom: 10px;
+    }
+    .profile-section {
+      flex: 1;
+    }
+    .section-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.03);
+    }
+    .section-card h5 {
+      font-size: 16px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .section-card a {
+      font-size: 14px;
+      color: #0073e6;
+      text-decoration: none;
+    }
+    .modal textarea {
+      border-radius: 12px;
+    }
+      .modal-content {
+  border-radius: 16px;
+  background-color: #fff;
+}
 
   .modal-body label {
     font-weight: 500;
@@ -157,14 +149,11 @@
     border-color: #007bff;
     box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.25);
   }
-
-  .section-card p,
-  .section-card div {
-    font-size: 14px;
-    color: #444;
-  }
-
-  .badge {
+  .section-card p, .section-card div {
+  font-size: 14px;
+  color: #444;
+}
+.badge {
     background-color: #f3f6f8;
     font-weight: 500;
   }
@@ -175,7 +164,6 @@
     border-radius: 4px;
     transition: background-color 0.2s;
   }
-
   .edit.icon:hover {
     background-color: #eef4fa;
   }
@@ -187,201 +175,195 @@
   .btn-outline-danger.btn-sm {
     border-radius: 8px;
   }
-
   .badge {
-    font-size: 13px;
-    font-weight: 500;
-    background-color: #f8f9fa;
-    border: 1px solid #ccc;
-  }
+  font-size: 13px;
+  font-weight: 500;
+  background-color: #f8f9fa;
+  border: 1px solid #ccc;
+}
+.removeSkillIcon i {
+  font-size: 14px;
+  margin-left: 6px;
+}
+.list-group-item {
+  border: 1px solid #e1e5ea;
+  background-color: #f8f9fa;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+}
 
-  .removeSkillIcon i {
-    font-size: 14px;
-    margin-left: 6px;
-  }
+.list-group-item:hover {
+  background-color: #eef4ff;
+  transition: 0.2s;
+}
 
-  .list-group-item {
-    border: 1px solid #e1e5ea;
-    background-color: #f8f9fa;
-    padding: 12px 16px;
-    border-radius: 8px;
-    font-size: 14px;
-  }
 
-  .list-group-item:hover {
-    background-color: #eef4ff;
-    transition: 0.2s;
-  }
-</style>
+  </style>
+</head>
+<body>
+  <?php if (session()->getFlashdata('success')): ?>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <?= session()->getFlashdata('success') ?>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<?php endif; ?>
 
-<div class="container-fluid">
-  <div class="container-custom">
-    <!-- Top Full Width Profile Card -->
-    <div class="profile-card">
-      <div class="profile-info">
-        <div class="profile-photo">
-          <!-- You can replace this div with an <img> tag once you have image support -->
-          <div class="progress-circle"><?= $completionPercentage ?? '5%' ?></div>
-        </div>
-        <div class="details">
-          <h5><?= esc($student['full_name']) ?> <?= esc($student['appar_id']) ?> ✏️</h5>
-          <small>Profile last updated -
-            <?= !empty($student['updated_at']) ? date('F j, Y', strtotime($student['updated_at'])) : 'Not yet updated' ?></small>
-          <p>📍 <?= !empty($student['preferred_location']) ? esc($student['preferred_location']) : 'Add location' ?></p>
-          <p>🧑‍🎓 <?= !empty($student['experience_level']) ? esc($student['experience_level']) : 'Fresher' ?></p>
-          <p>📅
-            <?= !empty($student['availability']) ? 'Available from ' . esc($student['availability']) : 'Add availability to join' ?>
-          </p>
-        </div>
+<div class="container-custom">
+  <!-- Top Full Width Profile Card -->
+  <div class="profile-card">
+    <div class="profile-info">
+      <div class="profile-photo">
+        <!-- You can replace this div with an <img> tag once you have image support -->
+        <div class="progress-circle"><?= $completionPercentage ?? '5%' ?></div>
       </div>
+      <div class="details">
+        <h5><?= esc($student['full_name']) ?> <?= esc($student['appar_id']) ?> ✏️</h5>
+        <small>Profile last updated - <?= !empty($student['updated_at']) ? date('F j, Y', strtotime($student['updated_at'])) : 'Not yet updated' ?></small>
+        <p>📍 <?= !empty($student['preferred_location']) ? esc($student['preferred_location']) : 'Add location' ?></p>
+        <p>🧑‍🎓 <?= !empty($student['experience_level']) ? esc($student['experience_level']) : 'Fresher' ?></p>
+        <p>📅 <?= !empty($student['availability']) ? 'Available from ' . esc($student['availability']) : 'Add availability to join' ?></p>
+      </div>
+    </div>
 
-      <!-- Missing prompts box -->
-      <div class="prompt-box">
-        <ul class="ps-3">
-          <?php if (empty($student['mobile_no'])): ?>
-            <li>📱 Verify mobile number <span class="text-success">+10%</span></li>
-          <?php endif; ?>
+    <!-- Missing prompts box -->
+    <div class="prompt-box">
+      <ul class="ps-3">
+        <?php if (empty($student['mobile_no'])): ?>
+          <li>📱 Verify mobile number <span class="text-success">+10%</span></li>
+        <?php endif; ?>
 
-          <?php if (empty($student['preferred_location'])): ?>
-            <li>📍 Add preferred location <span class="text-success">+2%</span></li>
-          <?php endif; ?>
+        <?php if (empty($student['preferred_location'])): ?>
+          <li>📍 Add preferred location <span class="text-success">+2%</span></li>
+        <?php endif; ?>
 
-          <?php if (empty($student['resume_path'])): ?>
-            <li>📄 Add resume <span class="text-success">+10%</span></li>
-          <?php endif; ?>
-        </ul>
+        <?php if (empty($student['resume_path'])): ?>
+          <li>📄 Add resume <span class="text-success">+10%</span></li>
+        <?php endif; ?>
+      </ul>
 
-        <?php
+      <?php
         // Count missing fields for a score system
         $missing = 0;
         $missing += empty($student['mobile_no']) ? 1 : 0;
         $missing += empty($student['preferred_location']) ? 1 : 0;
         $missing += empty($student['resume_path']) ? 1 : 0;
         $totalMissing = $missing * 1; // You can adjust scoring logic
-        ?>
-        <button class="btn">Add <?= $totalMissing ?> missing details</button>
-      </div>
+      ?>
+      <button class="btn">Add <?= $totalMissing ?> missing details</button>
     </div>
-    <!-- Main Body with Sidebar + Sections -->
-    <div class="main-body">
-      <!-- Sidebar -->
-      <div class="quick-links">
-        <h6>Quick Links</h6>
-        <a href="#profile-summary">Profile Summary</a>
-        <a href="#personal-info">Personal Information</a>
-        <a href="#family-details">Family Details</a>
-        <a href="#experience">Experience Details</a>
-        <a href="#skills">Key Skills</a>
-        <a href="#education">Education Details</a>
-        <a href="#certifications">Licenses & Certifications</a>
-        <a href="#projects">Projects & Publications</a>
-        <a href="#languages">Languages</a>
-        <a href="#academic-info">Current Academic Information</a>
-        <a href="#preferences">Placement Preferences</a>
-        <a href="#training">Placement Training</a>
-        <a href="#offers">Placement Offers</a>
-        <a href="#documents">Documents</a>
+  </div>
+  <!-- Main Body with Sidebar + Sections -->
+  <div class="main-body">
+    <!-- Sidebar -->
+    <div class="quick-links">
+      <h6>Quick Links</h6>
+      <a href="#profile-summary">Profile Summary</a>
+      <a href="#personal-info">Personal Information</a>
+      <a href="#family-details">Family Details</a>
+      <a href="#experience">Experience Details</a>
+      <a href="#skills">Key Skills</a>
+      <a href="#education">Education Details</a>
+      <a href="#certifications">Licenses & Certifications</a>
+      <a href="#projects">Projects & Publications</a>
+      <a href="#languages">Languages</a>
+      <a href="#academic-info">Current Academic Information</a>
+      <a href="#preferences">Placement Preferences</a>
+      <a href="#training">Placement Training</a>
+      <a href="#offers">Placement Offers</a>
+      <a href="#documents">Documents</a>
+    </div>
+
+    <!-- Sections Area -->
+    <div class="profile-section">
+      <div id="profile-summary" class="section-card">
+        <h5 class="d-flex align-items-center gap-2">
+          <span>Profile Summary</span>
+          <span class="edit icon" tabindex="0" data-bs-toggle="modal" data-bs-target="#profileSummaryModal" title="Edit Summary">
+            <i class="fa-solid fa-pen-to-square text-primary" style="font-size: 15px;"></i>
+          </span>
+        </h5>
+
+        <p><?= !empty($student['profile_summary']) ? esc($student['profile_summary']) : 'No summary added yet.' ?></p>
       </div>
 
-      <!-- Sections Area -->
-      <div class="profile-section">
-        <div id="profile-summary" class="section-card">
-          <h5 class="d-flex align-items-center gap-2">
-            <span>Profile Summary</span>
-            <span class="edit icon" tabindex="0" data-bs-toggle="modal" data-bs-target="#profileSummaryModal"
-              title="Edit Summary">
-              <i class="fa-solid fa-pen-to-square text-primary" style="font-size: 15px;"></i>
-            </span>
-          </h5>
+      <div id="personal-info" class="section-card">
+        <h5 class="d-flex align-items-center gap-2 fw-bold mb-3 text-dark" style="font-size: 16px;">
+          <span>Personal Information</span>
+          <span class="edit icon" tabindex="0" data-bs-toggle="modal" data-bs-target="#personalInfoModal" title="Edit Personal Info">
+            <i class="fa-solid fa-pen-to-square text-primary" style="font-size: 15px;"></i>
+          </span>
+        </h5>
+        <div class="row text-muted small">
+        <div class="col-md-6 mb-2">
+          <strong>Full Name:</strong> <?= esc($student['full_name']) ?>
+        </div>
+        <div class="col-md-6 mb-2">
+          <strong>Mobile No:</strong> <?= esc($student['mobile_no']) ?>
+        </div>
+        <div class="col-md-6 mb-2">
+          <strong>WhatsApp No:</strong> <?= esc($student['whatsapp_no']) ?>
+        </div>
+        <div class="col-md-6 mb-2">
+          <strong>Personal Email:</strong> <?= esc($student['personal_email']) ?>
+        </div>
+        <div class="col-md-6 mb-2">
+          <strong>Official Email:</strong> <?= esc($student['official_email']) ?>
+        </div>
+        <div class="col-md-6 mb-2">
+          <strong>Gender:</strong> <?= esc($student['gender']) ?>
+        </div>
+        <div class="col-md-6 mb-2">
+          <strong>Date of Birth:</strong> <?= esc($student['date_of_birth']) ?>
+        </div>
+        <div class="col-md-6 mb-2">
+          <strong>Native Place:</strong> <?= esc($student['native_place']) ?>
+        </div>
+</div>
 
-          <p><?= !empty($student['profile_summary']) ? esc($student['profile_summary']) : 'No summary added yet.' ?></p>
+      </div>
+
+      <div id="family-details" class="section-card">
+        <h5>Family Details 
+          <a href="#" data-bs-toggle="modal" data-bs-target="#familyDetailsModal">Add</a>
+        </h5>
+         <div id="familyDetailsList" class="mt-3"></div>
+      </div>
+      <div id="experience" class="section-card"><h5>Experience Details <a href="#">Add</a></h5></div>
+      <div id="skills" class="section-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold text-dark mb-0">Skills</h5>
+          <a href="#" data-bs-toggle="modal" data-bs-target="#addSkillModal" class="text-primary fw-semibold">Add</a>
         </div>
 
-        <div id="personal-info" class="section-card">
-          <h5 class="d-flex align-items-center gap-2 fw-bold mb-3 text-dark" style="font-size: 16px;">
-            <span>Personal Information</span>
-            <span class="edit icon" tabindex="0" data-bs-toggle="modal" data-bs-target="#personalInfoModal"
-              title="Edit Personal Info">
-              <i class="fa-solid fa-pen-to-square text-primary" style="font-size: 15px;"></i>
-            </span>
-          </h5>
-          <div class="row text-muted small">
-            <div class="col-md-6 mb-2">
-              <strong>Full Name:</strong> <?= esc($student['full_name']) ?>
-            </div>
-            <div class="col-md-6 mb-2">
-              <strong>Mobile No:</strong> <?= esc($student['mobile_no']) ?>
-            </div>
-            <div class="col-md-6 mb-2">
-              <strong>WhatsApp No:</strong> <?= esc($student['whatsapp_no']) ?>
-            </div>
-            <div class="col-md-6 mb-2">
-              <strong>Personal Email:</strong> <?= esc($student['personal_email']) ?>
-            </div>
-            <div class="col-md-6 mb-2">
-              <strong>Official Email:</strong> <?= esc($student['official_email']) ?>
-            </div>
-            <div class="col-md-6 mb-2">
-              <strong>Gender:</strong> <?= esc($student['gender']) ?>
-            </div>
-            <div class="col-md-6 mb-2">
-              <strong>Date of Birth:</strong> <?= esc($student['date_of_birth']) ?>
-            </div>
-            <div class="col-md-6 mb-2">
-              <strong>Native Place:</strong> <?= esc($student['native_place']) ?>
-            </div>
+        <?php if (!empty($skills)): ?>
+          <div class="list-group">
+            <?php foreach ($skills as $skill): ?>
+              <div class="list-group-item d-flex justify-content-between align-items-center rounded mb-2" style="background: #f9f9f9;">
+                <span class="text-dark"><?= esc($skill['skill_name']) ?></span>
+                <button 
+                  class="btn btn-sm text-danger deleteSkillBtn" 
+                  data-id="<?= $skill['id'] ?>" 
+                  data-skill="<?= esc($skill['skill_name']) ?>"
+                  data-bs-toggle="modal" 
+                  data-bs-target="#deleteSkillModal">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            <?php endforeach; ?>
           </div>
-
-        </div>
-
-        <div id="family-details" class="section-card">
-          <h5>Family Details
-            <a href="#" data-bs-toggle="modal" data-bs-target="#familyDetailsModal">Add</a>
-          </h5>
-          <div id="familyDetailsList" class="mt-3"></div>
-        </div>
-        <div id="experience" class="section-card">
-          <h5>Experience Details <a href="#">Add</a></h5>
-        </div>
-        <div id="skills" class="section-card">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="fw-bold text-dark mb-0">Skills</h5>
-            <a href="#" data-bs-toggle="modal" data-bs-target="#addSkillModal" class="text-primary fw-semibold">Add</a>
-          </div>
-
-          <?php if (!empty($skills)): ?>
-            <div class="list-group">
-              <?php foreach ($skills as $skill): ?>
-                <div class="list-group-item d-flex justify-content-between align-items-center rounded mb-2"
-                  style="background: #f9f9f9;">
-                  <span class="text-dark"><?= esc($skill['skill_name']) ?></span>
-                  <button class="btn btn-sm text-danger deleteSkillBtn" data-id="<?= $skill['id'] ?>"
-                    data-skill="<?= esc($skill['skill_name']) ?>" data-bs-toggle="modal" data-bs-target="#deleteSkillModal">
-                    <i class="bi bi-trash"></i>
-                  </button>
-                </div>
-              <?php endforeach; ?>
-            </div>
-          <?php else: ?>
-            <p class="text-muted small">You haven't added any skills yet.</p>
-          <?php endif; ?>
-        </div>
+        <?php else: ?>
+          <p class="text-muted small">You haven't added any skills yet.</p>
+        <?php endif; ?>
+      </div>
 
 
 
-        <div id="education" class="section-card">
-          <h5>Education Details <a href="#">Add</a></h5>
-        </div>
-        <div id="certifications" class="section-card">
-          <h5>Licenses & Certifications <a href="#">Add</a></h5>
-        </div>
-        <div id="projects" class="section-card">
-          <h5>Projects & Publications <a href="#">Add</a></h5>
-        </div>
-        <div id="languages" class="section-card">
-          <h5>Languages <a href="#">Add</a></h5>
-        </div>
-        <?php
+      <div id="education" class="section-card"><h5>Education Details <a href="#">Add</a></h5></div>
+      <div id="certifications" class="section-card"><h5>Licenses & Certifications <a href="#">Add</a></h5></div>
+      <div id="projects" class="section-card"><h5>Projects & Publications <a href="#">Add</a></h5></div>
+      <div id="languages" class="section-card"><h5>Languages <a href="#">Add</a></h5></div>
+      <?php
         // 🔹 Place this block where you're rendering student dashboard sections
         ?>
         <div id="academic-info" class="section-card">
@@ -398,25 +380,22 @@
               <div class="col-md-6 mb-2"><strong>Department:</strong> <?= esc($academic['department_name']) ?></div>
               <div class="col-md-6 mb-2"><strong>Year of Joining:</strong> <?= esc($academic['year_of_joining']) ?></div>
               <div class="col-md-6 mb-2"><strong>Type of Entry:</strong> <?= esc($academic['type_of_entry']) ?></div>
-              <div class="col-md-6 mb-2"><strong>Mode of Admission:</strong> <?= esc($academic['mode_of_admission']) ?>
-              </div>
+              <div class="col-md-6 mb-2"><strong>Mode of Admission:</strong> <?= esc($academic['mode_of_admission']) ?></div>
               <div class="col-md-6 mb-2"><strong>Rank:</strong> <?= esc($academic['entrance_rank']) ?: '—' ?></div>
               <div class="col-12">
                 <strong>SGPA/CGPA:</strong>
                 <ul class="mb-2">
                   <?php for ($i = 1; $i <= 10; $i++): ?>
-                    <?php $sem = 'sem' . $i . '_sgpa_cgpa'; ?>
+                    <?php $sem = 'sem'.$i.'_sgpa_cgpa'; ?>
                     <?php if (!empty($academic[$sem])): ?>
                       <li>Sem <?= $i ?>: <?= esc($academic[$sem]) ?></li>
                     <?php endif; ?>
                   <?php endfor; ?>
                 </ul>
               </div>
-              <div class="col-md-4 mb-2"><strong>Current Active Backlogs:</strong>
-                <?= esc($academic['active_backlogs']) ?></div>
+              <div class="col-md-4 mb-2"><strong>Current Active Backlogs:</strong> <?= esc($academic['active_backlogs']) ?></div>
               <div class="col-md-4 mb-2"><strong>Backlog History:</strong> <?= esc($academic['backlog_history']) ?></div>
-              <div class="col-md-4 mb-2"><strong>Year Back:</strong> <?= esc($academic['year_back'] ? 'Yes' : 'No') ?>
-              </div>
+              <div class="col-md-4 mb-2"><strong>Year Back:</strong> <?= esc($academic['year_back'] ? 'Yes' : 'No') ?></div>
               <div class="col-md-4 mb-2"><strong>Academic Gaps:</strong> <?= esc($academic['academic_gaps']) ?></div>
             </div>
           <?php else: ?>
@@ -424,62 +403,50 @@
           <?php endif; ?>
         </div>
 
-        <!-- Placement Preferences Section -->
-        <div id="preferences" class="section-card">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <h5 class="fw-bold text-dark mb-0">Placement Preferences</h5>
-            <a href="#" data-bs-toggle="modal" data-bs-target="#placementPreferencesModal" class="text-danger">
-              <i class="bi bi-pencil-square text-primary"></i>
-            </a>
+      <!-- Placement Preferences Section -->
+      <div id="preferences" class="section-card">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="fw-bold text-dark mb-0">Placement Preferences</h5>
+          <a href="#" data-bs-toggle="modal" data-bs-target="#placementPreferencesModal" class="text-danger">
+            <i class="bi bi-pencil-square text-primary"></i>
+          </a>
+        </div>
+
+        <?php if (!empty($preferences)): ?>
+          <div class="row">
+            <div class="col-md-6 mb-2"><strong>Interested in Placements:</strong> <?= esc($preferences['interested_in_placements'] ? 'Yes' : 'No') ?></div>
+            <div class="col-md-6 mb-2"><strong>Preferred Jobs:</strong> <?= esc($preferences['preferred_jobs']) ?: '—' ?></div>
+            <div class="col-md-6 mb-2"><strong>Interested in Higher Studies:</strong> <?= esc($preferences['interested_in_higher_studies'] ? 'Yes' : 'No') ?></div>
+            <div class="col-md-6 mb-2"><strong>Placement Coordinator Name:</strong> <?= esc($preferences['placement_coordinator_name']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Department:</strong> <?= esc($preferences['coordinator_department']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Mobile:</strong> <?= esc($preferences['coordinator_mobile']) ?></div>
           </div>
-
-          <?php if (!empty($preferences)): ?>
-            <div class="row">
-              <div class="col-md-6 mb-2"><strong>Interested in Placements:</strong>
-                <?= esc($preferences['interested_in_placements'] ? 'Yes' : 'No') ?></div>
-              <div class="col-md-6 mb-2"><strong>Preferred Jobs:</strong>
-                <?= esc($preferences['preferred_jobs']) ?: '—' ?></div>
-              <div class="col-md-6 mb-2"><strong>Interested in Higher Studies:</strong>
-                <?= esc($preferences['interested_in_higher_studies'] ? 'Yes' : 'No') ?></div>
-              <div class="col-md-6 mb-2"><strong>Placement Coordinator Name:</strong>
-                <?= esc($preferences['placement_coordinator_name']) ?></div>
-              <div class="col-md-6 mb-2"><strong>Department:</strong> <?= esc($preferences['coordinator_department']) ?>
-              </div>
-              <div class="col-md-6 mb-2"><strong>Mobile:</strong> <?= esc($preferences['coordinator_mobile']) ?></div>
-            </div>
-          <?php else: ?>
-            <p class="text-muted small">You haven't filled placement preferences yet.</p>
-          <?php endif; ?>
-        </div>
-        <div id="training" class="section-card">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="fw-bold text-dark mb-0">Placement Training</h5>
-            <i class="bi bi-lock text-muted" title="Only admin can edit this"></i>
-          </div>
-
-          <?php if (!empty($training)): ?>
-            <div class="row">
-              <div class="col-md-6 mb-2"><strong>Training Attendance:</strong>
-                <?= esc($training['training_attendance']) ?: '—' ?></div>
-              <div class="col-md-6 mb-2"><strong>Training Score:</strong> <?= esc($training['training_score']) ?: '—' ?>
-              </div>
-              <div class="col-12 mb-2"><strong>PX-Certificates:</strong> <?= esc($training['px_certificates']) ?: '—' ?>
-              </div>
-            </div>
-          <?php else: ?>
-            <p class="text-muted">No placement training details available.</p>
-          <?php endif; ?>
-        </div>
-
-        <div id="offers" class="section-card">
-          <h5>Placement Offers <a href="#">Add</a></h5>
-        </div>
-        <div id="documents" class="section-card">
-          <h5>Documents <a href="#">Upload</a></h5>
-        </div>
+        <?php else: ?>
+          <p class="text-muted small">You haven't filled placement preferences yet.</p>
+        <?php endif; ?>
       </div>
+      <div id="training" class="section-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold text-dark mb-0">Placement Training</h5>
+          <i class="bi bi-lock text-muted" title="Only admin can edit this"></i>
+        </div>
+
+        <?php if (!empty($training)): ?>
+          <div class="row">
+            <div class="col-md-6 mb-2"><strong>Training Attendance:</strong> <?= esc($training['training_attendance']) ?: '—' ?></div>
+            <div class="col-md-6 mb-2"><strong>Training Score:</strong> <?= esc($training['training_score']) ?: '—' ?></div>
+            <div class="col-12 mb-2"><strong>PX-Certificates:</strong> <?= esc($training['px_certificates']) ?: '—' ?></div>
+          </div>
+        <?php else: ?>
+          <p class="text-muted">No placement training details available.</p>
+        <?php endif; ?>
+      </div>
+
+      <div id="offers" class="section-card"><h5>Placement Offers <a href="#">Add</a></h5></div>
+      <div id="documents" class="section-card"><h5>Documents <a href="#">Upload</a></h5></div>
     </div>
   </div>
+</div> 
 <!-- Modal for profile summary -->
 <div class="modal fade" id="profileSummaryModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -1026,7 +993,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-
-</div>
-
-<?= $this->endSection() ?>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
