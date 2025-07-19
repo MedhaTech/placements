@@ -730,4 +730,25 @@ class StudentController extends Controller
             ->to('student/dashboard')
             ->with('success', 'Password changed successfully.');
     }
+  
+  public function saveFamilyDetails()
+{
+    $studentId = session()->get('student_id');
+
+    $fatherName = $this->request->getPost('father_name');
+    $motherName = $this->request->getPost('mother_name');
+    $fatherOccupation = $this->request->getPost('father_occupation');
+    $motherOccupation = $this->request->getPost('mother_occupation');
+
+    $model = new \App\Models\StudentModel();
+    $model->update($studentId, [
+        'father_name' => $fatherName,
+        'mother_name' => $motherName,
+        'father_occupation' => $fatherOccupation,
+        'mother_occupation' => $motherOccupation,
+    ]);
+
+    return redirect()->to('/student/dashboard')->with('success', 'Family details saved successfully.');
+}
+
 }
