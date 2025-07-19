@@ -1,13 +1,13 @@
 <?php
 
 namespace App\Controllers;
-
-use App\Models\UserModel;
 use CodeIgniter\Controller;
 use CodeIgniter\Database\Config;
 use Config\Database;
 use App\Libraries\GlobalData;
 use App\Models\StudentModel;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 
 class StudentController extends Controller
 {
@@ -55,6 +55,46 @@ class StudentController extends Controller
         session()->destroy();
         return redirect()->to('/student');
     }
+
+    public function fillMissingPasswords()
+{
+    $model = new StudentModel();
+
+    // Fetch students with missing or empty passwords
+    $students = $model->where('password', null)
+                      ->orWhere('password', '')
+                      ->findAll();
+
+    $updated = 0;
+
+    foreach ($students as $student) {
+        if (!empty($student['mobile_no'])) {
+            $hashedPassword = password_hash($student['mobile_no'], PASSWORD_DEFAULT);
+            $model->update($student['id'], ['password' => $hashedPassword]);
+            $updated++;
+        }
+    }
+
+    return "Updated $updated student record(s) with missing passwords.";
+}
+
+public function overwriteAllPasswordsWithMobile()
+{
+    $model = new StudentModel();
+    $students = $model->findAll();
+
+    $updated = 0;
+
+    foreach ($students as $student) {
+        if (!empty($student['mobile_no'])) {
+            $hashedPassword = password_hash($student['mobile_no'], PASSWORD_DEFAULT);
+            $model->update($student['id'], ['password' => $hashedPassword]);
+            $updated++;
+        }
+    }
+
+    return "Overwritten passwords for $updated student record(s).";
+}
 
     public function studentProfilePreview()
     {
@@ -730,6 +770,94 @@ class StudentController extends Controller
             ->to('student/dashboard')
             ->with('success', 'Password changed successfully.');
     }
+
+
+ public function uploadExcelForm()
+{
+    return view('student/upload_excel'); // adjust path if needed
+}
+
+public function uploadExcel()
+{
+    helper(['form']);
+    $file = $this->request->getFile('excel_file');
+
+    if ($file && $file->isValid()) {
+        $ext = $file->getClientExtension();
+
+        if ($ext === 'xlsx') {
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getTempName());
+            $sheet = $spreadsheet->getActiveSheet()->toArray();
+
+            $studentModel = new \App\Models\StudentModel();
+
+            foreach ($sheet as $index => $row) {
+                if ($index == 0) continue; // skip header
+
+                // Get fields (default empty except mobile)
+                $reg_no                = $row[0] ?? '';
+                $full_name             = $row[1] ?? '';
+                $mobile_no             = $row[2] ?? '';
+                $whatsapp_no           = $row[3] ?? '';
+                $personal_email        = $row[4] ?? '';
+                $official_email        = $row[6] ?? '';
+                $gender                = $row[7] ?? '';
+                $date_of_birth         = $row[8] ?? '';
+                $native_place          = $row[9] ?? '';
+                $communication_address = $row[10] ?? '';
+                $communication_state   = $row[11] ?? '';
+                $communication_pincode = $row[12] ?? '';
+                $permanent_address     = $row[13] ?? '';
+                $permanent_state       = $row[14] ?? '';
+                $permanent_pincode     = $row[15] ?? '';
+                $pan_number            = $row[16] ?? '';
+                $aadhar_number         = $row[17] ?? '';
+                $appar_id              = $row[18] ?? '';
+                $profile_summary       = $row[19] ?? '';
+                $linkedin              = $row[20] ?? '';
+                $github                = $row[21] ?? '';
+
+                // Required check for mobile_no
+                if (empty($mobile_no)) continue; // skip row if mobile_no missing
+
+                // Password based on mobile number
+                $password_raw = $row[5] ?? $mobile_no;
+
+                $studentModel->save([
+                    'reg_no'                => $reg_no,
+                    'full_name'             => $full_name,
+                    'mobile_no'             => $mobile_no,
+                    'whatsapp_no'           => $whatsapp_no,
+                    'personal_email'        => $personal_email,
+                    'password'              => password_hash($password_raw, PASSWORD_DEFAULT),
+                    'official_email'        => $official_email,
+                    'gender'                => $gender,
+                    'date_of_birth'         => $date_of_birth,
+                    'native_place'          => $native_place,
+                    'communication_address' => $communication_address,
+                    'communication_state'   => $communication_state,
+                    'communication_pincode' => $communication_pincode,
+                    'permanent_address'     => $permanent_address,
+                    'permanent_state'       => $permanent_state,
+                    'permanent_pincode'     => $permanent_pincode,
+                    'pan_number'            => $pan_number,
+                    'aadhar_number'         => $aadhar_number,
+                    'appar_id'              => $appar_id,
+                    'profile_summary'       => $profile_summary,
+                    'linkedin'              => $linkedin,
+                    'github'                => $github,
+                    'created_by'            => 'admin',
+                    'created_on'            => date('Y-m-d H:i:s'),
+                ]);
+            }
+
+            return redirect()->to('student/uploadExcel')->with('success', 'Data imported successfully.');
+        }
+    }
+
+    return redirect()->back()->with('error', 'Invalid file.');
+}
+
   
   public function saveFamilyDetails()
 {
@@ -749,6 +877,7 @@ class StudentController extends Controller
     ]);
 
     return redirect()->to('/student/dashboard')->with('success', 'Family details saved successfully.');
+
 }
 
 }
