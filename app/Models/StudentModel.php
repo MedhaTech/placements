@@ -28,6 +28,8 @@ class StudentModel extends Model
     }
     public function updatePersonalInfo($id, $data)
 {
+    $data['updated_on'] = date('Y-m-d H:i:s');
+
     return $this->db->table('students')
         ->where('id', $id)
         ->update([
@@ -50,6 +52,7 @@ class StudentModel extends Model
             'appar_id' => $data['appar_id'],
             'linkedin' => $data['linkedin'],
             'github' => $data['github'],
+            'updated_on' => $data['updated_on'],
         ]);
 }
 public function updateKeySkills($student_id, $skills)
