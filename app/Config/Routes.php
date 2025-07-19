@@ -16,6 +16,9 @@ $routes->post('/student-login', 'StudentController::loginStudentUser');
 $routes->get('/student/dashboard', 'StudentController::studentDashboard');
 $routes->get('/student/logout', 'StudentController::studentLogout');
 
+$routes->get('/student/student_pwd', 'StudentController::changePasswordForm');
+$routes->post('/student/student_pwd', 'StudentController::updatePassword');
+
 // Static preview page
 /*$routes->get('/preview', function () {
     return view('student/student_profile_preview');
@@ -23,7 +26,8 @@ $routes->get('/student/logout', 'StudentController::studentLogout');
 $routes->get('/student/profile-preview', 'StudentController::studentProfilePreview');
 
 //profile summary
-$routes->get('/student/profile', 'StudentController::profilePreview');
+
+$routes->get('/student/profile', 'StudentController::studentProfilePreview');
 $routes->post('/student/update-profile-summary', 'StudentController::updateProfileSummary');
 
 //personal information
@@ -47,5 +51,11 @@ $routes->post('/admin-login', 'AdminController::loginAdminUser');
 $routes->get('/admin/dashboard', 'AdminController::adminDashboard');
 $routes->get('/admin/logout', 'AdminController::adminLogout');
 
+
 // Student Family Details Save
 $routes->post('/student/save-family-details', 'StudentController::saveFamilyDetails');
+
+$routes->get('/admin/change_pwd', 'AdminController::changePasswordForm');
+$routes->post('/admin/change_pwd', 'AdminController::updatePassword');
+
+

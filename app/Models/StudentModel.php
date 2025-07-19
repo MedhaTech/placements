@@ -6,9 +6,10 @@ use CodeIgniter\Model;
 class StudentModel extends Model
 {
     // 🔹 Used for login (users table)
-    protected $table = 'users';
+    protected $table = 'students';
+    protected $allowedFields = ['official_email', 'password']; // only needed if you're using `save()`, not raw query
+
     protected $primaryKey = 'id';
-    protected $allowedFields = ['email', 'password', 'role'];
 
     // 🔹 Handle profile summary from 'students' table
     public function getStudentById($id)
@@ -27,6 +28,8 @@ class StudentModel extends Model
     }
     public function updatePersonalInfo($id, $data)
 {
+    $data['updated_on'] = date('Y-m-d H:i:s');
+
     return $this->db->table('students')
         ->where('id', $id)
         ->update([
@@ -49,6 +52,7 @@ class StudentModel extends Model
             'appar_id' => $data['appar_id'],
             'linkedin' => $data['linkedin'],
             'github' => $data['github'],
+            'updated_on' => $data['updated_on'],
         ]);
 }
 public function updateKeySkills($student_id, $skills)
@@ -74,6 +78,7 @@ public function updateKeySkills($student_id, $skills)
                     ->where('id', $skillId)
                     ->where('student_id', $studentId)
                     ->delete();
+
 }
 
 public function getAcademicInfo($studentId)
@@ -117,4 +122,20 @@ public function savePlacementPreferences($studentId, $data)
     }
 }
 
+public function getUserById($id)
+    {
+        return $this->where('id', $id)->first();
+    }
+
+    public function getPassword($id)
+    {
+        $user = $this->select('password')->where('id', $id)->first();
+        return $user['password'] ?? null;
+    }
+
+    public function updatePassword($id, $hashedPassword)
+    {
+        return $this->update($id, ['password' => $hashedPassword]);
+    }
 }
+

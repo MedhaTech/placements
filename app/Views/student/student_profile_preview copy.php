@@ -20,7 +20,7 @@
     }
     .profile-card {
       background: #fff;
-      padding: 20px 24px;
+      padding: 24px;
       border-radius: 16px;
       box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
       display: flex;
@@ -30,69 +30,27 @@
     }
     .profile-info {
       display: flex;
-      gap: 24px;
-      align-items: flex-start;
-      width: 100%;
+      gap: 20px;
     }
-    .profile-photo-wrapper {
-      position: relative;
-      width: 140px;
-      height: 160px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
     .profile-photo {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      width: 120px;
-      height: 120px;
+      width: 90px;
+      height: 90px;
+      background: #ddd;
       border-radius: 50%;
-      background-color: #ccc;
-      background-size: cover;
-      background-position: center;
-      border: 4px solid #fff;
-      box-shadow: 0 0 6px rgba(0, 0, 0, 0.08);
-     }
-    .progress-ring {
       position: relative;
-      width: 140px;
-      height: 140px;
     }
-
-    .circle {
-      transform: rotate(-90deg);
-    }
-
-    .circle .bg {
-      fill: none;
-      stroke: #e6e6e6;
-      stroke-width: 8;
-    }
-    .circle .fg {
-      fill: none;
-      stroke: #198754; /* green */
-      stroke-width: 8;
-      transition: stroke-dashoffset 0.6s ease;
-    }
-
-    .progress-ring svg {
+    .progress-circle {
       position: absolute;
-      top: 0;
-      left: 0;
-      transform: rotate(90deg);
-    }
-
-    .progress-label {
-      font-size: 14px;
+      bottom: -10px;
+      left: 20px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 4px 10px;
+      font-size: 13px;
       font-weight: bold;
-      color: #198754;
-      margin-top: 8px;
+      color: red;
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
     }
-
-
     .details h5 {
       margin: 0;
       font-size: 18px;
@@ -107,67 +65,22 @@
       margin: 4px 0;
     }
     .prompt-box {
-        width: 470px;
-        background: #fff4ef;
-        border-radius: 12px;
-        padding: 16px 18px;
-        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        max-height: 200px; /* Fixed height */
-    }
-
-    .prompt-box h6 {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: #d32f2f;
+      width: 320px;
+      background: #fff4ef;
+      border-radius: 12px;
+      padding: 20px;
     }
     .prompt-box li {
       font-size: 14px;
       margin-bottom: 8px;
-      line-height: 1.4;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-
     }
     .prompt-box .btn {
       background: #f43f20;
       color: #fff;
-      border-radius: 18px;
-      padding: 6px 18px;
+      border-radius: 20px;
+      padding: 6px 20px;
       font-size: 14px;
-      font-weight:500;
-      width: fit-content;
-      align-self: center;
-      margin-top: auto;
-    }
-
-    .scrollable-list {
-      max-height: 100px;
-      overflow-y: auto;
-      padding-right: 6px;
-      scrollbar-width: thin;
-      scrollbar-color: #d1d1d1 transparent;
-    }
-
-    /* 🔹 For WebKit (Chrome, Edge, etc.) */
-    .scrollable-list::-webkit-scrollbar {
-      width: 4px;
-    }
-    .scrollable-list::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    .scrollable-list::-webkit-scrollbar-thumb {
-      background-color: #c4c4c4;
-      border-radius: 4px;
-    }
-
-    /* ❌ No up/down arrows */
-    .scrollable-list::-webkit-scrollbar-button {
-      display: none;
+      border: none;
     }
     .main-body {
       display: flex;
@@ -284,30 +197,9 @@
   background-color: #eef4ff;
   transition: 0.2s;
 }
-.info-row {
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  color: #333;
-}
 
-.info-row i {
-  width: 18px;
-  text-align: center;
-  color: #444;
-}
- .profile-divider {
-  border: none;
-  height: 1px;
-  background-color: #e3e3e3;
-  max-width: 650px;
-  margin: 12px 0 18px 0;
-}
 
-.border-start {
-  border-left: 1px solid #e0e0e0 !important;
-}
-</style>
+  </style>
 </head>
 <body>
   <?php if (session()->getFlashdata('success')): ?>
@@ -320,132 +212,47 @@
 <div class="container-custom">
   <!-- Top Full Width Profile Card -->
   <div class="profile-card">
-  <div class="profile-info">
-    <div class="profile-photo-wrapper">
-
-      <!-- Green ring with photo inside -->
-      <div class="progress-ring">
-        <svg class="circle" width="140" height="140">
-          <circle class="bg" cx="70" cy="70" r="60"></circle>
-          <circle class="fg" cx="70" cy="70" r="60"
-            stroke-dasharray="377"
-            stroke-dashoffset="<?= 377 * (1 - intval($completionPercentage)/100) ?>">
-          </circle>
-        </svg>
-
-        <!-- Profile photo sits centered in ring -->
-        <div class="profile-photo" style="background-image: url('<?= $student['profile_photo'] ?? '' ?>');"></div>
+    <div class="profile-info">
+      <div class="profile-photo">
+        <!-- You can replace this div with an <img> tag once you have image support -->
+        <div class="progress-circle"><?= $completionPercentage ?? '5%' ?></div>
       </div>
-
-      <!-- Percentage label below -->
-      <div class="progress-label">
-        <?= esc($completionPercentage) ?>
+      <div class="details">
+        <h5><?= esc($student['full_name']) ?> <?= esc($student['appar_id']) ?> ✏️</h5>
+        <small>Profile last updated - <?= !empty($student['updated_at']) ? date('F j, Y', strtotime($student['updated_at'])) : 'Not yet updated' ?></small>
+        <p>📍 <?= !empty($student['preferred_location']) ? esc($student['preferred_location']) : 'Add location' ?></p>
+        <p>🧑‍🎓 <?= !empty($student['experience_level']) ? esc($student['experience_level']) : 'Fresher' ?></p>
+        <p>📅 <?= !empty($student['availability']) ? 'Available from ' . esc($student['availability']) : 'Add availability to join' ?></p>
       </div>
-
     </div>
 
+    <!-- Missing prompts box -->
+    <div class="prompt-box">
+      <ul class="ps-3">
+        <?php if (empty($student['mobile_no'])): ?>
+          <li>📱 Verify mobile number <span class="text-success">+10%</span></li>
+        <?php endif; ?>
 
-      <div class="details w-100">
-        <!-- Name + ID -->
-        <div class="d-flex justify-content-between align-items-center flex-wrap">
-          <h5 class="mb-1">
-            <?= esc($student['full_name']) ?>
-            <i class="fa fa-pen edit icon ms-2"></i>
-          </h5>
-        </div>
+        <?php if (empty($student['preferred_location'])): ?>
+          <li>📍 Add preferred location <span class="text-success">+2%</span></li>
+        <?php endif; ?>
 
-        <!-- Last updated -->
-        <small class="text-muted d-block mb-3">
-          Profile last updated –
-          <?= !empty($student['updated_on']) ? date('d M, Y', strtotime($student['updated_on'])) : 'Not yet updated' ?>
-        </small>
+        <?php if (empty($student['resume_path'])): ?>
+          <li>📄 Add resume <span class="text-success">+10%</span></li>
+        <?php endif; ?>
+      </ul>
 
-        <hr class="profile-divider" >
-
-
-        <!-- Two-column layout -->
-        <div class="row">
-          <!-- LEFT -->
-          <div class="col-md-6">
-            <div class="info-row mb-2">
-              <i class="fa fa-mobile-screen-button me-2"></i>
-              <span><?= esc($student['mobile_no'] ?? 'Not added') ?></span>
-            </div>
-
-            <div class="info-row mb-2">
-              <i class="fa fa-envelope me-2"></i>
-              <span><?= esc($student['official_email'] ?? 'Email not added') ?></span>
-              <i class="fa fa-circle-check text-success ms-2"></i>
-            </div>
-
-            <div class="info-row mb-2">
-              <i class="fa fa-id-badge me-2"></i>
-              <span><?= esc($student['appar_id'] ?? 'Roll No not added') ?></span>
-            </div>
-          </div>
-
-          <!-- RIGHT -->
-          <div class="col-md-6 border-start ps-4">
-            <div class="info-row mb-2">
-              <i class="fa fa-link me-2"></i>
-               <?php if (!empty($student['linkedin'])): ?>
-                <a href="<?= esc($student['linkedin']) ?>" target="_blank">LinkedIn</a>
-               <?php else: ?>
-                <span class="text-muted">LinkedIn</span>
-               <?php endif; ?>
-            </div>
-
-            <div class="info-row mb-2">
-              <i class="fa fa-laptop-code me-2"></i>
-              <?php if (!empty($student['github'])): ?>
-                <a href="<?= esc($student['github']) ?>" target="_blank">GitHub</a>
-               <?php else: ?>
-                <span class="text-muted">GitHub</span>
-               <?php endif; ?>  
-            </div>
-
-             <div class="info-row mb-2">
-              <i class="fa fa-file-lines me-2"></i>
-              <?php if (!empty($student['resume_url'])): ?>
-                <a href="<?= esc($student['resume_url']) ?>" download target="_blank">Resume Download</a>
-              <?php else: ?>
-                <span class="text-muted">Resume not uploaded</span>
-              <?php endif; ?>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-
+      <?php
+        // Count missing fields for a score system
+        $missing = 0;
+        $missing += empty($student['mobile_no']) ? 1 : 0;
+        $missing += empty($student['preferred_location']) ? 1 : 0;
+        $missing += empty($student['resume_path']) ? 1 : 0;
+        $totalMissing = $missing * 1; // You can adjust scoring logic
+      ?>
+      <button class="btn">Add <?= $totalMissing ?> missing details</button>
     </div>
-
-    
-
-    <!-- Missing prompts box -->  
-  <?php if (!empty($incompleteSections)): ?>
-  <div class="prompt-box">
-
-    <!-- Scrollable list without any border, arrows, or box -->
-    <ul class="scrollable-list ps-3 mb-2">
-      <?php foreach ($incompleteSections as $section): ?>
-        <li>
-          <?= esc($section['name']) ?>
-          <span class="text-success">+<?= $section['percent'] ?>%</span>
-        </li>
-      <?php endforeach; ?>
-    </ul>
-
-    <!-- Fixed button -->
-    <button class="btn btn-danger">
-      Add <?= count($incompleteSections) ?> missing detail<?= count($incompleteSections) > 1 ? 's' : '' ?>
-    </button>
-
   </div>
-<?php endif; ?>
-
-
-</div>
   <!-- Main Body with Sidebar + Sections -->
   <div class="main-body">
     <!-- Sidebar -->
@@ -748,11 +555,11 @@
           </div>
           <div class="col-md-6">
             <label>LinkedIn</label>
-            <input type="url" name="linkedin" class="form-control" value="<?= esc($student['linkedin'] ?? '') ?>">
+            <input type="url" name="linkedin" class="form-control" value="<?= esc($student['linkedin']) ?>">
           </div>
           <div class="col-md-6">
             <label>GitHub</label>
-            <input type="url" name="github" class="form-control" value="<?= esc($student['github'] ?? '') ?>">
+            <input type="url" name="github" class="form-control" value="<?= esc($student['github']) ?>">
           </div>
         </div>
         <div class="modal-footer border-0">
@@ -993,64 +800,61 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-  <p class="text-muted">Add details of your family members below.</p>
-  <div id="familyDetailsList" class="mb-3">
-  <!-- Entries will be added here -->
+        <p class="text-muted">Add details of your family members below.</p>
+        <form id="familyForm">
+          <div id="familyInputs">
+            <div class="row g-3 family-entry mb-3">
+              <div class="col-md-4">
+                <label class="form-label">Relation</label>
+                <select class="form-select" name="relation[]">
+                  <option value="">Select</option>
+                  <?php foreach ($relationTypes as $relation): ?>
+                    <option value="<?= esc($relation) ?>"><?= esc($relation) ?></option>
+                  <?php endforeach; ?>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-control" name="name[]" placeholder="Full Name">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Occupation</label>
+                <input type="text" class="form-control" name="occupation[]" placeholder="Occupation">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Contact</label>
+                <input type="text" class="form-control" name="contact[]" placeholder="Contact Number">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Mobile</label>
+                <input type="text" class="form-control" name="mobile[]" placeholder="Mobile Number">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" name="email[]" placeholder="Email ID">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Salary</label>
+                <input type="text" class="form-control" name="salary[]" placeholder="Salary">
+              </div>
+            </div>
+          </div>
+
+          <div class="text-end">
+            <button type="button" class="btn btn-sm btn-outline-primary" onclick="addFamilyEntry()">+ Add More</button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer border-0">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
 </div>
-  <form id="familyForm">
-    <div class="row mb-3">
-      <div class="col-md-4">
-        <label class="form-label">Relation</label>
-        <select class="form-select" id="relation">
-          <option selected disabled>Select</option>
-          <option value="Father">Father</option>
-          <option value="Mother">Mother</option>
-          <option value="Brother">Brother</option>
-          <option value="Sister">Sister</option>
-          <!-- add more if needed -->
-        </select>
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Name</label>
-        <input type="text" class="form-control" id="name" placeholder="Full Name">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Occupation</label>
-        <input type="text" class="form-control" id="occupation" placeholder="Occupation">
-      </div>
-    </div>
 
-    <div class="row mb-3">
-      <div class="col-md-4">
-        <label class="form-label">Contact</label>
-        <input type="text" class="form-control" id="contact" placeholder="Contact Number">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Mobile</label>
-        <input type="text" class="form-control" id="mobile" placeholder="Mobile Number">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Email</label>
-        <input type="email" class="form-control" id="email" placeholder="Email ID">
-      </div>
-    </div>
 
-    <div class="row mb-4">
-      <div class="col-md-4">
-        <label class="form-label">Salary</label>
-        <input type="text" class="form-control" id="salary" placeholder="Salary">
-      </div>
-      <div class="col-md-8 d-flex align-items-end justify-content-end">
-        <button type="button" class="btn btn-link">+ Add More</button>
-      </div>
-    </div>
 
-    <div class="d-flex justify-content-end">
-      <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
-      <button type="button" class="btn btn-primary" id="saveFamilyBtn">Save</button>
-    </div>
-  </form>
-</div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   const allSkills = [
@@ -1177,7 +981,7 @@ document.addEventListener('DOMContentLoaded', function () {
           const modal = bootstrap.Modal.getInstance(document.getElementById('deleteSkillModal'));
           modal.hide();
 
-          const skillItem = document.querySelector(.deleteSkillBtn[data-id="${skillId}"])?.closest('.list-group-item');
+          const skillItem = document.querySelector(`.deleteSkillBtn[data-id="${skillId}"]`)?.closest('.list-group-item');
           if (skillItem) skillItem.remove();
         } else {
           alert('Error deleting skill');
@@ -1188,47 +992,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 </script>
-<script>
-  document.getElementById('saveFamilyBtn').addEventListener('click', function () {
-    const relation = document.getElementById('relation').value;
-    const name = document.getElementById('name').value;
-    const occupation = document.getElementById('occupation').value;
-    const contact = document.getElementById('contact').value;
-    const mobile = document.getElementById('mobile').value;
-    const email = document.getElementById('email').value;
-    const salary = document.getElementById('salary').value;
-
-    // Optional: Validate fields here
-    if (!relation || !name) {
-      alert("Please fill required fields");
-      return;
-    }
-
-    // Example AJAX call (you must have a controller endpoint to receive it)
-    fetch('<?= base_url("/student/save-family-details") ?>', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest'
-      },
-      body: JSON.stringify({
-        relation, name, occupation, contact, mobile, email, salary
-      })
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        alert("Family member added");
-        // Optionally clear form or update UI here
-      } else {
-        alert("Error saving: " + data.message);
-      }
-    })
-    .catch(err => console.error('Save failed:', err));
-  });
-</script>
-
-
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
