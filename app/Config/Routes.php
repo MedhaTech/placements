@@ -17,28 +17,28 @@ $routes->get('/student/dashboard', 'StudentController::studentDashboard');
 $routes->get('/student/logout', 'StudentController::studentLogout');
 
 // Static preview page
-$routes->get('/preview', function () {
-    return view('student_profile_preview');
-});
-$routes->get('/student/profile-preview', 'Student::profilePreview');
+/*$routes->get('/preview', function () {
+    return view('student/student_profile_preview');
+});*/
+$routes->get('/student/profile-preview', 'StudentController::studentProfilePreview');
 
 //profile summary
-$routes->get('/student/profile', 'Student::profilePreview');
-$routes->post('/student/update-profile-summary', 'Student::updateProfileSummary');
+$routes->get('/student/profile', 'StudentController::profilePreview');
+$routes->post('/student/update-profile-summary', 'StudentController::updateProfileSummary');
 
 //personal information
-$routes->post('/student/update-personal-info', 'Student::updatePersonalInfo');
+$routes->post('/student/update-personal-info', 'StudentController::updatePersonalInfo');
 
 //key skills
-$routes->post('/student/update-skills', 'Student::updateSkills');
-$routes->post('/student/delete-skill', 'Student::deleteSkill');
-$routes->post('/student/add-skill', 'Student::addSkill');
+$routes->post('/student/update-skills', 'StudentController::updateSkills');
+$routes->post('/student/delete-skill', 'StudentController::deleteSkill');
+$routes->post('/student/add-skill', 'StudentController::addSkill');
 
 //Academics info
-$routes->post('/student/update-academic-info', 'Student::updateAcademicInfo');
+$routes->post('/student/update-academic-info', 'StudentController::updateAcademicInfo');
 
 //placement preferences
-$routes->post('student/update-placement-preferences', 'Student::updatePlacementPreferences');
+$routes->post('student/update-placement-preferences', 'StudentController::updatePlacementPreferences');
 $routes->get('/preview', 'StudentController::studentProfilePreview');
 
 // Admin login and dashboard
@@ -46,3 +46,6 @@ $routes->get('/admin', 'AdminController::adminLogin');
 $routes->post('/admin-login', 'AdminController::loginAdminUser');
 $routes->get('/admin/dashboard', 'AdminController::adminDashboard');
 $routes->get('/admin/logout', 'AdminController::adminLogout');
+
+// Student Family Details Save
+$routes->post('/student/save-family-details', 'StudentController::saveFamilyDetails');

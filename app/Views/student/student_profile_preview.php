@@ -555,11 +555,11 @@
           </div>
           <div class="col-md-6">
             <label>LinkedIn</label>
-            <input type="url" name="linkedin" class="form-control" value="<?= esc($student['linkedin']) ?>">
+            <input type="url" name="linkedin" class="form-control" value="<?= esc($student['linkedin'] ?? '') ?>">
           </div>
           <div class="col-md-6">
             <label>GitHub</label>
-            <input type="url" name="github" class="form-control" value="<?= esc($student['github']) ?>">
+            <input type="url" name="github" class="form-control" value="<?= esc($student['github'] ?? '') ?>">
           </div>
         </div>
         <div class="modal-footer border-0">
@@ -800,61 +800,64 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <p class="text-muted">Add details of your family members below.</p>
-        <form id="familyForm">
-          <div id="familyInputs">
-            <div class="row g-3 family-entry mb-3">
-              <div class="col-md-4">
-                <label class="form-label">Relation</label>
-                <select class="form-select" name="relation[]">
-                  <option value="">Select</option>
-                  <?php foreach ($relationTypes as $relation): ?>
-                    <option value="<?= esc($relation) ?>"><?= esc($relation) ?></option>
-                  <?php endforeach; ?>
-                </select>
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Name</label>
-                <input type="text" class="form-control" name="name[]" placeholder="Full Name">
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Occupation</label>
-                <input type="text" class="form-control" name="occupation[]" placeholder="Occupation">
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Contact</label>
-                <input type="text" class="form-control" name="contact[]" placeholder="Contact Number">
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Mobile</label>
-                <input type="text" class="form-control" name="mobile[]" placeholder="Mobile Number">
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Email</label>
-                <input type="email" class="form-control" name="email[]" placeholder="Email ID">
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Salary</label>
-                <input type="text" class="form-control" name="salary[]" placeholder="Salary">
-              </div>
-            </div>
-          </div>
-
-          <div class="text-end">
-            <button type="button" class="btn btn-sm btn-outline-primary" onclick="addFamilyEntry()">+ Add More</button>
-          </div>
-        </form>
+  <p class="text-muted">Add details of your family members below.</p>
+  <div id="familyDetailsList" class="mb-3">
+  <!-- Entries will be added here -->
+</div>
+  <form id="familyForm">
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="form-label">Relation</label>
+        <select class="form-select" id="relation">
+          <option selected disabled>Select</option>
+          <option value="Father">Father</option>
+          <option value="Mother">Mother</option>
+          <option value="Brother">Brother</option>
+          <option value="Sister">Sister</option>
+          <!-- add more if needed -->
+        </select>
       </div>
-      <div class="modal-footer border-0">
-        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button class="btn btn-primary">Save</button>
+      <div class="col-md-4">
+        <label class="form-label">Name</label>
+        <input type="text" class="form-control" id="name" placeholder="Full Name">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Occupation</label>
+        <input type="text" class="form-control" id="occupation" placeholder="Occupation">
       </div>
     </div>
-  </div>
+
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="form-label">Contact</label>
+        <input type="text" class="form-control" id="contact" placeholder="Contact Number">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Mobile</label>
+        <input type="text" class="form-control" id="mobile" placeholder="Mobile Number">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" placeholder="Email ID">
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <label class="form-label">Salary</label>
+        <input type="text" class="form-control" id="salary" placeholder="Salary">
+      </div>
+      <div class="col-md-8 d-flex align-items-end justify-content-end">
+        <button type="button" class="btn btn-link">+ Add More</button>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end">
+      <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+      <button type="button" class="btn btn-primary" id="saveFamilyBtn">Save</button>
+    </div>
+  </form>
 </div>
-
-
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   const allSkills = [
@@ -992,6 +995,47 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 </script>
+<script>
+  document.getElementById('saveFamilyBtn').addEventListener('click', function () {
+    const relation = document.getElementById('relation').value;
+    const name = document.getElementById('name').value;
+    const occupation = document.getElementById('occupation').value;
+    const contact = document.getElementById('contact').value;
+    const mobile = document.getElementById('mobile').value;
+    const email = document.getElementById('email').value;
+    const salary = document.getElementById('salary').value;
+
+    // Optional: Validate fields here
+    if (!relation || !name) {
+      alert("Please fill required fields");
+      return;
+    }
+
+    // Example AJAX call (you must have a controller endpoint to receive it)
+    fetch('<?= base_url("/student/save-family-details") ?>', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: JSON.stringify({
+        relation, name, occupation, contact, mobile, email, salary
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert("Family member added");
+        // Optionally clear form or update UI here
+      } else {
+        alert("Error saving: " + data.message);
+      }
+    })
+    .catch(err => console.error('Save failed:', err));
+  });
+</script>
+
+
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
