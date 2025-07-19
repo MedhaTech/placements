@@ -6,6 +6,7 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
+//Student Routes
 // Default route for student login
 $routes->get('/', 'StudentController::studentLogin');
 $routes->get('/student', 'StudentController::studentLogin');
@@ -16,13 +17,28 @@ $routes->post('/student-login', 'StudentController::loginStudentUser');
 $routes->get('/student/dashboard', 'StudentController::studentDashboard');
 $routes->get('/student/logout', 'StudentController::studentLogout');
 
+//Change password 
 $routes->get('/student/student_pwd', 'StudentController::changePasswordForm');
 $routes->post('/student/student_pwd', 'StudentController::updatePassword');
+
+// to fill missing password rows 
+$routes->get('student/fill-missing-passwords', 'StudentController::fillMissingPasswords');
+
+//Overwrite all password column to mobile no as password(hashed) 
+$routes->get('student/overwrite-all-passwords-with-mobile', 'StudentController::overwriteAllPasswordsWithMobile');
+
+// Excel tables upload 
+$routes->get('student/upload', 'StudentController::uploadExcelView');
+$routes->post('student/uploadExcel', 'StudentController::uploadExcel');
+$routes->get('student/uploadExcel', 'StudentController::uploadExcelForm');
+
+
 
 // Static preview page
 /*$routes->get('/preview', function () {
     return view('student/student_profile_preview');
 });*/
+
 $routes->get('/student/profile-preview', 'StudentController::studentProfilePreview');
 
 //profile summary
@@ -55,6 +71,10 @@ $routes->post('/student/update-academic-info', 'StudentController::updateAcademi
 //placement preferences
 $routes->post('student/update-placement-preferences', 'StudentController::updatePlacementPreferences');
 $routes->get('/preview', 'StudentController::studentProfilePreview');
+
+
+
+//Admin Routes
 
 // Admin login and dashboard
 $routes->get('/admin', 'AdminController::adminLogin');
