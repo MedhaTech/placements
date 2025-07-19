@@ -20,7 +20,7 @@
     }
     .profile-card {
       background: #fff;
-      padding: 24px;
+      padding: 20px 24px;
       border-radius: 16px;
       box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
       display: flex;
@@ -30,27 +30,69 @@
     }
     .profile-info {
       display: flex;
-      gap: 20px;
+      gap: 24px;
+      align-items: flex-start;
+      width: 100%;
     }
-    .profile-photo {
-      width: 90px;
-      height: 90px;
-      background: #ddd;
-      border-radius: 50%;
+    .profile-photo-wrapper {
       position: relative;
+      width: 140px;
+      height: 160px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    .progress-circle {
+
+    .profile-photo {
       position: absolute;
-      bottom: -10px;
-      left: 20px;
-      background: #fff;
-      border-radius: 12px;
-      padding: 4px 10px;
-      font-size: 13px;
-      font-weight: bold;
-      color: red;
-      box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+      top: 10px;
+      left: 10px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background-color: #ccc;
+      background-size: cover;
+      background-position: center;
+      border: 4px solid #fff;
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.08);
+     }
+    .progress-ring {
+      position: relative;
+      width: 140px;
+      height: 140px;
     }
+
+    .circle {
+      transform: rotate(-90deg);
+    }
+
+    .circle .bg {
+      fill: none;
+      stroke: #e6e6e6;
+      stroke-width: 8;
+    }
+    .circle .fg {
+      fill: none;
+      stroke: #198754; /* green */
+      stroke-width: 8;
+      transition: stroke-dashoffset 0.6s ease;
+    }
+
+    .progress-ring svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: rotate(90deg);
+    }
+
+    .progress-label {
+      font-size: 14px;
+      font-weight: bold;
+      color: #198754;
+      margin-top: 8px;
+    }
+
+
     .details h5 {
       margin: 0;
       font-size: 18px;
@@ -65,22 +107,67 @@
       margin: 4px 0;
     }
     .prompt-box {
-      width: 320px;
-      background: #fff4ef;
-      border-radius: 12px;
-      padding: 20px;
+        width: 470px;
+        background: #fff4ef;
+        border-radius: 12px;
+        padding: 16px 18px;
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: 200px; /* Fixed height */
+    }
+
+    .prompt-box h6 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #d32f2f;
     }
     .prompt-box li {
       font-size: 14px;
       margin-bottom: 8px;
+      line-height: 1.4;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
     }
     .prompt-box .btn {
       background: #f43f20;
       color: #fff;
-      border-radius: 20px;
-      padding: 6px 20px;
+      border-radius: 18px;
+      padding: 6px 18px;
       font-size: 14px;
-      border: none;
+      font-weight:500;
+      width: fit-content;
+      align-self: center;
+      margin-top: auto;
+    }
+
+    .scrollable-list {
+      max-height: 100px;
+      overflow-y: auto;
+      padding-right: 6px;
+      scrollbar-width: thin;
+      scrollbar-color: #d1d1d1 transparent;
+    }
+
+    /* 🔹 For WebKit (Chrome, Edge, etc.) */
+    .scrollable-list::-webkit-scrollbar {
+      width: 4px;
+    }
+    .scrollable-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .scrollable-list::-webkit-scrollbar-thumb {
+      background-color: #c4c4c4;
+      border-radius: 4px;
+    }
+
+    /* ❌ No up/down arrows */
+    .scrollable-list::-webkit-scrollbar-button {
+      display: none;
     }
     .main-body {
       display: flex;
@@ -197,9 +284,30 @@
   background-color: #eef4ff;
   transition: 0.2s;
 }
+.info-row {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #333;
+}
 
+.info-row i {
+  width: 18px;
+  text-align: center;
+  color: #444;
+}
+ .profile-divider {
+  border: none;
+  height: 1px;
+  background-color: #e3e3e3;
+  max-width: 650px;
+  margin: 12px 0 18px 0;
+}
 
-  </style>
+.border-start {
+  border-left: 1px solid #e0e0e0 !important;
+}
+</style>
 </head>
 <body>
   <?php if (session()->getFlashdata('success')): ?>
@@ -212,47 +320,132 @@
 <div class="container-custom">
   <!-- Top Full Width Profile Card -->
   <div class="profile-card">
-    <div class="profile-info">
-      <div class="profile-photo">
-        <!-- You can replace this div with an <img> tag once you have image support -->
-        <div class="progress-circle"><?= $completionPercentage ?? '5%' ?></div>
+  <div class="profile-info">
+    <div class="profile-photo-wrapper">
+
+      <!-- Green ring with photo inside -->
+      <div class="progress-ring">
+        <svg class="circle" width="140" height="140">
+          <circle class="bg" cx="70" cy="70" r="60"></circle>
+          <circle class="fg" cx="70" cy="70" r="60"
+            stroke-dasharray="377"
+            stroke-dashoffset="<?= 377 * (1 - intval($completionPercentage)/100) ?>">
+          </circle>
+        </svg>
+
+        <!-- Profile photo sits centered in ring -->
+        <div class="profile-photo" style="background-image: url('<?= $student['profile_photo'] ?? '' ?>');"></div>
       </div>
-      <div class="details">
-        <h5><?= esc($student['full_name']) ?> <?= esc($student['appar_id']) ?> ✏️</h5>
-        <small>Profile last updated - <?= !empty($student['updated_at']) ? date('F j, Y', strtotime($student['updated_at'])) : 'Not yet updated' ?></small>
-        <p>📍 <?= !empty($student['preferred_location']) ? esc($student['preferred_location']) : 'Add location' ?></p>
-        <p>🧑‍🎓 <?= !empty($student['experience_level']) ? esc($student['experience_level']) : 'Fresher' ?></p>
-        <p>📅 <?= !empty($student['availability']) ? 'Available from ' . esc($student['availability']) : 'Add availability to join' ?></p>
+
+      <!-- Percentage label below -->
+      <div class="progress-label">
+        <?= esc($completionPercentage) ?>
       </div>
+
     </div>
 
-    <!-- Missing prompts box -->
-    <div class="prompt-box">
-      <ul class="ps-3">
-        <?php if (empty($student['mobile_no'])): ?>
-          <li>📱 Verify mobile number <span class="text-success">+10%</span></li>
-        <?php endif; ?>
 
-        <?php if (empty($student['preferred_location'])): ?>
-          <li>📍 Add preferred location <span class="text-success">+2%</span></li>
-        <?php endif; ?>
+      <div class="details w-100">
+        <!-- Name + ID -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+          <h5 class="mb-1">
+            <?= esc($student['full_name']) ?>
+            <i class="fa fa-pen edit icon ms-2"></i>
+          </h5>
+        </div>
 
-        <?php if (empty($student['resume_path'])): ?>
-          <li>📄 Add resume <span class="text-success">+10%</span></li>
-        <?php endif; ?>
-      </ul>
+        <!-- Last updated -->
+        <small class="text-muted d-block mb-3">
+          Profile last updated –
+          <?= !empty($student['updated_on']) ? date('d M, Y', strtotime($student['updated_on'])) : 'Not yet updated' ?>
+        </small>
 
-      <?php
-        // Count missing fields for a score system
-        $missing = 0;
-        $missing += empty($student['mobile_no']) ? 1 : 0;
-        $missing += empty($student['preferred_location']) ? 1 : 0;
-        $missing += empty($student['resume_path']) ? 1 : 0;
-        $totalMissing = $missing * 1; // You can adjust scoring logic
-      ?>
-      <button class="btn">Add <?= $totalMissing ?> missing details</button>
+        <hr class="profile-divider" >
+
+
+        <!-- Two-column layout -->
+        <div class="row">
+          <!-- LEFT -->
+          <div class="col-md-6">
+            <div class="info-row mb-2">
+              <i class="fa fa-mobile-screen-button me-2"></i>
+              <span><?= esc($student['mobile_no'] ?? 'Not added') ?></span>
+            </div>
+
+            <div class="info-row mb-2">
+              <i class="fa fa-envelope me-2"></i>
+              <span><?= esc($student['official_email'] ?? 'Email not added') ?></span>
+              <i class="fa fa-circle-check text-success ms-2"></i>
+            </div>
+
+            <div class="info-row mb-2">
+              <i class="fa fa-id-badge me-2"></i>
+              <span><?= esc($student['appar_id'] ?? 'Roll No not added') ?></span>
+            </div>
+          </div>
+
+          <!-- RIGHT -->
+          <div class="col-md-6 border-start ps-4">
+            <div class="info-row mb-2">
+              <i class="fa fa-link me-2"></i>
+               <?php if (!empty($student['linkedin'])): ?>
+                <a href="<?= esc($student['linkedin']) ?>" target="_blank">LinkedIn</a>
+               <?php else: ?>
+                <span class="text-muted">LinkedIn</span>
+               <?php endif; ?>
+            </div>
+
+            <div class="info-row mb-2">
+              <i class="fa fa-laptop-code me-2"></i>
+              <?php if (!empty($student['github'])): ?>
+                <a href="<?= esc($student['github']) ?>" target="_blank">GitHub</a>
+               <?php else: ?>
+                <span class="text-muted">GitHub</span>
+               <?php endif; ?>  
+            </div>
+
+             <div class="info-row mb-2">
+              <i class="fa fa-file-lines me-2"></i>
+              <?php if (!empty($student['resume_url'])): ?>
+                <a href="<?= esc($student['resume_url']) ?>" download target="_blank">Resume Download</a>
+              <?php else: ?>
+                <span class="text-muted">Resume not uploaded</span>
+              <?php endif; ?>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
     </div>
+
+    
+
+    <!-- Missing prompts box -->  
+  <?php if (!empty($incompleteSections)): ?>
+  <div class="prompt-box">
+
+    <!-- Scrollable list without any border, arrows, or box -->
+    <ul class="scrollable-list ps-3 mb-2">
+      <?php foreach ($incompleteSections as $section): ?>
+        <li>
+          <?= esc($section['name']) ?>
+          <span class="text-success">+<?= $section['percent'] ?>%</span>
+        </li>
+      <?php endforeach; ?>
+    </ul>
+
+    <!-- Fixed button -->
+    <button class="btn btn-danger">
+      Add <?= count($incompleteSections) ?> missing detail<?= count($incompleteSections) > 1 ? 's' : '' ?>
+    </button>
+
   </div>
+<?php endif; ?>
+
+
+</div>
   <!-- Main Body with Sidebar + Sections -->
   <div class="main-body">
     <!-- Sidebar -->
