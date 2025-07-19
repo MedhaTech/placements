@@ -6,10 +6,6 @@
                  <img class="logo-expand" alt="" src="<?= base_url('assets/img/logo-light.png') ?>">
                  <img class="logo-collapse" alt="" src="<?= base_url('assets/img/logo_collapse_light.png') ?>">
              </a>
-
-             <a href="<?= base_url('dashboard') ?>" class="ml-2" title="Go to Dashboard">
-                 <i class="material-icons list-icon" style="color: white; font-size: 24px;">home</i>
-             </a>
          </div>
 
          <!-- /.navbar-header -->
@@ -20,9 +16,9 @@
          </ul>
          <!-- /.navbar-left -->
          <!-- Search Form -->
-         <form class="navbar-search d-none d-sm-block" role="search"><i class="material-icons list-icon">search</i>
+         <!-- <form class="navbar-search d-none d-sm-block" role="search"><i class="material-icons list-icon">search</i>
              <input type="search" class="search-query" placeholder="Search anything..."> <a href="javascript:void(0);" class="remove-focus"><i class="material-icons md-24">close</i></a>
-         </form>
+         </form> -->
          <!-- /.navbar-search -->
          <div class="spacer"></div>
          <!-- Right Menu -->
