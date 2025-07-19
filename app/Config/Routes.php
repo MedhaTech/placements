@@ -42,10 +42,10 @@ $routes->get('student/uploadExcel', 'StudentController::uploadExcelForm');
 $routes->get('/student/profile-preview', 'StudentController::studentProfilePreview');
 
 //profile summary
+
 $routes->get('/student/profile', 'StudentController::studentProfilePreview');
 $routes->post('/student/update-profile-summary', 'StudentController::updateProfileSummary');
 
-
 //personal information
 $routes->post('/student/update-personal-info', 'StudentController::updatePersonalInfo');
 
@@ -53,17 +53,6 @@ $routes->post('/student/update-personal-info', 'StudentController::updatePersona
 $routes->post('/student/update-skills', 'StudentController::updateSkills');
 $routes->post('/student/delete-skill', 'StudentController::deleteSkill');
 $routes->post('/student/add-skill', 'StudentController::addSkill');
-
-
-
-//personal information
-$routes->post('/student/update-personal-info', 'StudentController::updatePersonalInfo');
-
-//key skills
-$routes->post('/student/update-skills', 'StudentController::updateSkills');
-$routes->post('/student/delete-skill', 'StudentController::deleteSkill');
-$routes->post('/student/add-skill', 'StudentController::addSkill');
-
 
 //Academics info
 $routes->post('/student/update-academic-info', 'StudentController::updateAcademicInfo');
@@ -82,6 +71,11 @@ $routes->post('/admin-login', 'AdminController::loginAdminUser');
 $routes->get('/admin/dashboard', 'AdminController::adminDashboard');
 $routes->get('/admin/logout', 'AdminController::adminLogout');
 
+
+// Student Family Details Save
+$routes->post('/student/save-family-details', 'StudentController::saveFamilyDetails');
+
 $routes->get('/admin/change_pwd', 'AdminController::changePasswordForm');
 $routes->post('/admin/change_pwd', 'AdminController::updatePassword');
+
 

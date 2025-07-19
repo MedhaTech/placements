@@ -122,8 +122,7 @@ public function overwriteAllPasswordsWithMobile()
             ->where('student_id', $student_id)
             ->get()
             ->getRowArray() ?? [];
-        $completionPercentage = '5%';
-
+       
         // Fetch placement training info
         $training = $this->db->table('students_placement_training')
             ->where('student_id', $student_id)
@@ -132,21 +131,435 @@ public function overwriteAllPasswordsWithMobile()
 
         // ✅ Added relation types
         $relationTypes = ['Father', 'Mother', 'Guardian', 'Brother', 'Sister'];
+   
+    $preferences = $db->table('students_placement_preferences')
+                  ->where('student_id', $student_id)
+                  ->get()
+                  ->getRowArray() ?? [];
+    
+    
+    // Fetch placement training info
+    $training = $this->db->table('students_placement_training')
+        ->where('student_id', $student_id)
+        ->get()
+        ->getRowArray();
+
+    // ✅ Added relation types
+    $relationTypes = ['Father', 'Mother', 'Guardian', 'Brother', 'Sister'];
+    
+     // ✅ Calculate profile completion
+    $incompleteSections = [];
+    $completion = 0;
+
+    // 1. Profile Summary
+    if (!empty($student['profile_summary'])) $completion += 7;
+    else $incompleteSections[] = ['name' => 'Profile Summary', 'percent' => 7];
+
+    // 2. Personal Info (All fields required)
+    if (
+        !empty($student['full_name']) &&
+        !empty($student['mobile_no']) &&
+        !empty($student['whatsapp_no']) &&
+        !empty($student['personal_email']) &&
+        !empty($student['official_email']) &&
+        !empty($student['gender']) &&
+        !empty($student['date_of_birth']) &&
+        !empty($student['native_place'])
+    ) {
+        $completion += 7;
+    } else {
+        $incompleteSections[] = ['name' => 'Personal Information', 'percent' => 7];
+    }
+
+
+    // 3. Family Details (✅ ALL entries must be complete)
+        $familyDetails = $db->table('students_family_details')
+                            ->where('student_id', $student_id)
+                            ->get()
+                            ->getResultArray();
+
+        $hasAllFamilyComplete = true;
+
+        if (empty($familyDetails)) {
+            $hasAllFamilyComplete = false;
+        } else {
+            foreach ($familyDetails as $entry) {
+                if (
+                    empty($entry['relation']) ||
+                    empty($entry['name']) ||
+                    empty($entry['contact']) ||
+                    empty($entry['occupation']) ||
+                    empty($entry['mobile']) ||
+                    empty($entry['email']) ||
+                    empty($entry['salary'])
+                ) {
+                    $hasAllFamilyComplete = false;
+                    break;
+                }
+            }
+        }
+
+        if ($hasAllFamilyComplete) {
+            $completion += 7;
+        } else {
+            $incompleteSections[] = ['name' => 'Family Details', 'percent' => 7];
+        }
+
+
+    // 4. Experience Details (✅ All entries must be complete)
+        $experienceDetails = $db->table('students_experience')
+                                ->where('student_id', $student_id)
+                                ->get()
+                                ->getResultArray();
+
+        $hasAllExperienceComplete = true;
+
+        if (empty($experienceDetails)) {
+            $hasAllExperienceComplete = false;
+        } else {
+            foreach ($experienceDetails as $entry) {
+                if (
+                    empty($entry['title']) ||
+                    empty($entry['employment_type']) ||
+                    empty($entry['organization']) ||
+                    empty($entry['joining_date']) ||
+                    (empty($entry['end_date']) && empty($entry['is_current'])) || // either end date or current must be there
+                    empty($entry['location']) ||
+                    empty($entry['location_type']) ||
+                    empty($entry['remarks'])
+                ) {
+                    $hasAllExperienceComplete = false;
+                    break;
+                }
+            }
+        }
+
+        if ($hasAllExperienceComplete) {
+            $completion += 7;
+        } else {
+            $incompleteSections[] = ['name' => 'Experience Details', 'percent' => 7];
+        }
+
+    // 5. Key Skills
+    $skills = $db->table('students_key_skills')
+             ->where('student_id', $student_id)
+             ->get()
+             ->getResultArray();
+
+
+        if (!empty($skills)) {
+            $completion += 7;
+        } else {
+            $incompleteSections[] = ['name' => 'Key Skills', 'percent' => 7];
+        }
+
+
+    // 6. Education Details (✅ ALL entries must be complete)
+        $educationDetails = $db->table('students_education')
+                            ->where('student_id', $student_id)
+                            ->get()
+                            ->getResultArray();
+
+        $hasAllEducationComplete = true;
+
+        if (empty($educationDetails)) {
+            $hasAllEducationComplete = false;
+        } else {
+            foreach ($educationDetails as $entry) {
+                if (
+                    empty($entry['qualification_type']) ||
+                    empty($entry['institution_name']) ||
+                    empty($entry['board_university']) ||
+                    empty($entry['course_specialization']) ||
+                    empty($entry['course_type']) ||
+                    empty($entry['year_of_passing']) ||
+                    empty($entry['grade_percentage']) ||
+                    empty($entry['result_status'])
+                ) {
+                    $hasAllEducationComplete = false;
+                    break;
+                }
+            }
+        }
+
+        if ($hasAllEducationComplete) {
+            $completion += 7;
+        } else {
+            $incompleteSections[] = ['name' => 'Education Details', 'percent' => 7];
+        }
+
+
+    // 7. Licenses & Certifications (✅ ALL entries must be complete)
+        $certifications = $db->table('students_certifications')
+                            ->where('student_id', $student_id)
+                            ->get()
+                            ->getResultArray();
+
+        $hasAllCertificationsComplete = true;
+
+        if (empty($certifications)) {
+            $hasAllCertificationsComplete = false;
+        } else {
+            foreach ($certifications as $entry) {
+                if (
+                    empty($entry['certificate_name']) ||
+                    empty($entry['issuing_organization']) ||
+                    empty($entry['issue_date']) ||
+                    empty($entry['expiry_date']) ||
+                    empty($entry['reg_no']) ||
+                    empty($entry['url'])
+                ) {
+                    $hasAllCertificationsComplete = false;
+                    break;
+                }
+            }
+        }
+
+        if ($hasAllCertificationsComplete) {
+            $completion += 7;
+        } else {
+            $incompleteSections[] = ['name' => 'Licenses & Certifications', 'percent' => 7];
+        }
+
+
+    // 8. Projects & Publications (✅ ALL entries must be complete)
+        $projects = $db->table('students_projects_publications')
+                    ->where('student_id', $student_id)
+                    ->get()
+                    ->getResultArray();
+
+        $hasAllProjectsComplete = true;
+
+        if (empty($projects)) {
+            $hasAllProjectsComplete = false;
+        } else {
+            foreach ($projects as $entry) {
+                if (
+                    empty($entry['title']) ||
+                    empty($entry['publishing_type']) ||
+                    empty($entry['publisher']) ||
+                    empty($entry['completion_date']) ||
+                    empty($entry['authors']) ||
+                    empty($entry['publication_url']) ||
+                    empty($entry['description'])
+                ) {
+                    $hasAllProjectsComplete = false;
+                    break;
+                }
+            }
+        }
+
+        if ($hasAllProjectsComplete) {
+            $completion += 7;
+        } else {
+            $incompleteSections[] = ['name' => 'Projects & Publications', 'percent' => 7];
+        }
+
+
+    // 9. Languages (✅ ALL entries must be complete)
+        $languages = $db->table('students_languages')
+                        ->where('student_id', $student_id)
+                        ->get()
+                        ->getResultArray();
+
+        $hasAllLanguagesComplete = true;
+
+        if (empty($languages)) {
+            $hasAllLanguagesComplete = false;
+        } else {
+            foreach ($languages as $entry) {
+                if (
+                    empty($entry['language_name']) ||
+                    empty($entry['proficiency']) ||
+                    (
+                        empty($entry['can_read']) &&
+                        empty($entry['can_write']) &&
+                        empty($entry['can_speak'])
+                    )
+                ) {
+                    $hasAllLanguagesComplete = false;
+                    break;
+                }
+            }
+        }
+
+        if ($hasAllLanguagesComplete) {
+            $completion += 7;
+        } else {
+            $incompleteSections[] = ['name' => 'Languages Known', 'percent' => 7];
+        }
+
+
+    // 10. Current Academic Info (Strict check)
+        $academicInfo = $db->table('students_academics')
+                        ->where('student_id', $student_id)
+                        ->get()
+                        ->getRowArray();
+
+        $hasAcademicInfoComplete = true;
+
+        if (empty($academicInfo)) {
+            $hasAcademicInfoComplete = false;
+        } else {
+            $requiredFields = [
+                'pursuing_degree', 'department_id', 'year_of_joining', 'type_of_entry', 
+                'mode_of_admission', 'sem1_sgpa_cgpa', 'active_backlogs', 
+                'backlog_history', 'year_back', 'academic_gaps'
+            ];
+
+            foreach ($requiredFields as $field) {
+                if (empty($academicInfo[$field]) && $academicInfo[$field] !== "0") {
+                    $hasAcademicInfoComplete = false;
+                    break;
+                }
+            }
+        }
+
+        if ($hasAcademicInfoComplete) {
+            $completion += 7;
+        } else {
+            $incompleteSections[] = ['name' => 'Current Academic Information', 'percent' => 7];
+        }
+
+
+
+    // 11. Placement Preferences (strict)
+        $placement = $db->table('students_placement_preferences')
+                        ->where('student_id', $student_id)
+                        ->get()
+                        ->getRowArray();
+
+        $hasPlacementPreferences = true;
+
+        $requiredFields = [
+            'interested_in_placements',
+            'preferred_jobs',
+            'interested_in_higher_studies',
+            'placement_coordinator_name',
+            'coordinator_department',
+            'coordinator_mobile'
+        ];
+
+        if (empty($placement)) {
+            $hasPlacementPreferences = false;
+        } else {
+            foreach ($requiredFields as $field) {
+                if (!isset($placement[$field]) || $placement[$field] === '') {
+                    $hasPlacementPreferences = false;
+                    break;
+                }
+            }
+        }
+
+        if ($hasPlacementPreferences) {
+            $completion += 7;
+        } else {
+            $incompleteSections[] = ['name' => 'Placement Preferences', 'percent' => 7];
+        }
+
+
+   // 12. Placement Training (strict)
+        $training = $db->table('students_placement_training')
+                    ->where('student_id', $student_id)
+                    ->get()
+                    ->getRowArray();
+
+        $hasTrainingData = true;
+
+        if (empty($training) ||
+            empty($training['training_attendance']) ||
+            empty($training['training_score']) ||
+            empty($training['px_certificates'])) {
+            $hasTrainingData = false;
+        }
+
+        if ($hasTrainingData) {
+            $completion += 7;
+        } else {
+            $incompleteSections[] = ['name' => 'Placement Training', 'percent' => 7];
+        }
+
+
+    // 13. Placement Offers (✅ STRICT: All entries must be fully filled including Offer Status)
+        $offers = $db->table('students_placement_offers')
+                    ->where('student_id', $student_id)
+                    ->get()
+                    ->getResultArray();
+
+        $hasAllOffersComplete = true;
+
+        if (empty($offers)) {
+            $hasAllOffersComplete = false;
+        } else {
+            foreach ($offers as $offer) {
+                if (
+                    empty($offer['company_name']) ||
+                    empty($offer['job_title']) ||
+                    empty($offer['offered_salary']) ||
+                    empty($offer['status']) ||              // Eligible / Applied / Selected etc.
+                    empty($offer['offer_status'])           // Accepted / Rejected / On Hold etc.
+                ) {
+                    $hasAllOffersComplete = false;
+                    break;
+                }
+            }
+        }
+
+        if ($hasAllOffersComplete) {
+            $completion += 7;
+        } else {
+            $incompleteSections[] = ['name' => 'Placement Offers', 'percent' => 7];
+        }
+
+
+
+    // 14. Documents (✅ STRICT: All entries must have document_type and file_path)
+        $documents = $db->table('students_documents')
+                        ->where('student_id', $student_id)
+                        ->get()
+                        ->getResultArray();
+
+        $hasAllDocumentsComplete = true;
+
+        if (empty($documents)) {
+            $hasAllDocumentsComplete = false;
+        } else {
+            foreach ($documents as $doc) {
+                if (
+                    empty($doc['document_type']) ||
+                    empty($doc['file_path'])
+                ) {
+                    $hasAllDocumentsComplete = false;
+                    break;
+                }
+            }
+        }
+
+        if ($hasAllDocumentsComplete) {
+            $completion += 7;
+        } else {
+            $incompleteSections[] = ['name' => 'Documents', 'percent' => 7];
+        }
+
+
+    $completionPercentage = $completion . '%';
 
         return view('student/student_profile_preview', [
-            'student' => $student,
-            'skills' => $skills,
-            'academic' => $academic,
-            'preferences' => $preferences,
-            'training' => $training,
-            'departments' => $departments,
-            'pursuingDegrees' => $global->getPursuingDegrees(),
-            'entryTypes' => $global->getEntryTypes(),
-            'admissionModes' => $global->getAdmissionModes(),
-            'yesNoOptions' => $global->getYesNoOptions(),
-            'completionPercentage' => $completionPercentage, // ✅ Comma added here
-            'relationTypes' => $relationTypes                // ✅ This line is now valid
-        ]);
+        'student' => $student,
+        'skills' => $skills,
+        'academic' => $academic,
+        'preferences' => $preferences, 
+        'training' => $training,
+        'departments' => $departments,
+        'pursuingDegrees' => $global->getPursuingDegrees(),
+        'entryTypes' => $global->getEntryTypes(),
+        'admissionModes' => $global->getAdmissionModes(),
+        'yesNoOptions' => $global->getYesNoOptions(),
+        'completionPercentage' => $completionPercentage, // ✅ Comma added here
+        'relationTypes' => $relationTypes,               // ✅ This line is now valid
+        'incompleteSections' => $incompleteSections // pass to view
+    ]);
+
     }
 
     // Optional: If used globally, this function should move to GlobalData instead
@@ -178,7 +591,10 @@ public function overwriteAllPasswordsWithMobile()
         $id = session()->get('student_id');
         $data = $this->request->getPost();
 
-        $model = new \App\Models\StudentModel();
+
+    $data['updated_on'] = date('Y-m-d H:i:s');
+
+    $model = new \App\Models\StudentModel();
 
         $model->updatePersonalInfo($id, $data);
 
@@ -336,6 +752,7 @@ public function overwriteAllPasswordsWithMobile()
             }
         }
 
+
         // 3️⃣ Return if errors
         if (!empty($errors)) {
             return view('student/student_pwd', [
@@ -353,6 +770,7 @@ public function overwriteAllPasswordsWithMobile()
             ->to('student/dashboard')
             ->with('success', 'Password changed successfully.');
     }
+
 
  public function uploadExcelForm()
 {
@@ -438,6 +856,28 @@ public function uploadExcel()
     }
 
     return redirect()->back()->with('error', 'Invalid file.');
+}
+
+  
+  public function saveFamilyDetails()
+{
+    $studentId = session()->get('student_id');
+
+    $fatherName = $this->request->getPost('father_name');
+    $motherName = $this->request->getPost('mother_name');
+    $fatherOccupation = $this->request->getPost('father_occupation');
+    $motherOccupation = $this->request->getPost('mother_occupation');
+
+    $model = new \App\Models\StudentModel();
+    $model->update($studentId, [
+        'father_name' => $fatherName,
+        'mother_name' => $motherName,
+        'father_occupation' => $fatherOccupation,
+        'mother_occupation' => $motherOccupation,
+    ]);
+
+    return redirect()->to('/student/dashboard')->with('success', 'Family details saved successfully.');
+
 }
 
 }
