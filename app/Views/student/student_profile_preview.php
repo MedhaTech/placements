@@ -640,40 +640,161 @@
     </div>
   </div>
 </div> 
-<!-- Modal for profile summary -->
-<div class="modal fade" id="profileSummaryModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content" style="border-radius: 16px;">
-      <form method="post" action="<?= base_url('/student/update-profile-summary') ?>">
-        <div class="modal-header border-0">
-          <h5 class="modal-title">Edit Profile Summary <span class="text-success">+8%</span></h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+
+ <div id="skills" class="section-card"> 
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold text-dark mb-0">Skills</h5>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#addSkillModal" class="text-primary fw-semibold">Add</a>
+          </div>
+          <?php if (!empty($skills)): ?>
+            <div class="d-flex flex-wrap gap-2">
+              <?php foreach ($skills as $skill): ?>
+                <div class="badge rounded-pill bg-light text-dark border d-flex align-items-center" style="font-size: 14px; padding: 10px 14px;">
+                  <?= esc($skill['skill_name']) ?>
+                  <button type="button"
+                          class="btn-close btn-close-sm ms-2"
+                          aria-label="Remove"
+                          style="font-size: 10px;"
+                          data-id="<?= $skill['id'] ?>"
+                          data-skill="<?= esc($skill['skill_name']) ?>"
+                          data-bs-toggle="modal"
+                          data-bs-target="#deleteSkillModal"></button>
+                </div>
+              <?php endforeach; ?>
+            </div>
+          <?php else: ?>
+            <p class="text-muted small">You haven't added any skills yet.</p>
+          <?php endif; ?>
         </div>
-        <div class="modal-body">
-          <p class="text-muted">Give recruiters a brief overview of your career goals, key achievements, and interests.</p>
-          <textarea class="form-control" name="summary" rows="6" maxlength="1000" placeholder="Type here..."><?= esc($student['profile_summary']) ?></textarea>
-          <div class="text-end small text-muted mt-1">1000 characters max</div>
+
+
+
+
+
+        <div id="education" class="section-card">
+          <h5>Education Details <a href="#">Add</a></h5>
         </div>
-        <div class="modal-footer border-0">
-          <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save</button>
+        <div id="certifications" class="section-card">
+          <h5>Licenses & Certifications <a href="#">Add</a></h5>
         </div>
-      </form>
+        <div id="projects" class="section-card">
+          <h5>Projects & Publications <a href="#">Add</a></h5>
+        </div>
+        <div id="languages" class="section-card">
+          <h5>Languages <a href="#">Add</a></h5>
+        </div>
+        <?php
+        // 🔹 Place this block where you're rendering student dashboard sections
+        ?>
+        <div id="academic-info" class="section-card">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold text-dark mb-0">Current Academic Information</h5>
+            <a href="#" class="text-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#academicInfoModal">
+              <i class="bi bi-pencil-square"></i>
+            </a>
+          </div>
+
+          <?php if (!empty($academic)): ?>
+            <div class="row">
+              <div class="col-md-6 mb-2"><strong>Pursuing Degree:</strong> <?= esc($academic['pursuing_degree']) ?></div>
+              <div class="col-md-6 mb-2"><strong>Department:</strong> <?= esc($academic['department_name']) ?></div>
+              <div class="col-md-6 mb-2"><strong>Year of Joining:</strong> <?= esc($academic['year_of_joining']) ?></div>
+              <div class="col-md-6 mb-2"><strong>Type of Entry:</strong> <?= esc($academic['type_of_entry']) ?></div>
+              <div class="col-md-6 mb-2"><strong>Mode of Admission:</strong> <?= esc($academic['mode_of_admission']) ?>
+              </div>
+              <div class="col-md-6 mb-2"><strong>Rank:</strong> <?= esc($academic['entrance_rank']) ?: '—' ?></div>
+              <div class="col-12">
+                <strong>SGPA/CGPA:</strong>
+                <ul class="mb-2">
+                  <?php for ($i = 1; $i <= 10; $i++): ?>
+                    <?php $sem = 'sem' . $i . '_sgpa_cgpa'; ?>
+                    <?php if (!empty($academic[$sem])): ?>
+                      <li>Sem <?= $i ?>: <?= esc($academic[$sem]) ?></li>
+                    <?php endif; ?>
+                  <?php endfor; ?>
+                </ul>
+              </div>
+              <div class="col-md-4 mb-2"><strong>Current Active Backlogs:</strong>
+                <?= esc($academic['active_backlogs']) ?></div>
+              <div class="col-md-4 mb-2"><strong>Backlog History:</strong> <?= esc($academic['backlog_history']) ?></div>
+              <div class="col-md-4 mb-2"><strong>Year Back:</strong> <?= esc($academic['year_back'] ? 'Yes' : 'No') ?>
+              </div>
+              <div class="col-md-4 mb-2"><strong>Academic Gaps:</strong> <?= esc($academic['academic_gaps']) ?></div>
+            </div>
+          <?php else: ?>
+            <p class="text-muted small">No academic details added yet.</p>
+          <?php endif; ?>
+        </div>
+
+        <!-- Placement Preferences Section -->
+        <div id="preferences" class="section-card">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="fw-bold text-dark mb-0">Placement Preferences</h5>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#placementPreferencesModal" class="text-danger">
+              <i class="bi bi-pencil-square text-primary"></i>
+            </a>
+          </div>
+
+          <?php if (!empty($preferences)): ?>
+            <div class="row">
+              <div class="col-md-6 mb-2"><strong>Interested in Placements:</strong>
+                <?= esc($preferences['interested_in_placements'] ? 'Yes' : 'No') ?></div>
+              <div class="col-md-6 mb-2"><strong>Preferred Jobs:</strong>
+                <?= esc($preferences['preferred_jobs']) ?: '—' ?></div>
+              <div class="col-md-6 mb-2"><strong>Interested in Higher Studies:</strong>
+                <?= esc($preferences['interested_in_higher_studies'] ? 'Yes' : 'No') ?></div>
+              <div class="col-md-6 mb-2"><strong>Placement Coordinator Name:</strong>
+                <?= esc($preferences['placement_coordinator_name']) ?></div>
+              <div class="col-md-6 mb-2"><strong>Department:</strong> <?= esc($preferences['coordinator_department']) ?>
+              </div>
+              <div class="col-md-6 mb-2"><strong>Mobile:</strong> <?= esc($preferences['coordinator_mobile']) ?></div>
+            </div>
+          <?php else: ?>
+            <p class="text-muted small">You haven't filled placement preferences yet.</p>
+          <?php endif; ?>
+        </div>
+        <div id="training" class="section-card">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold text-dark mb-0">Placement Training</h5>
+            <i class="bi bi-lock text-muted" title="Only admin can edit this"></i>
+          </div>
+
+          <?php if (!empty($training)): ?>
+            <div class="row">
+              <div class="col-md-6 mb-2"><strong>Training Attendance:</strong>
+                <?= esc($training['training_attendance']) ?: '—' ?></div>
+              <div class="col-md-6 mb-2"><strong>Training Score:</strong> <?= esc($training['training_score']) ?: '—' ?>
+              </div>
+              <div class="col-12 mb-2"><strong>PX-Certificates:</strong> <?= esc($training['px_certificates']) ?: '—' ?>
+              </div>
+            </div>
+          <?php else: ?>
+            <p class="text-muted">No placement training details available.</p>
+          <?php endif; ?>
+        </div>
+
+        <div id="offers" class="section-card">
+          <h5>Placement Offers <a href="#">Add</a></h5>
+        </div>
+        <div id="documents" class="section-card">
+          <h5>Documents <a href="#">Upload</a></h5>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
-<!--Edit Modal for personal info -->
+<!-- Edit Modal for personal info -->
 <div class="modal fade" id="personalInfoModal" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content" style="border-radius: 16px;">
       <form method="post" action="<?= base_url('/student/update-personal-info') ?>">
         <div class="modal-header border-0">
           <h5 class="modal-title">Edit Personal Information</h5>
-
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
+
         <div class="modal-body row g-3">
+          <!-- Personal Info -->
           <div class="col-md-6">
             <label>Full Name</label>
             <input type="text" name="full_name" class="form-control" value="<?= esc($student['full_name']) ?>" required>
@@ -710,30 +831,6 @@
             <label>Native Place</label>
             <input type="text" name="native_place" class="form-control" value="<?= esc($student['native_place']) ?>">
           </div>
-          <div class="col-md-12">
-            <label>Communication Address</label>
-            <input type="text" name="communication_address" class="form-control" value="<?= esc($student['communication_address']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>State</label>
-            <input type="text" name="communication_state" class="form-control" value="<?= esc($student['communication_state']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>Pincode</label>
-            <input type="text" name="communication_pincode" class="form-control" value="<?= esc($student['communication_pincode']) ?>">
-          </div>
-          <div class="col-md-12">
-            <label>Permanent Address</label>
-            <input type="text" name="permanent_address" class="form-control" value="<?= esc($student['permanent_address']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>State</label>
-            <input type="text" name="permanent_state" class="form-control" value="<?= esc($student['permanent_state']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>Pincode</label>
-            <input type="text" name="permanent_pincode" class="form-control" value="<?= esc($student['permanent_pincode']) ?>">
-          </div>
           <div class="col-md-6">
             <label>PAN Number</label>
             <input type="text" name="pan_number" class="form-control" value="<?= esc($student['pan_number']) ?>">
@@ -748,13 +845,49 @@
           </div>
           <div class="col-md-6">
             <label>LinkedIn</label>
-            <input type="url" name="linkedin" class="form-control" value="<?= esc($student['linkedin'] ?? '') ?>">
+            <input type="url" name="linkedin" class="form-control" value="<?= esc($student['linkedin']) ?>">
           </div>
           <div class="col-md-6">
             <label>GitHub</label>
-            <input type="url" name="github" class="form-control" value="<?= esc($student['github'] ?? '') ?>">
+            <input type="url" name="github" class="form-control" value="<?= esc($student['github']) ?>">
           </div>
-        </div>
+
+  <!-- Communication Address Fields -->
+          <div class="col-md-12">
+            <label>Communication Address</label>
+            <input type="text" id="communicationAddress" name="communication_address" class="form-control" value="<?= esc($student['communication_address']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>State</label>
+            <?= (new \App\Libraries\GlobalData())->renderStateDropdown('communication_state', $student['communication_state']) ?>
+          </div>
+
+          <div class="col-md-6">
+            <label>Pincode</label>
+            <input type="text" id="communicationPincode" name="communication_pincode" class="form-control" value="<?= esc($student['communication_pincode']) ?>">
+          </div>
+
+          <!-- Permanent Address Header + Checkbox in same row -->
+          <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+              <label for="permanentAddress">Permanent Address</label>
+              <div class="d-flex align-items-center" style="gap: 6px;">
+                <input type="checkbox" id="sameAsComm" style="width: 12px; height: 12px; margin-top: 2px;" />
+                <label for="sameAsComm" class="mb-0 text-muted" style="font-size: 13px;">Same as Communication Address</label>
+              </div>
+            </div>
+            <input type="text" id="permanentAddress" name="permanent_address" class="form-control mt-2" value="<?= esc($student['permanent_address']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>State</label>
+            <?= (new \App\Libraries\GlobalData())->renderStateDropdown('permanent_state', $student['permanent_state']) ?>
+          </div>
+
+          <div class="col-md-6">
+            <label>Pincode</label>
+            <input type="text" id="permanentPincode" name="permanent_pincode" class="form-control" value="<?= esc($student['permanent_pincode']) ?>">
+          </div>
+
         <div class="modal-footer border-0">
           <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
           <button type="submit" class="btn btn-primary">Save</button>
@@ -1228,6 +1361,68 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 </script>
 
+      <!-- JavaScript for checkbox -->
+<script>
+  document.getElementById("sameAsComm").addEventListener("change", function () {
+    const isChecked = this.checked;
+
+    const commAddress = document.getElementById("communicationAddress").value;
+    const commState = document.getElementById("communicationState").value;
+    const commPincode = document.getElementById("communicationPincode").value;
+
+    document.getElementById("permanentAddress").value = isChecked ? commAddress : '';
+    document.getElementById("permanentState").value = isChecked ? commState : '';
+    document.getElementById("permanentPincode").value = isChecked ? commPincode : '';
+  });
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const checkbox = document.getElementById('sameAsComm');
+    const commAddress = document.getElementById('communicationAddress');
+    const commState = document.getElementById('communication_state');
+    const commPincode = document.getElementById('communicationPincode');
+
+    const permAddress = document.getElementById('permanentAddress');
+    const permState = document.getElementById('permanent_state');
+    const permPincode = document.getElementById('permanentPincode');
+
+    checkbox.addEventListener('change', function () {
+        if (this.checked) {
+ permAddress.value = commAddress.value;
+            permState.value = commState.value;
+            permPincode.value = commPincode.value;
+        } else {
+            permAddress.value = '';
+            permState.value = '';
+            permPincode.value = '';
+        }
+    });
+});
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const $rightSidebar = document.getElementsByClassName('right-sidebar')[0];
+    const $chatPanel = document.getElementsByClassName('chat-panel')[0];
+
+    if ($rightSidebar && $chatPanel) {
+      document.addEventListener('click', function (event) {
+        const isInsideContainer =
+          $rightSidebar.contains(event.target) || $chatPanel.contains(event.target);
+
+        if (!isInsideContainer) {
+          document.body.classList.remove('right-sidebar-expand');
+
+          const toggle = document.getElementsByClassName('right-sidebar-toggle');
+          for (let i = 0; i < toggle.length; i++) {
+            toggle[i].classList.remove('active');
+          }
+
+          $chatPanel.hidden = 'hidden';
+        }
+      });
+    }
+  });
+</script>
 
 
 <!-- Bootstrap JS -->

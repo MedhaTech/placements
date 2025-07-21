@@ -611,21 +611,37 @@ public function overwriteAllPasswordsWithMobile()
         return redirect()->to('/student/profile')->with('success', 'Skills updated successfully.');
     }
 
-    public function deleteSkill()
-    {
-        if ($this->request->isAJAX()) {
-            $skillId = $this->request->getPost('skill_id');
-            $studentId = session()->get('student_id');
+    public function addSkill()
+{
+    $skill = $this->request->getPost('skill_name');
+    $studentId = session()->get('student_id');
 
-            $db = \Config\Database::connect();
-            $builder = $db->table('students_key_skills');
-
-            $builder->where('id', $skillId)->where('student_id', $studentId);
-            $deleted = $builder->delete();
-
-            return $this->response->setJSON(['status' => $deleted ? 'success' : 'error']);
-        }
+    if (!empty($skill) && $studentId) {
+        $this->db->table('students_key_skills')->insert([
+            'student_id' => $studentId,
+            'skill_name' => $skill,
+            'created_by' => 'self'
+        ]);
+        return $this->response->setStatusCode(200)->setBody('success');
     }
+
+    return $this->response->setStatusCode(400)->setBody('error');
+}
+
+public function deleteSkill()
+{
+    if ($this->request->isAJAX()) {
+        $skillId = $this->request->getPost('skill_id');
+        $studentId = session()->get('student_id');
+
+        $deleted = $this->db->table('students_key_skills')
+                            ->where('id', $skillId)
+                            ->where('student_id', $studentId)
+                            ->delete();
+
+        return $this->response->setJSON(['status' => $deleted ? 'success' : 'error']);
+    }
+}
 
 
     public function __construct()
@@ -633,22 +649,6 @@ public function overwriteAllPasswordsWithMobile()
         $this->db = Database::connect(); // ✅ This sets up $this->db
     }
 
-    public function addSkill()
-    {
-        $skill = $this->request->getPost('skill_name');
-        $studentId = session()->get('student_id');
-
-        if (!empty($skill) && $studentId) {
-            $builder = $this->db->table('students_key_skills');
-            $builder->insert([
-                'student_id' => $studentId,
-                'skill_name' => $skill,
-                'created_by' => 'self'
-            ]);
-        }
-
-        return redirect()->to('/student/profile-preview')->with('success', 'Skill added successfully');
-    }
 
     public function updateAcademicInfo()
     {
