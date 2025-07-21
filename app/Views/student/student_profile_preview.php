@@ -22,6 +22,16 @@
     display: flex;
     gap: 20px;
   }
+    .custom-checkbox {
+    transform: scale(0.8);
+    margin-right: 6px;
+  }
+
+  .form-label-with-checkbox {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
   .profile-photo {
     width: 90px;
@@ -297,7 +307,7 @@
           <p><?= !empty($student['profile_summary']) ? esc($student['profile_summary']) : 'No summary added yet.' ?></p>
         </div>
 
-        <div id="personal-info" class="section-card">
+       <div id="personal-info" class="section-card">
           <h5 class="d-flex align-items-center gap-2 fw-bold mb-3 text-dark" style="font-size: 16px;">
             <span>Personal Information</span>
             <span class="edit icon" tabindex="0" data-bs-toggle="modal" data-bs-target="#personalInfoModal"
@@ -305,34 +315,58 @@
               <i class="fa-solid fa-pen-to-square text-primary" style="font-size: 15px;"></i>
             </span>
           </h5>
-          <div class="row text-muted small">
-            <div class="col-md-6 mb-2">
-              <strong>Full Name:</strong> <?= esc($student['full_name']) ?>
-            </div>
-            <div class="col-md-6 mb-2">
-              <strong>Mobile No:</strong> <?= esc($student['mobile_no']) ?>
-            </div>
-            <div class="col-md-6 mb-2">
-              <strong>WhatsApp No:</strong> <?= esc($student['whatsapp_no']) ?>
-            </div>
-            <div class="col-md-6 mb-2">
-              <strong>Personal Email:</strong> <?= esc($student['personal_email']) ?>
-            </div>
-            <div class="col-md-6 mb-2">
-              <strong>Official Email:</strong> <?= esc($student['official_email']) ?>
-            </div>
-            <div class="col-md-6 mb-2">
-              <strong>Gender:</strong> <?= esc($student['gender']) ?>
-            </div>
-            <div class="col-md-6 mb-2">
-              <strong>Date of Birth:</strong> <?= esc($student['date_of_birth']) ?>
-            </div>
-            <div class="col-md-6 mb-2">
-              <strong>Native Place:</strong> <?= esc($student['native_place']) ?>
-            </div>
-          </div>
 
+          <div class="row text-muted small">
+            <!-- Top Fields -->
+            <div class="col-md-6 mb-2"><strong>Full Name:</strong> <?= esc($student['full_name']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Mobile No:</strong> <?= esc($student['mobile_no']) ?></div>
+            <div class="col-md-6 mb-2"><strong>WhatsApp No:</strong> <?= esc($student['whatsapp_no']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Personal Email:</strong> <?= esc($student['personal_email']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Official Email:</strong> <?= esc($student['official_email']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Gender:</strong> <?= esc($student['gender']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Date of Birth:</strong> <?= esc($student['date_of_birth']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Native Place:</strong> <?= esc($student['native_place']) ?></div>
+            <div class="col-md-6 mb-2"><strong>PAN Number:</strong> <?= esc($student['pan_number']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Aadhar Number:</strong> <?= esc($student['aadhar_number']) ?></div>
+            <div class="col-md-6 mb-2"><strong>APPAR ID:</strong> <?= esc($student['appar_id']) ?></div>
+            <div class="col-md-6 mb-2">
+              <strong>LinkedIn:</strong>
+              <a href="<?= esc($student['linkedin']) ?>" target="_blank" class="text-decoration-none">
+                <?= esc($student['linkedin']) ?>
+              </a>
+            </div>
+            <div class="col-md-6 mb-2">
+              <strong>GitHub:</strong>
+              <a href="<?= esc($student['github']) ?>" target="_blank" class="text-decoration-none">
+                <?= esc($student['github']) ?>
+              </a>
+            </div>
+
+            <!-- Divider -->
+            <div class="col-12 mt-3 mb-2">
+              <hr>
+              <strong class="text-dark">Communication Address</strong>
+            </div>
+
+            <!-- Communication Address -->
+            <div class="col-md-12 mb-2"><strong>Address:</strong> <?= esc($student['communication_address']) ?></div>
+            <div class="col-md-6 mb-2"><strong>State:</strong> <?= esc($student['communication_state']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Pincode:</strong> <?= esc($student['communication_pincode']) ?></div>
+
+            <!-- Divider -->
+            <div class="col-12 mt-3 mb-2">
+              <hr>
+              <strong class="text-dark">Permanent Address</strong>
+            </div>
+
+            <!-- Permanent Address -->
+            <div class="col-md-12 mb-2"><strong>Address:</strong> <?= esc($student['permanent_address']) ?></div>
+            <div class="col-md-6 mb-2"><strong>State:</strong> <?= esc($student['permanent_state']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Pincode:</strong> <?= esc($student['permanent_pincode']) ?></div>
+          </div>
         </div>
+
+
 
         <div id="family-details" class="section-card">
           <h5>Family Details
@@ -343,22 +377,25 @@
         <div id="experience" class="section-card">
           <h5>Experience Details <a href="#">Add</a></h5>
         </div>
-        <div id="skills" class="section-card">
+
+       <div id="skills" class="section-card"> 
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h5 class="fw-bold text-dark mb-0">Skills</h5>
             <a href="#" data-bs-toggle="modal" data-bs-target="#addSkillModal" class="text-primary fw-semibold">Add</a>
           </div>
-
           <?php if (!empty($skills)): ?>
-            <div class="list-group">
+            <div class="d-flex flex-wrap gap-2">
               <?php foreach ($skills as $skill): ?>
-                <div class="list-group-item d-flex justify-content-between align-items-center rounded mb-2"
-                  style="background: #f9f9f9;">
-                  <span class="text-dark"><?= esc($skill['skill_name']) ?></span>
-                  <button class="btn btn-sm text-danger deleteSkillBtn" data-id="<?= $skill['id'] ?>"
-                    data-skill="<?= esc($skill['skill_name']) ?>" data-bs-toggle="modal" data-bs-target="#deleteSkillModal">
-                    <i class="bi bi-trash"></i>
-                  </button>
+                <div class="badge rounded-pill bg-light text-dark border d-flex align-items-center" style="font-size: 14px; padding: 10px 14px;">
+                  <?= esc($skill['skill_name']) ?>
+                  <button type="button"
+                          class="btn-close btn-close-sm ms-2"
+                          aria-label="Remove"
+                          style="font-size: 10px;"
+                          data-id="<?= $skill['id'] ?>"
+                          data-skill="<?= esc($skill['skill_name']) ?>"
+                          data-bs-toggle="modal"
+                          data-bs-target="#deleteSkillModal"></button>
                 </div>
               <?php endforeach; ?>
             </div>
@@ -366,6 +403,8 @@
             <p class="text-muted small">You haven't added any skills yet.</p>
           <?php endif; ?>
         </div>
+
+
 
 
 
@@ -480,6 +519,7 @@
       </div>
     </div>
   </div>
+
 <!-- Modal for profile summary -->
 <div class="modal fade" id="profileSummaryModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -503,17 +543,18 @@
   </div>
 </div>
 
-<!--Edit Modal for personal info -->
+<!-- Edit Modal for personal info -->
 <div class="modal fade" id="personalInfoModal" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content" style="border-radius: 16px;">
       <form method="post" action="<?= base_url('/student/update-personal-info') ?>">
         <div class="modal-header border-0">
           <h5 class="modal-title">Edit Personal Information</h5>
-
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
+
         <div class="modal-body row g-3">
+          <!-- Personal Info -->
           <div class="col-md-6">
             <label>Full Name</label>
             <input type="text" name="full_name" class="form-control" value="<?= esc($student['full_name']) ?>" required>
@@ -550,30 +591,6 @@
             <label>Native Place</label>
             <input type="text" name="native_place" class="form-control" value="<?= esc($student['native_place']) ?>">
           </div>
-          <div class="col-md-12">
-            <label>Communication Address</label>
-            <input type="text" name="communication_address" class="form-control" value="<?= esc($student['communication_address']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>State</label>
-            <input type="text" name="communication_state" class="form-control" value="<?= esc($student['communication_state']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>Pincode</label>
-            <input type="text" name="communication_pincode" class="form-control" value="<?= esc($student['communication_pincode']) ?>">
-          </div>
-          <div class="col-md-12">
-            <label>Permanent Address</label>
-            <input type="text" name="permanent_address" class="form-control" value="<?= esc($student['permanent_address']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>State</label>
-            <input type="text" name="permanent_state" class="form-control" value="<?= esc($student['permanent_state']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>Pincode</label>
-            <input type="text" name="permanent_pincode" class="form-control" value="<?= esc($student['permanent_pincode']) ?>">
-          </div>
           <div class="col-md-6">
             <label>PAN Number</label>
             <input type="text" name="pan_number" class="form-control" value="<?= esc($student['pan_number']) ?>">
@@ -594,7 +611,43 @@
             <label>GitHub</label>
             <input type="url" name="github" class="form-control" value="<?= esc($student['github']) ?>">
           </div>
-        </div>
+
+  <!-- Communication Address Fields -->
+          <div class="col-md-12">
+            <label>Communication Address</label>
+            <input type="text" id="communicationAddress" name="communication_address" class="form-control" value="<?= esc($student['communication_address']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>State</label>
+            <?= (new \App\Libraries\GlobalData())->renderStateDropdown('communication_state', $student['communication_state']) ?>
+          </div>
+
+          <div class="col-md-6">
+            <label>Pincode</label>
+            <input type="text" id="communicationPincode" name="communication_pincode" class="form-control" value="<?= esc($student['communication_pincode']) ?>">
+          </div>
+
+          <!-- Permanent Address Header + Checkbox in same row -->
+          <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+              <label for="permanentAddress">Permanent Address</label>
+              <div class="d-flex align-items-center" style="gap: 6px;">
+                <input type="checkbox" id="sameAsComm" style="width: 12px; height: 12px; margin-top: 2px;" />
+                <label for="sameAsComm" class="mb-0 text-muted" style="font-size: 13px;">Same as Communication Address</label>
+              </div>
+            </div>
+            <input type="text" id="permanentAddress" name="permanent_address" class="form-control mt-2" value="<?= esc($student['permanent_address']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>State</label>
+            <?= (new \App\Libraries\GlobalData())->renderStateDropdown('permanent_state', $student['permanent_state']) ?>
+          </div>
+
+          <div class="col-md-6">
+            <label>Pincode</label>
+            <input type="text" id="permanentPincode" name="permanent_pincode" class="form-control" value="<?= esc($student['permanent_pincode']) ?>">
+          </div>
+
         <div class="modal-footer border-0">
           <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
           <button type="submit" class="btn btn-primary">Save</button>
@@ -603,6 +656,7 @@
     </div>
   </div>
 </div>
+
 <!-- Add Skill Modal -->
 <div class="modal fade" id="addSkillModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-md">
@@ -646,17 +700,17 @@
 <!-- Delete Skill Modal -->
 <div class="modal fade" id="deleteSkillModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content" style="border-radius: 16px;">
+    <div class="modal-content custom-modal">
       <form id="deleteSkillForm">
         <input type="hidden" name="skill_id" id="deleteSkillId">
-        <div class="modal-header border-0">
+        <div class="modal-header border-0 pb-0">
           <h5 class="modal-title">Delete Skill</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body text-center">
-          <p class="mb-0">Are you sure you want to delete <strong id="skillNameLabel">this skill?</strong></p>
+        <div class="modal-body text-center pt-2">
+          <p>Are you sure you want to delete <strong id="skillNameLabel">this skill?</strong></p>
         </div>
-        <div class="modal-footer border-0 justify-content-center">
+        <div class="modal-footer border-0 justify-content-center pt-1">
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
           <button type="button" class="btn btn-danger" id="confirmDeleteSkill">Delete</button>
         </div>
@@ -664,6 +718,7 @@
     </div>
   </div>
 </div>
+
 
 <!-- Academic Info Modal -->
 <div class="modal fade" id="academicInfoModal" tabindex="-1">
@@ -885,9 +940,10 @@
     </div>
   </div>
 </div>
-
-
-
+<?= $this->endSection() ?>
+<!-- Before </body> -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<?= $this->section('scripts') ?>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   const allSkills = [
@@ -897,13 +953,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const skillInput = document.getElementById("skillInput");
   const suggestedSkills = document.getElementById("suggestedSkills");
-  const formBody = document.getElementById("addSkillForm");
   const formContainer = document.getElementById("skillFormBody");
   const successView = document.getElementById("successMessage");
   const saveBtn = document.getElementById("saveSkillBtn");
   const addMoreBtn = document.getElementById("addMoreSkillBtn");
 
-  // 1. Display Suggested Skills
   function displaySkills(skills) {
     suggestedSkills.innerHTML = "";
     skills.forEach(skill => {
@@ -918,7 +972,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // 2. Filter Suggested Skills
   function filterSkills() {
     const keyword = skillInput.value.toLowerCase();
     const filtered = allSkills.filter(skill => skill.toLowerCase().includes(keyword));
@@ -926,46 +979,48 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   skillInput.addEventListener('keyup', filterSkills);
-  displaySkills(allSkills); // Initial display
+  displaySkills(allSkills);
 
-  // 3. Add Skill via AJAX
   saveBtn.addEventListener('click', function () {
     const skillName = skillInput.value.trim();
     if (!skillName) return;
 
-    fetch('<?= base_url('/student/add-skill') ?>', {
+    fetch('/student/add-skill', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ skill_name: skillName })
     })
     .then(res => res.ok ? res.text() : Promise.reject())
     .then(() => {
-      // Show success view
       formContainer.classList.add('d-none');
       successView.classList.remove('d-none');
 
-      // Add to DOM
-      const listGroup = document.querySelector("#skills .list-group");
-      if (listGroup) {
-        const newItem = document.createElement("div");
-        newItem.className = "list-group-item d-flex justify-content-between align-items-center rounded mb-2";
-        newItem.style.background = "#f9f9f9";
-        newItem.innerHTML = `
-          <span class="text-dark">${skillName}</span>
-          <button class="btn btn-sm text-danger deleteSkillBtn" data-id="TEMP" data-skill="${skillName}" data-bs-toggle="modal" data-bs-target="#deleteSkillModal">
-            <i class="bi bi-trash"></i>
-          </button>`;
-        listGroup.appendChild(newItem);
+      const skillContainer = document.querySelector("#skills .d-flex.flex-wrap");
+      if (skillContainer) {
+        const newSkill = document.createElement("div");
+        newSkill.className = "badge rounded-pill bg-light text-dark border d-flex align-items-center";
+        newSkill.style.fontSize = "14px";
+        newSkill.style.padding = "10px 14px";
+        newSkill.innerHTML = `
+          ${skillName}
+          <button type="button"
+                  class="btn-close btn-close-sm ms-2"
+                  aria-label="Remove"
+                  style="font-size: 10px;"
+                  data-id="TEMP"
+                  data-skill="${skillName}"
+                  data-bs-toggle="modal"
+                  data-bs-target="#deleteSkillModal"></button>
+        `;
+        skillContainer.appendChild(newSkill);
       }
 
-      // Reset input
       skillInput.value = '';
       filterSkills();
     })
     .catch(() => alert('Failed to add skill'));
   });
 
-  // 4. Reset Modal on Add More
   addMoreBtn.addEventListener('click', function () {
     skillInput.value = '';
     formContainer.classList.remove('d-none');
@@ -973,7 +1028,6 @@ document.addEventListener('DOMContentLoaded', function () {
     filterSkills();
   });
 
-  // 5. Reset Modal on Close
   document.getElementById("addSkillModal").addEventListener("hidden.bs.modal", function () {
     skillInput.value = '';
     formContainer.classList.remove('d-none');
@@ -981,18 +1035,15 @@ document.addEventListener('DOMContentLoaded', function () {
     filterSkills();
   });
 
-  // 6. Delete Skill Logic
-  let selectedSkillId = null;
+  // Delete Skill Logic
   const deleteInput = document.getElementById('deleteSkillId');
   const skillNameLabel = document.getElementById('skillNameLabel');
 
   document.addEventListener('click', function (e) {
-    const btn = e.target.closest('.deleteSkillBtn');
-    if (btn) {
-      selectedSkillId = btn.getAttribute('data-id');
-      const skillName = btn.getAttribute('data-skill');
-      deleteInput.value = selectedSkillId;
-      skillNameLabel.textContent = skillName;
+    const btn = e.target.closest('.btn-close');
+    if (btn && btn.dataset.skill) {
+      deleteInput.value = btn.dataset.id;
+      skillNameLabel.textContent = btn.dataset.skill;
     }
   });
 
@@ -1000,7 +1051,7 @@ document.addEventListener('DOMContentLoaded', function () {
   if (confirmBtn) {
     confirmBtn.addEventListener('click', function () {
       const skillId = deleteInput.value;
-      fetch("<?= base_url('/student/delete-skill') ?>", {
+      fetch("/student/delete-skill", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -1011,10 +1062,8 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(response => response.json())
       .then(data => {
         if (data.status === 'success') {
-          const modal = bootstrap.Modal.getInstance(document.getElementById('deleteSkillModal'));
-          modal.hide();
-
-          const skillItem = document.querySelector(`.deleteSkillBtn[data-id="${skillId}"]`)?.closest('.list-group-item');
+          bootstrap.Modal.getInstance(document.getElementById('deleteSkillModal')).hide();
+          const skillItem = document.querySelector(`.btn-close[data-id="${skillId}"]`)?.parentElement;
           if (skillItem) skillItem.remove();
         } else {
           alert('Error deleting skill');
@@ -1026,7 +1075,68 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
+<!-- JavaScript for checkbox -->
+<script>
+  document.getElementById("sameAsComm").addEventListener("change", function () {
+    const isChecked = this.checked;
 
+    const commAddress = document.getElementById("communicationAddress").value;
+    const commState = document.getElementById("communicationState").value;
+    const commPincode = document.getElementById("communicationPincode").value;
+
+    document.getElementById("permanentAddress").value = isChecked ? commAddress : '';
+    document.getElementById("permanentState").value = isChecked ? commState : '';
+    document.getElementById("permanentPincode").value = isChecked ? commPincode : '';
+  });
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const checkbox = document.getElementById('sameAsComm');
+    const commAddress = document.getElementById('communicationAddress');
+    const commState = document.getElementById('communication_state');
+    const commPincode = document.getElementById('communicationPincode');
+
+    const permAddress = document.getElementById('permanentAddress');
+    const permState = document.getElementById('permanent_state');
+    const permPincode = document.getElementById('permanentPincode');
+
+    checkbox.addEventListener('change', function () {
+        if (this.checked) {
+            permAddress.value = commAddress.value;
+            permState.value = commState.value;
+            permPincode.value = commPincode.value;
+        } else {
+            permAddress.value = '';
+            permState.value = '';
+            permPincode.value = '';
+        }
+    });
+});
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const $rightSidebar = document.getElementsByClassName('right-sidebar')[0];
+    const $chatPanel = document.getElementsByClassName('chat-panel')[0];
+
+    if ($rightSidebar && $chatPanel) {
+      document.addEventListener('click', function (event) {
+        const isInsideContainer =
+          $rightSidebar.contains(event.target) || $chatPanel.contains(event.target);
+
+        if (!isInsideContainer) {
+          document.body.classList.remove('right-sidebar-expand');
+
+          const toggle = document.getElementsByClassName('right-sidebar-toggle');
+          for (let i = 0; i < toggle.length; i++) {
+            toggle[i].classList.remove('active');
+          }
+
+          $chatPanel.hidden = 'hidden';
+        }
+      });
+    }
+  });
+</script>
 </div>
 
 <?= $this->endSection() ?>
