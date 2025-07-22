@@ -636,7 +636,11 @@
       </div>
 
       <div id="offers" class="section-card"><h5>Placement Offers <a href="#">Add</a></h5></div>
-      <div id="documents" class="section-card"><h5>Documents <a href="#">Upload</a></h5></div>
+      <div id="documents" class="section-card">
+       <h5>Documents 
+        <a href="#" data-bs-toggle="modal" data-bs-target="#documentUploadModal">Upload</a>
+      </h5>
+      </div>
     </div>
   </div>
 </div> 
@@ -1046,6 +1050,35 @@
   </div>
 </div>
 
+<!-- 📎 Document Upload Modal -->
+<div class="modal fade" id="documentUploadModal" tabindex="-1" aria-labelledby="documentUploadModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form action="<?= base_url('student/uploadDocument') ?>" method="post" enctype="multipart/form-data">
+      <?= csrf_field() ?>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="documentUploadModalLabel">Upload Document</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="document_type" class="form-label">Document Type</label>
+            <?= (new \App\Libraries\GlobalData())->renderDocumentTypeDropdown('document_type', old('document_type')) ?>
+          </div>
+          <div class="mb-3">
+            <label for="document_file" class="form-label">Select File</label>
+            <input type="file" name="document_file" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Upload</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 
 
 <script>

@@ -56,6 +56,9 @@ $routes->post('/student/update-academic-info', 'StudentController::updateAcademi
 $routes->post('student/update-placement-preferences', 'StudentController::updatePlacementPreferences');
 $routes->get('/preview', 'StudentController::studentProfilePreview');
 
+$routes->post('student/uploadDocument', 'StudentController::uploadDocument');
+
+
 // Admin login and dashboard
 $routes->get('/admin', 'AdminController::adminLogin');
 $routes->post('/admin-login', 'AdminController::loginAdminUser');

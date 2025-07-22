@@ -85,6 +85,29 @@ class GlobalData
         return ['Accepted', 'Rejected', 'On Hold'];
     }
 
+
+    public function getDocumentTypes()
+     {
+         return [
+            'Photo',
+            'PAN Card',
+            'Aadhar Card',
+            'College ID Card',
+            'Resume',
+            'Passport',
+            'X Certificate',
+            'XII Certificate',
+            'UG Certificate',
+            'PG Certificate',
+            'Diploma Certificate',
+            'Internship Certificate',
+            'Experience Certificate',
+            'Skill Certificate',
+            'Offer Letter'
+        ];
+    }
+
+
     // ✅ Below are reusable dropdown generators
 
     public function renderSelect($name, $options, $selected = null, $class = 'form-select')
@@ -165,4 +188,10 @@ class GlobalData
     {
         return $this->renderSelect($name, $this->getOfferStatuses(), $selected);
     }
+
+    public function renderDocumentTypeDropdown($name = 'document_type', $selected = null)
+    {
+        return $this->renderSelect($name, $this->getDocumentTypes(), $selected);
+    }
+
 }
