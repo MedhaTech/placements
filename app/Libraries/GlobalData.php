@@ -86,6 +86,7 @@ class GlobalData
     }
 
 
+
     public function getDocumentTypes()
      {
          return [
@@ -110,20 +111,25 @@ class GlobalData
 
     // ✅ Below are reusable dropdown generators
 
-    public function renderSelect($name, $options, $selected = null, $class = 'form-select')
-{
-    $html = "<select name='$name' class='$class'>\n";
-    $html .= "<option value=''>Select</option>\n"; // 🔥 Added this line
-    foreach ($options as $opt) {
-        $isSelected = $selected === $opt ? 'selected' : '';
-        $html .= "<option value='" . esc($opt) . "' $isSelected>" . esc($opt) . "</option>\n";
+    public function getSouthIndianStates()
+    {
+        return ['Andhra Pradesh', 'Karnataka', 'Kerala', 'Tamil Nadu', 'Telangana', 'Puducherry'];
     }
-    $html .= "</select>";
-    return $html;
-}
 
+    // 🔽 Generic dropdown renderer
+    public function renderSelect($name, $options, $selected = null, $class = 'form-select')
+    {
+        $html = "<select name='$name' class='$class'>\n";
+        $html .= "<option value=''>Select</option>\n";
+        foreach ($options as $opt) {
+            $isSelected = $selected === $opt ? 'selected' : '';
+            $html .= "<option value='" . esc($opt) . "' $isSelected>" . esc($opt) . "</option>\n";
+        }
+        $html .= "</select>";
+        return $html;
+    }
 
-    // Individual renderers
+    // 🔽 Render dropdowns for all datasets
     public function renderRelationTypeDropdown($name = 'relation', $selected = null)
     {
         return $this->renderSelect($name, $this->getRelationTypes(), $selected);
@@ -193,5 +199,19 @@ class GlobalData
     {
         return $this->renderSelect($name, $this->getDocumentTypes(), $selected);
     }
+
+   public function renderStateDropdown($name, $selected = null, $class = 'form-select')
+{
+    $states = ['Tamil Nadu', 'Karnataka', 'Kerala', 'Andhra Pradesh']; // example
+    $html = "<select name='$name' id='$name' class='$class'>\n";
+    $html .= "<option value=''>Select</option>\n";
+    foreach ($states as $state) {
+        $isSelected = $selected === $state ? 'selected' : '';
+        $html .= "<option value='" . esc($state) . "' $isSelected>" . esc($state) . "</option>\n";
+    }
+    $html .= "</select>";
+    return $html;
+}
+
 
 }

@@ -7,8 +7,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
       background-color: #f4f5f7;
@@ -481,54 +480,89 @@
       </div>
 
       <div id="personal-info" class="section-card">
-        <h5 class="d-flex align-items-center gap-2 fw-bold mb-3 text-dark" style="font-size: 16px;">
-          <span>Personal Information</span>
-          <span class="edit icon" tabindex="0" data-bs-toggle="modal" data-bs-target="#personalInfoModal" title="Edit Personal Info">
-            <i class="fa-solid fa-pen-to-square text-primary" style="font-size: 15px;"></i>
-          </span>
-        </h5>
-        <div class="row text-muted small">
-        <div class="col-md-6 mb-2">
-          <strong>Full Name:</strong> <?= esc($student['full_name']) ?>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>Mobile No:</strong> <?= esc($student['mobile_no']) ?>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>WhatsApp No:</strong> <?= esc($student['whatsapp_no']) ?>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>Personal Email:</strong> <?= esc($student['personal_email']) ?>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>Official Email:</strong> <?= esc($student['official_email']) ?>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>Gender:</strong> <?= esc($student['gender']) ?>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>Date of Birth:</strong> <?= esc($student['date_of_birth']) ?>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>Native Place:</strong> <?= esc($student['native_place']) ?>
-        </div>
-</div>
+          <h5 class="d-flex align-items-center gap-2 fw-bold mb-3 text-dark" style="font-size: 16px;">
+            <span>Personal Information</span>
+            <span class="edit icon" tabindex="0" data-bs-toggle="modal" data-bs-target="#personalInfoModal"
+              title="Edit Personal Info">
+              <i class="fa-solid fa-pen-to-square text-primary" style="font-size: 15px;"></i>
+            </span>
+          </h5>
 
-      </div>
+          <div class="row text-muted small">
+            <!-- Top Fields -->
+            <div class="col-md-6 mb-2"><strong>Full Name:</strong> <?= esc($student['full_name']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Mobile No:</strong> <?= esc($student['mobile_no']) ?></div>
+            <div class="col-md-6 mb-2"><strong>WhatsApp No:</strong> <?= esc($student['whatsapp_no']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Personal Email:</strong> <?= esc($student['personal_email']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Official Email:</strong> <?= esc($student['official_email']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Gender:</strong> <?= esc($student['gender']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Date of Birth:</strong> <?= esc($student['date_of_birth']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Native Place:</strong> <?= esc($student['native_place']) ?></div>
+            <div class="col-md-6 mb-2"><strong>PAN Number:</strong> <?= esc($student['pan_number']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Aadhar Number:</strong> <?= esc($student['aadhar_number']) ?></div>
+            <div class="col-md-6 mb-2"><strong>APPAR ID:</strong> <?= esc($student['appar_id']) ?></div>
+            <div class="col-md-6 mb-2">
+              <strong>LinkedIn:</strong>
+              <a href="<?= esc($student['linkedin']) ?>" target="_blank" class="text-decoration-none">
+                <?= esc($student['linkedin']) ?>
+              </a>
+            </div>
+            <div class="col-md-6 mb-2">
+              <strong>GitHub:</strong>
+              <a href="<?= esc($student['github']) ?>" target="_blank" class="text-decoration-none">
+                <?= esc($student['github']) ?>
+              </a>
+            </div>
 
+            <!-- Divider -->
+            <div class="col-12 mt-3 mb-2">
+              <hr>
+              <strong class="text-dark">Communication Address</strong>
+            </div>
+
+            <!-- Communication Address -->
+            <div class="col-md-12 mb-2"><strong>Address:</strong> <?= esc($student['communication_address']) ?></div>
+            <div class="col-md-6 mb-2"><strong>State:</strong> <?= esc($student['communication_state']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Pincode:</strong> <?= esc($student['communication_pincode']) ?></div>
+
+            <!-- Divider -->
+            <div class="col-12 mt-3 mb-2">
+              <hr>
+              <strong class="text-dark">Permanent Address</strong>
+            </div>
+
+            <!-- Permanent Address -->
+            <div class="col-md-12 mb-2"><strong>Address:</strong> <?= esc($student['permanent_address']) ?></div>
+            <div class="col-md-6 mb-2"><strong>State:</strong> <?= esc($student['permanent_state']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Pincode:</strong> <?= esc($student['permanent_pincode']) ?></div>
+          </div>
+        </div>
+      
       <div id="family-details" class="section-card">
         <h5>Family Details 
           <a href="#" data-bs-toggle="modal" data-bs-target="#familyDetailsModal">Add</a>
         </h5>
          <div id="familyDetailsList" class="mt-3"></div>
       </div>
-      <div id="experience" class="section-card"><h5>Experience Details <a href="#">Add</a></h5></div>
+      <div id="experience-details" class="section-card">
+        <h5>Experience Details 
+          <a href="#" data-bs-toggle="modal" data-bs-target="#experienceDetailsModal">Add</a>
+        </h5>
+        <div id="experienceDetailsList" class="mt-3"></div>
+      </div>
+      <div id="education-details" class="section-card">
+        <h5>
+          Education Details 
+          <a href="#" data-bs-toggle="modal" data-bs-target="#educationDetailsModal">Add</a>
+        </h5>
+        <div id="educationDetailsList" class="mt-3"></div>
+      </div>
+      
       <div id="skills" class="section-card">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h5 class="fw-bold text-dark mb-0">Skills</h5>
           <a href="#" data-bs-toggle="modal" data-bs-target="#addSkillModal" class="text-primary fw-semibold">Add</a>
         </div>
-
         <?php if (!empty($skills)): ?>
           <div class="list-group">
             <?php foreach ($skills as $skill): ?>
@@ -549,12 +583,21 @@
           <p class="text-muted small">You haven't added any skills yet.</p>
         <?php endif; ?>
       </div>
-
-
-
-      <div id="education" class="section-card"><h5>Education Details <a href="#">Add</a></h5></div>
-      <div id="certifications" class="section-card"><h5>Licenses & Certifications <a href="#">Add</a></h5></div>
-      <div id="projects" class="section-card"><h5>Projects & Publications <a href="#">Add</a></h5></div>
+      <div id="certifications" class="section-card">
+        <h5>
+          Licenses & Certifications 
+          <a href="#" data-bs-toggle="modal" data-bs-target="#licenseModal">Add</a>
+        </h5>
+      </div>
+      <div id="projects-publications" class="section-card">
+        <h5>
+          Projects & Publications 
+          <a href="#" data-bs-toggle="modal" data-bs-target="#projectsModal">Add</a>
+        </h5>
+        <div id="projectList" class="mt-3">
+          <!-- Project/Publication cards will be appended here -->
+        </div>
+      </div>
       <div id="languages" class="section-card"><h5>Languages <a href="#">Add</a></h5></div>
       <?php
         // 🔹 Place this block where you're rendering student dashboard sections
@@ -637,9 +680,9 @@
 
       <div id="offers" class="section-card"><h5>Placement Offers <a href="#">Add</a></h5></div>
       <div id="documents" class="section-card">
-       <h5>Documents 
-        <a href="#" data-bs-toggle="modal" data-bs-target="#documentUploadModal">Upload</a>
-      </h5>
+        <h5>Documents 
+          <a href="#" data-bs-toggle="modal" data-bs-target="#documentUploadModal">Upload</a>
+        </h5>
       </div>
     </div>
   </div>
@@ -667,106 +710,7 @@
   </div>
 </div>
 
-<!--Edit Modal for personal info -->
-<div class="modal fade" id="personalInfoModal" tabindex="-1">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content" style="border-radius: 16px;">
-      <form method="post" action="<?= base_url('/student/update-personal-info') ?>">
-        <div class="modal-header border-0">
-          <h5 class="modal-title">Edit Personal Information</h5>
 
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body row g-3">
-          <div class="col-md-6">
-            <label>Full Name</label>
-            <input type="text" name="full_name" class="form-control" value="<?= esc($student['full_name']) ?>" required>
-          </div>
-          <div class="col-md-6">
-            <label>Mobile No</label>
-            <input type="text" name="mobile_no" class="form-control" value="<?= esc($student['mobile_no']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>WhatsApp No</label>
-            <input type="text" name="whatsapp_no" class="form-control" value="<?= esc($student['whatsapp_no']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>Personal Email</label>
-            <input type="email" name="personal_email" class="form-control" value="<?= esc($student['personal_email']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>Official Email</label>
-            <input type="email" name="official_email" class="form-control" value="<?= esc($student['official_email']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>Gender</label>
-            <select name="gender" class="form-control">
-              <option value="Male" <?= $student['gender'] == 'Male' ? 'selected' : '' ?>>Male</option>
-              <option value="Female" <?= $student['gender'] == 'Female' ? 'selected' : '' ?>>Female</option>
-              <option value="Other" <?= $student['gender'] == 'Other' ? 'selected' : '' ?>>Other</option>
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label>Date of Birth</label>
-            <input type="date" name="date_of_birth" class="form-control" value="<?= esc($student['date_of_birth']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>Native Place</label>
-            <input type="text" name="native_place" class="form-control" value="<?= esc($student['native_place']) ?>">
-          </div>
-          <div class="col-md-12">
-            <label>Communication Address</label>
-            <input type="text" name="communication_address" class="form-control" value="<?= esc($student['communication_address']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>State</label>
-            <input type="text" name="communication_state" class="form-control" value="<?= esc($student['communication_state']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>Pincode</label>
-            <input type="text" name="communication_pincode" class="form-control" value="<?= esc($student['communication_pincode']) ?>">
-          </div>
-          <div class="col-md-12">
-            <label>Permanent Address</label>
-            <input type="text" name="permanent_address" class="form-control" value="<?= esc($student['permanent_address']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>State</label>
-            <input type="text" name="permanent_state" class="form-control" value="<?= esc($student['permanent_state']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>Pincode</label>
-            <input type="text" name="permanent_pincode" class="form-control" value="<?= esc($student['permanent_pincode']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>PAN Number</label>
-            <input type="text" name="pan_number" class="form-control" value="<?= esc($student['pan_number']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>Aadhar Number</label>
-            <input type="text" name="aadhar_number" class="form-control" value="<?= esc($student['aadhar_number']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>APPAR ID</label>
-            <input type="text" name="appar_id" class="form-control" value="<?= esc($student['appar_id']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>LinkedIn</label>
-            <input type="url" name="linkedin" class="form-control" value="<?= esc($student['linkedin']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>GitHub</label>
-            <input type="url" name="github" class="form-control" value="<?= esc($student['github']) ?>">
-          </div>
-        </div>
-        <div class="modal-footer border-0">
-          <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
 <!-- Add Skill Modal -->
 <div class="modal fade" id="addSkillModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-md">
@@ -988,69 +932,312 @@
     </div>
   </div>
 </div>
-<!-- Family Details Modal -->
-<div class="modal fade" id="familyDetailsModal" tabindex="-1">
+<!-- Experience Details Modal -->
+<div class="modal fade" id="experienceDetailsModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content" style="border-radius: 16px;">
       <div class="modal-header border-0">
-        <h5 class="modal-title">Family Details</h5>
+        <h5 class="modal-title">Experience Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <p class="text-muted">Add details of your family members below.</p>
-        <form id="familyForm">
-          <div id="familyInputs">
-            <div class="row g-3 family-entry mb-3">
-              <div class="col-md-4">
-                <label class="form-label">Relation</label>
-                <select class="form-select" name="relation[]">
-                  <option value="">Select</option>
-                  <?php foreach ($relationTypes as $relation): ?>
-                    <option value="<?= esc($relation) ?>"><?= esc($relation) ?></option>
-                  <?php endforeach; ?>
-                </select>
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Name</label>
-                <input type="text" class="form-control" name="name[]" placeholder="Full Name">
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Occupation</label>
-                <input type="text" class="form-control" name="occupation[]" placeholder="Occupation">
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Contact</label>
-                <input type="text" class="form-control" name="contact[]" placeholder="Contact Number">
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Mobile</label>
-                <input type="text" class="form-control" name="mobile[]" placeholder="Mobile Number">
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Email</label>
-                <input type="email" class="form-control" name="email[]" placeholder="Email ID">
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Salary</label>
-                <input type="text" class="form-control" name="salary[]" placeholder="Salary">
-              </div>
+        <p class="text-muted">Add your work experience below.</p>
+        
+        <!-- Experience List -->
+        <div id="experienceDetailsList" class="mb-3">
+          <!-- Appended entries will appear here -->
+        </div>
+
+        <!-- Experience Form -->
+        <form id="experienceForm">
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="form-label">Title</label>
+              <input type="text" class="form-control" id="expTitle" placeholder="Job Title">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Employment Type</label>
+              <select class="form-select" id="employmentType">
+                <option selected disabled>Select</option>
+                <option>Full-time</option>
+                <option>Part-time</option>
+                <option>Self-Employed</option>
+                <option>Freelance</option>
+                <option>Internship</option>
+                <option>Trainee</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Company / Organisation</label>
+              <input type="text" class="form-control" id="company" placeholder="Company Name">
             </div>
           </div>
 
-          <div class="text-end">
-            <button type="button" class="btn btn-sm btn-outline-primary" onclick="addFamilyEntry()">+ Add More</button>
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="form-label">Joining Date</label>
+              <input type="month" class="form-control" id="joiningDate">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label d-block">Currently Working?</label>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="currentlyWorking">
+                <label class="form-check-label" for="currentlyWorking">I am currently working in this role</label>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Worked Till</label>
+              <input type="month" class="form-control" id="workedTill">
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="form-label">Location</label>
+              <input type="text" class="form-control" id="location" placeholder="Location">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Location Type</label>
+              <select class="form-select" id="locationType">
+                <option selected disabled>Select</option>
+                <option>On-site</option>
+                <option>Hybrid</option>
+                <option>Remote</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Remarks</label>
+              <input type="text" class="form-control" id="remarks" placeholder="Optional notes">
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="saveExperienceBtn">Save</button>
           </div>
         </form>
-      </div>
-      <div class="modal-footer border-0">
-        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button class="btn btn-primary">Save</button>
       </div>
     </div>
   </div>
 </div>
+<!-- Education Details Modal -->
+<div class="modal fade" id="educationDetailsModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" style="border-radius: 16px;">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">Education Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted">Add your educational qualifications below.</p>
+        <div id="educationDetailsList" class="mb-3">
+          <!-- Entries will be added here -->
+        </div>
 
-<!-- 📎 Document Upload Modal -->
+        <form id="educationForm">
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="form-label">Qualification Type</label>
+              <select class="form-select" id="qualificationType">
+                <option selected disabled>Select</option>
+                <option value="X / SSC">X / SSC</option>
+                <option value="XII / PUC">XII / PUC</option>
+                <option value="Diploma">Diploma</option>
+                <option value="Graduation">Graduation</option>
+                <option value="Post Graduation">Post Graduation</option>
+                <option value="Ph.D">Ph.D</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Institution Name</label>
+              <input type="text" class="form-control" id="institutionName" placeholder="Institution Name">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Board / University</label>
+              <input type="text" class="form-control" id="board" placeholder="Board / University">
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="form-label">Course / Specialization</label>
+              <input type="text" class="form-control" id="course" placeholder="Course or Specialization">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Course Type</label>
+              <select class="form-select" id="courseType">
+                <option selected disabled>Select</option>
+                <option value="Full Time">Full Time</option>
+                <option value="Part Time">Part Time</option>
+                <option value="Correspondence">Correspondence</option>
+                <option value="Distance Learning">Distance Learning</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Year of Passing</label>
+              <input type="text" class="form-control" id="yearOfPassing" placeholder="Year of Passing">
+            </div>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-md-4">
+              <label class="form-label">Grade / Percentage</label>
+              <input type="text" class="form-control" id="grade" placeholder="Grade or Percentage">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Result Status</label>
+              <select class="form-select" id="resultStatus">
+                <option selected disabled>Select</option>
+                <option value="Passed">Passed</option>
+                <option value="Pursuing">Pursuing</option>
+                <option value="Waiting for Results">Waiting for Results</option>
+              </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end justify-content-end">
+              <button type="button" class="btn btn-link">+ Add More</button>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="saveEducationBtn">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Licenses & Certifications Modal -->
+<div class="modal fade" id="licenseModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" style="border-radius: 16px;">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">Licenses & Certifications</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted">Add details of your licenses or certifications below.</p>
+        <div id="licenseList" class="mb-3">
+          <!-- Entries will be added here -->
+        </div>
+        <form id="licenseForm">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Name of the Licence / Certificate *</label>
+              <input type="text" class="form-control" id="licenseName" placeholder="e.g., AWS Certified Developer">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Issuing Organization *</label>
+              <input type="text" class="form-control" id="issuingOrg" placeholder="e.g., Amazon Web Services">
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Issue Date (Month & Year) *</label>
+              <input type="month" class="form-control" id="issueDate">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Expiry Date (Month & Year)</label>
+              <input type="month" class="form-control" id="expiryDate">
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">ID / Number</label>
+              <input type="text" class="form-control" id="licenseId" placeholder="License ID or Certificate Number">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">URL</label>
+              <input type="url" class="form-control" id="licenseUrl" placeholder="Optional URL to verify">
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="saveLicenseBtn">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Projects & Publications Modal -->
+<div class="modal fade" id="projectsModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" style="border-radius: 16px;">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">Projects & Publications</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <p class="text-muted">Add your project or publication details below.</p>
+
+        <!-- Appended List -->
+        <div id="projectList" class="mb-4">
+          <!-- Entries will appear here -->
+        </div>
+
+        <form id="projectForm">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Title</label>
+              <input type="text" class="form-control" id="title" placeholder="Enter title">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label d-block">Type</label>
+              <div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="type" id="projectType" value="Project">
+                  <label class="form-check-label" for="projectType">Project</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="type" id="publicationType" value="Publication">
+                  <label class="form-check-label" for="publicationType">Publication</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Publisher</label>
+              <input type="text" class="form-control" id="publisher" placeholder="Publisher">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Completion Date</label>
+              <input type="date" class="form-control" id="completionDate">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Authors / Co-Authors</label>
+            <input type="text" class="form-control" id="authors" placeholder="Enter names separated by commas">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Publication / Project URL</label>
+            <input type="url" class="form-control" id="url" placeholder="https://example.com">
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" id="description" rows="3" placeholder="Brief description"></textarea>
+          </div>
+
+          <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="saveProjectBtn">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <!-- 📎 Document Upload Modal -->
 <div class="modal fade" id="documentUploadModal" tabindex="-1" aria-labelledby="documentUploadModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <form action="<?= base_url('student/uploadDocument') ?>" method="post" enctype="multipart/form-data">
@@ -1079,8 +1266,175 @@
     </form>
   </div>
 </div>
+  
+ <!--Edit Modal for personal info -->
+<div class="modal fade" id="personalInfoModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 16px;">
+      <form method="post" action="<?= base_url('/student/update-personal-info') ?>">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">Edit Personal Information</h5>
 
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body row g-3">
+          <div class="col-md-6">
+            <label>Full Name</label>
+            <input type="text" name="full_name" class="form-control" value="<?= esc($student['full_name']) ?>" required>
+          </div>
+          <div class="col-md-6">
+            <label>Mobile No</label>
+            <input type="text" name="mobile_no" class="form-control" value="<?= esc($student['mobile_no']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>WhatsApp No</label>
+            <input type="text" name="whatsapp_no" class="form-control" value="<?= esc($student['whatsapp_no']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>Personal Email</label>
+            <input type="email" name="personal_email" class="form-control" value="<?= esc($student['personal_email']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>Official Email</label>
+            <input type="email" name="official_email" class="form-control" value="<?= esc($student['official_email']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>Gender</label>
+            <select name="gender" class="form-control">
+              <option value="Male" <?= $student['gender'] == 'Male' ? 'selected' : '' ?>>Male</option>
+              <option value="Female" <?= $student['gender'] == 'Female' ? 'selected' : '' ?>>Female</option>
+              <option value="Other" <?= $student['gender'] == 'Other' ? 'selected' : '' ?>>Other</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label>Date of Birth</label>
+            <input type="date" name="date_of_birth" class="form-control" value="<?= esc($student['date_of_birth']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>Native Place</label>
+            <input type="text" name="native_place" class="form-control" value="<?= esc($student['native_place']) ?>">
+          </div>
+          <div class="col-md-12">
+            <label>Communication Address</label>
+            <input type="text" name="communication_address" class="form-control" value="<?= esc($student['communication_address']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>State</label>
+            <input type="text" name="communication_state" class="form-control" value="<?= esc($student['communication_state']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>Pincode</label>
+            <input type="text" name="communication_pincode" class="form-control" value="<?= esc($student['communication_pincode']) ?>">
+          </div>
+          <div class="col-md-12">
+            <label>Permanent Address</label>
+            <input type="text" name="permanent_address" class="form-control" value="<?= esc($student['permanent_address']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>State</label>
+            <input type="text" name="permanent_state" class="form-control" value="<?= esc($student['permanent_state']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>Pincode</label>
+            <input type="text" name="permanent_pincode" class="form-control" value="<?= esc($student['permanent_pincode']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>PAN Number</label>
+            <input type="text" name="pan_number" class="form-control" value="<?= esc($student['pan_number']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>Aadhar Number</label>
+            <input type="text" name="aadhar_number" class="form-control" value="<?= esc($student['aadhar_number']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>APPAR ID</label>
+            <input type="text" name="appar_id" class="form-control" value="<?= esc($student['appar_id']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>LinkedIn</label>
+            <input type="url" name="linkedin" class="form-control" value="<?= esc($student['linkedin'] ?? '') ?>">
+          </div>
+          <div class="col-md-6">
+            <label>GitHub</label>
+            <input type="url" name="github" class="form-control" value="<?= esc($student['github'] ?? '') ?>">
+          </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+  
+<!-- Family Details Modal -->
+<div class="modal fade" id="familyDetailsModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" style="border-radius: 16px;">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">Family Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+  <p class="text-muted">Add details of your family members below.</p>
+  <div id="familyDetailsList" class="mb-3">
+  <!-- Entries will be added here -->
+</div>
+  <form id="familyForm">
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="form-label">Relation</label>
+        <select class="form-select" id="relation">
+          <option selected disabled>Select</option>
+          <option value="Father">Father</option>
+          <option value="Mother">Mother</option>
+          <option value="Brother">Brother</option>
+          <option value="Sister">Sister</option>
+          <!-- add more if needed -->
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Name</label>
+        <input type="text" class="form-control" id="name" placeholder="Full Name">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Occupation</label>
+        <input type="text" class="form-control" id="occupation" placeholder="Occupation">
+      </div>
+    </div>
 
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="form-label">Contact</label>
+        <input type="text" class="form-control" id="contact" placeholder="Contact Number">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Mobile</label>
+        <input type="text" class="form-control" id="mobile" placeholder="Mobile Number">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" placeholder="Email ID">
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <label class="form-label">Salary</label>
+        <input type="text" class="form-control" id="salary" placeholder="Salary">
+      </div>
+      <div class="col-md-8 d-flex align-items-end justify-content-end">
+        <button type="button" class="btn btn-link">+ Add More</button>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end">
+      <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+      <button type="button" class="btn btn-primary" id="saveFamilyBtn">Save</button>
+    </div>
+  </form>
+</div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   const allSkills = [
@@ -1207,7 +1561,7 @@ document.addEventListener('DOMContentLoaded', function () {
           const modal = bootstrap.Modal.getInstance(document.getElementById('deleteSkillModal'));
           modal.hide();
 
-          const skillItem = document.querySelector(.deleteSkillBtn[data-id="${skillId}"])?.closest('.list-group-item');
+          const skillItem = document.querySelector(`.deleteSkillBtn[data-id="${skillId}"]`)?.closest('.list-group-item');
           if (skillItem) skillItem.remove();
         } else {
           alert('Error deleting skill');
@@ -1218,8 +1572,229 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 </script>
+<script>
+  document.getElementById('saveFamilyBtn').addEventListener('click', function () {
+    const relation = document.getElementById('relation').value;
+    const name = document.getElementById('name').value;
+    const occupation = document.getElementById('occupation').value;
+    const contact = document.getElementById('contact').value;
+    const mobile = document.getElementById('mobile').value;
+    const email = document.getElementById('email').value;
+    const salary = document.getElementById('salary').value;
+
+    if (!relation || !name || !contact) {
+      alert('Please fill in all required fields (Relation, Name, Contact).');
+      return;
+    }
+
+    const card = document.createElement('div');
+    card.className = 'card mb-3';
+    card.innerHTML = `
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-2"><strong>Relation:</strong><br>${relation}</div>
+          <div class="col-md-2"><strong>Name:</strong><br>${name}</div>
+          <div class="col-md-2"><strong>Contact:</strong><br>${contact}</div>
+          <div class="col-md-2"><strong>Occupation:</strong><br>${occupation}</div>
+          <div class="col-md-2"><strong>Mobile:</strong><br>${mobile}</div>
+          <div class="col-md-2"><strong>Email:</strong><br>${email}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-12"><strong>Salary:</strong> ${salary}</div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('familyDetailsList').appendChild(card);
+
+    // Clear form fields
+    document.getElementById('familyForm').reset();
+  });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const saveBtn = document.getElementById("saveEducationBtn");
+    const educationDetailsList = document.getElementById("educationDetailsList");
+
+    if (saveBtn && educationDetailsList) {
+      saveBtn.addEventListener("click", function () {
+        const qualificationType = document.getElementById("qualificationType")?.value || "";
+        const institutionName = document.getElementById("institutionName")?.value || "";
+        const board = document.getElementById("board")?.value || "";
+        const course = document.getElementById("course")?.value || "";
+        const courseType = document.getElementById("courseType")?.value || "";
+        const yearOfPassing = document.getElementById("yearOfPassing")?.value || "";
+        const grade = document.getElementById("grade")?.value || "";
+        const resultStatus = document.getElementById("resultStatus")?.value || "";
+
+        if (
+          !qualificationType || !institutionName || !board || !course ||
+          !courseType || !yearOfPassing || !grade || !resultStatus
+        ) {
+          alert("Please fill out all education details.");
+          return;
+        }
+
+        const educationHTML = `
+          <div class="border rounded p-3 mb-2">
+            <h6 class="mb-1">${qualificationType} - ${course}</h6>
+            <p class="mb-1"><strong>${institutionName}</strong>, ${board}</p>
+            <p class="mb-1">${courseType} | ${yearOfPassing}</p>
+            <p class="mb-1">Grade: ${grade}</p>
+            <p class="mb-0 text-muted">Status: ${resultStatus}</p>
+          </div>
+        `;
+
+        educationDetailsList.insertAdjacentHTML("beforeend", educationHTML);
+
+        // Clear form inputs
+        document.getElementById("educationForm").reset();
+      });
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const modal = new bootstrap.Modal(document.getElementById('educationDetailsModal'));
+    document.getElementById('addEducationBtn').addEventListener('click', () => modal.show());
+  });
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("experienceForm");
+  const saveBtn = document.getElementById("saveExperienceBtn");
+  const list = document.getElementById("experienceDetailsList");
+  const workedTill = document.getElementById("workedTill");
+  const currentCheckbox = document.getElementById("currentlyWorking");
+
+  // ✅ Defensive check to prevent the script from breaking
+  if (!form || !saveBtn || !list) {
+    console.warn("❌ Experience modal elements not found in DOM.");
+    return;
+  }
+
+  saveBtn.addEventListener("click", function () {
+    const title = document.getElementById("expTitle")?.value;
+    const type = document.getElementById("employmentType")?.value;
+    const company = document.getElementById("company")?.value;
+    const joining = document.getElementById("joiningDate")?.value;
+    const isCurrent = currentCheckbox?.checked;
+    const till = workedTill?.value;
+    const location = document.getElementById("location")?.value;
+    const locationType = document.getElementById("locationType")?.value;
+    const remarks = document.getElementById("remarks")?.value;
+
+    if (!title || !type || !company || !joining || (!isCurrent && !till)) {
+      alert("Please fill out required fields.");
+      return;
+    }
+
+    const period = isCurrent ? "Present" : till;
+
+    const experienceHTML = `
+  <div class="border rounded p-3 mb-2">
+    <h6 class="mb-1">${title || "N/A"} (${type || "N/A"})</h6>
+    <p class="mb-1"><strong>${company || "N/A"}</strong></p>
+    <p class="mb-1">${joining || "Start"} – ${period || "End"}</p>
+    <p class="mb-1">Location: ${location || "Unknown"} (${locationType || "Type"})</p>
+    ${remarks ? `<p class="mb-0 text-muted">Remarks: ${remarks}</p>` : ""}
+  </div>`;
+
+
+    list.insertAdjacentHTML("beforeend", experienceHTML);
+    form.reset();
+    if (workedTill) workedTill.disabled = false;
+  });
+
+  if (currentCheckbox && workedTill) {
+    currentCheckbox.addEventListener("change", function () {
+      workedTill.disabled = this.checked;
+    });
+  }
+});
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const licenseForm = document.getElementById("licenseForm");
+    const saveBtn = document.getElementById("saveLicenseBtn");
+    const displaySection = document.getElementById("displayLicenses");
+
+    saveBtn.addEventListener("click", function () {
+      const name = document.getElementById("licenseName").value.trim();
+      const org = document.getElementById("issuingOrg").value.trim();
+      const issue = document.getElementById("issueDate").value;
+      const expiry = document.getElementById("expiryDate").value;
+      const id = document.getElementById("licenseId").value.trim();
+      const url = document.getElementById("licenseUrl").value.trim();
+
+      if (!name || !org || !issue) {
+        alert("Please fill in all required fields (*)");
+        return;
+      }
+
+      const container = document.createElement("div");
+      container.className = "col-md-6";
+
+      container.innerHTML = `
+        <div class="border p-3 rounded shadow-sm bg-light">
+          <h6 class="mb-1">${name}</h6>
+          <p class="mb-0"><strong>Issued by:</strong> ${org}</p>
+          <p class="mb-0"><strong>Issued:</strong> ${issue}${expiry ? ` | <strong>Expires:</strong> ${expiry}` : ''}</p>
+          ${id ? `<p class="mb-0"><strong>ID:</strong> ${id}</p>` : ''}
+          ${url ? `<p class="mb-0"><strong>URL:</strong> <a href="${url}" target="_blank">${url}</a></p>` : ''}
+        </div>
+      `;
+
+      displaySection.appendChild(container);
+
+      // Clear form
+      licenseForm.reset();
+
+      // Close modal
+      const modal = bootstrap.Modal.getInstance(document.getElementById('licenseModal'));
+      modal.hide();
+    });
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('saveProjectBtn').addEventListener('click', function () {
+      const title = document.getElementById('title').value;
+      const type = document.querySelector('input[name="type"]:checked')?.value;
+      const publisher = document.getElementById('publisher').value;
+      const completionDate = document.getElementById('completionDate').value;
+      const authors = document.getElementById('authors').value;
+      const url = document.getElementById('url').value;
+      const description = document.getElementById('description').value;
+
+      if (!title || !type || !publisher || !completionDate || !authors || !url || !description) {
+        alert('Please fill all fields before saving.');
+        return;
+      }
+
+      const entryHTML = `
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title">${title}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">${type} | ${publisher} | ${completionDate}</h6>
+            <p class="card-text"><strong>Authors:</strong> ${authors}</p>
+            <p class="card-text"><strong>Description:</strong> ${description}</p>
+            <a href="${url}" target="_blank" class="card-link">View ${type}</a>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('projectList').insertAdjacentHTML('beforeend', entryHTML);
+
+      // Reset the form
+      document.getElementById('projectForm').reset();
+    });
+  });
+</script>
 
 <!-- Bootstrap JS -->
+<!-- Make sure this is included at the bottom of your page (before </body>) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

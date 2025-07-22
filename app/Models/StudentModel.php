@@ -7,9 +7,15 @@ class StudentModel extends Model
 {
     // 🔹 Used for login (users table)
     protected $table = 'students';
-    protected $allowedFields = ['official_email', 'password']; // only needed if you're using `save()`, not raw query
-
     protected $primaryKey = 'id';
+    protected $allowedFields = [
+        'reg_no', 'full_name', 'mobile_no', 'whatsapp_no', 'personal_email', 'password',
+        'official_email', 'gender', 'date_of_birth', 'native_place',
+        'communication_address', 'communication_state', 'communication_pincode',
+        'permanent_address', 'permanent_state', 'permanent_pincode',
+        'pan_number', 'aadhar_number', 'appar_id', 'profile_summary',
+        'linkedin', 'github', 'created_by', 'created_on', 'updated_by', 'updated_on'
+    ];
 
     // 🔹 Handle profile summary from 'students' table
     public function getStudentById($id)
@@ -178,5 +184,7 @@ public function getUserById($id)
     {
         return $this->update($id, ['password' => $hashedPassword]);
     }
+
+    
 }
 

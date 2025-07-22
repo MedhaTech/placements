@@ -1,13 +1,13 @@
 <?php
 
 namespace App\Controllers;
-
-use App\Models\UserModel;
 use CodeIgniter\Controller;
 use CodeIgniter\Database\Config;
 use Config\Database;
 use App\Libraries\GlobalData;
 use App\Models\StudentModel;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 
 class StudentController extends Controller
 {
@@ -56,6 +56,46 @@ class StudentController extends Controller
         session()->destroy();
         return redirect()->to('/student');
     }
+
+    public function fillMissingPasswords()
+{
+    $model = new StudentModel();
+
+    // Fetch students with missing or empty passwords
+    $students = $model->where('password', null)
+                      ->orWhere('password', '')
+                      ->findAll();
+
+    $updated = 0;
+
+    foreach ($students as $student) {
+        if (!empty($student['mobile_no'])) {
+            $hashedPassword = password_hash($student['mobile_no'], PASSWORD_DEFAULT);
+            $model->update($student['id'], ['password' => $hashedPassword]);
+            $updated++;
+        }
+    }
+
+    return "Updated $updated student record(s) with missing passwords.";
+}
+
+public function overwriteAllPasswordsWithMobile()
+{
+    $model = new StudentModel();
+    $students = $model->findAll();
+
+    $updated = 0;
+
+    foreach ($students as $student) {
+        if (!empty($student['mobile_no'])) {
+            $hashedPassword = password_hash($student['mobile_no'], PASSWORD_DEFAULT);
+            $model->update($student['id'], ['password' => $hashedPassword]);
+            $updated++;
+        }
+    }
+
+    return "Overwritten passwords for $updated student record(s).";
+}
 
     public function studentProfilePreview()
     {
@@ -572,21 +612,37 @@ class StudentController extends Controller
         return redirect()->to('/student/profile')->with('success', 'Skills updated successfully.');
     }
 
-    public function deleteSkill()
-    {
-        if ($this->request->isAJAX()) {
-            $skillId = $this->request->getPost('skill_id');
-            $studentId = session()->get('student_id');
+    public function addSkill()
+{
+    $skill = $this->request->getPost('skill_name');
+    $studentId = session()->get('student_id');
 
-            $db = \Config\Database::connect();
-            $builder = $db->table('students_key_skills');
-
-            $builder->where('id', $skillId)->where('student_id', $studentId);
-            $deleted = $builder->delete();
-
-            return $this->response->setJSON(['status' => $deleted ? 'success' : 'error']);
-        }
+    if (!empty($skill) && $studentId) {
+        $this->db->table('students_key_skills')->insert([
+            'student_id' => $studentId,
+            'skill_name' => $skill,
+            'created_by' => 'self'
+        ]);
+        return $this->response->setStatusCode(200)->setBody('success');
     }
+
+    return $this->response->setStatusCode(400)->setBody('error');
+}
+
+public function deleteSkill()
+{
+    if ($this->request->isAJAX()) {
+        $skillId = $this->request->getPost('skill_id');
+        $studentId = session()->get('student_id');
+
+        $deleted = $this->db->table('students_key_skills')
+                            ->where('id', $skillId)
+                            ->where('student_id', $studentId)
+                            ->delete();
+
+        return $this->response->setJSON(['status' => $deleted ? 'success' : 'error']);
+    }
+}
 
 
     public function __construct()
@@ -594,22 +650,6 @@ class StudentController extends Controller
         $this->db = Database::connect(); // ✅ This sets up $this->db
     }
 
-    public function addSkill()
-    {
-        $skill = $this->request->getPost('skill_name');
-        $studentId = session()->get('student_id');
-
-        if (!empty($skill) && $studentId) {
-            $builder = $this->db->table('students_key_skills');
-            $builder->insert([
-                'student_id' => $studentId,
-                'skill_name' => $skill,
-                'created_by' => 'self'
-            ]);
-        }
-
-        return redirect()->to('/student/profile-preview')->with('success', 'Skill added successfully');
-    }
 
     public function updateAcademicInfo()
     {
@@ -730,7 +770,6 @@ class StudentController extends Controller
             ->with('success', 'Password changed successfully.');
     }
 
-     
 
   public function uploadDocument()
     {
@@ -786,5 +825,114 @@ class StudentController extends Controller
         return redirect()->back()->with('success', 'Document uploaded successfully.');
     }
 
+
+
+ public function uploadExcelForm()
+{
+    return view('student/upload_excel'); // adjust path if needed
+}
+
+public function uploadExcel()
+{
+    helper(['form']);
+    $file = $this->request->getFile('excel_file');
+
+    if ($file && $file->isValid()) {
+        $ext = $file->getClientExtension();
+
+        if ($ext === 'xlsx') {
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getTempName());
+            $sheet = $spreadsheet->getActiveSheet()->toArray();
+
+            $studentModel = new \App\Models\StudentModel();
+
+            foreach ($sheet as $index => $row) {
+                if ($index == 0) continue; // skip header
+
+                // Get fields (default empty except mobile)
+                $reg_no                = $row[0] ?? '';
+                $full_name             = $row[1] ?? '';
+                $mobile_no             = $row[2] ?? '';
+                $whatsapp_no           = $row[3] ?? '';
+                $personal_email        = $row[4] ?? '';
+                $official_email        = $row[6] ?? '';
+                $gender                = $row[7] ?? '';
+                $date_of_birth         = $row[8] ?? '';
+                $native_place          = $row[9] ?? '';
+                $communication_address = $row[10] ?? '';
+                $communication_state   = $row[11] ?? '';
+                $communication_pincode = $row[12] ?? '';
+                $permanent_address     = $row[13] ?? '';
+                $permanent_state       = $row[14] ?? '';
+                $permanent_pincode     = $row[15] ?? '';
+                $pan_number            = $row[16] ?? '';
+                $aadhar_number         = $row[17] ?? '';
+                $appar_id              = $row[18] ?? '';
+                $profile_summary       = $row[19] ?? '';
+                $linkedin              = $row[20] ?? '';
+                $github                = $row[21] ?? '';
+
+                // Required check for mobile_no
+                if (empty($mobile_no)) continue; // skip row if mobile_no missing
+
+                // Password based on mobile number
+                $password_raw = $row[5] ?? $mobile_no;
+
+                $studentModel->save([
+                    'reg_no'                => $reg_no,
+                    'full_name'             => $full_name,
+                    'mobile_no'             => $mobile_no,
+                    'whatsapp_no'           => $whatsapp_no,
+                    'personal_email'        => $personal_email,
+                    'password'              => password_hash($password_raw, PASSWORD_DEFAULT),
+                    'official_email'        => $official_email,
+                    'gender'                => $gender,
+                    'date_of_birth'         => $date_of_birth,
+                    'native_place'          => $native_place,
+                    'communication_address' => $communication_address,
+                    'communication_state'   => $communication_state,
+                    'communication_pincode' => $communication_pincode,
+                    'permanent_address'     => $permanent_address,
+                    'permanent_state'       => $permanent_state,
+                    'permanent_pincode'     => $permanent_pincode,
+                    'pan_number'            => $pan_number,
+                    'aadhar_number'         => $aadhar_number,
+                    'appar_id'              => $appar_id,
+                    'profile_summary'       => $profile_summary,
+                    'linkedin'              => $linkedin,
+                    'github'                => $github,
+                    'created_by'            => 'admin',
+                    'created_on'            => date('Y-m-d H:i:s'),
+                ]);
+            }
+
+            return redirect()->to('student/uploadExcel')->with('success', 'Data imported successfully.');
+        }
+    }
+
+    return redirect()->back()->with('error', 'Invalid file.');
+}
+
+  
+  public function saveFamilyDetails()
+{
+    $studentId = session()->get('student_id');
+
+    $fatherName = $this->request->getPost('father_name');
+    $motherName = $this->request->getPost('mother_name');
+    $fatherOccupation = $this->request->getPost('father_occupation');
+    $motherOccupation = $this->request->getPost('mother_occupation');
+
+    $model = new \App\Models\StudentModel();
+    $model->update($studentId, [
+        'father_name' => $fatherName,
+        'mother_name' => $motherName,
+        'father_occupation' => $fatherOccupation,
+        'mother_occupation' => $motherOccupation,
+    ]);
+
+    return redirect()->to('/student/dashboard')->with('success', 'Family details saved successfully.');
+
+}
 
 }
