@@ -128,6 +128,47 @@ public function savePlacementPreferences($studentId, $data)
     }
 }
 
+// 📁 Save or update student document
+public function saveStudentDocument($studentId, $documentType, $filePath)
+{
+    $builder = $this->db->table('students_documents');
+
+    // If it's a photo (replace type)
+    if ($documentType === 'Photo') {
+        $existing = $builder->where('student_id', $studentId)
+                            ->where('document_type', $documentType)
+                            ->get()
+                            ->getRowArray();
+
+        $data = [
+            'student_id'    => $studentId,
+            'document_type' => $documentType,
+            'file_path'     => $filePath,
+            'updated_by'    => $studentId,
+            'updated_on'    => date('Y-m-d H:i:s')
+        ];
+
+        if ($existing) {
+            // Replace old
+            return $builder->where('id', $existing['id'])->update($data);
+        } else {
+            // Insert new
+            $data['created_by'] = $studentId;
+            $data['created_on'] = date('Y-m-d H:i:s');
+            return $builder->insert($data);
+        }
+    }
+
+    // 📌 For other documents (allow multiple)
+    return $builder->insert([
+        'student_id'    => $studentId,
+        'document_type' => $documentType,
+        'file_path'     => $filePath,
+        'created_by'    => $studentId,
+        'created_on'    => date('Y-m-d H:i:s')
+    ]);
+}
+
 public function getUserById($id)
     {
         return $this->where('id', $id)->first();

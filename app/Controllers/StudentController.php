@@ -32,6 +32,7 @@ class StudentController extends Controller
         if ($student && password_verify($password, $student['password'])) {
             $session->set([
                 'student_id' => $student['id'],
+                'reg_no'     => $student['reg_no'], // ✅ Add this
                 'email' => $student['official_email'],
                 'isStudentLoggedIn' => true
             ]);
@@ -699,9 +700,7 @@ public function deleteSkill()
         $model->savePlacementPreferences($studentId, $data);
 
         return redirect()->to('/student/profile')->with('success', 'Placement preferences updated successfully.');
-    }
-
-
+    }  
     public function changePasswordForm()
     {
         return view('student/student_pwd', [
@@ -770,6 +769,62 @@ public function deleteSkill()
             ->to('student/dashboard')
             ->with('success', 'Password changed successfully.');
     }
+
+
+  public function uploadDocument()
+    {
+        $session = session();
+        $studentId = $session->get('student_id');
+
+        if (!$this->request->is('post')) {
+            return redirect()->back()->with('error', 'Invalid request method');
+        }
+
+        $documentType = $this->request->getPost('document_type');
+        $file = $this->request->getFile('document_file');
+
+        if (!$file || !$file->isValid()) {
+            return redirect()->back()->with('error', 'Please upload a valid file.');
+        }
+
+        // ✅ Get reg_no from session
+        $regNo = $session->get('reg_no');
+        if (empty($regNo)) {
+            return redirect()->back()->with('error', 'Student registration number not found in session.');
+        }
+
+        // ✅ Construct folder path (use WRITEPATH fallback if FCPATH is blank)
+        $basePath = rtrim(FCPATH ?: WRITEPATH . '../public/', '/') . '/assets/Stu_Docs/';
+        $studentFolder = $basePath . $regNo . '/';
+
+        // ✅ Create folder if not exists
+        if (!is_dir($studentFolder)) {
+            if (!mkdir($studentFolder, 0777, true) && !is_dir($studentFolder)) {
+                return redirect()->back()->with('error', 'Failed to create folder: ' . $studentFolder);
+            }
+        }
+
+        // ✅ Rename file: e.g. AADHAR_210720251854.jpg
+        $prefix = strtoupper(explode(' ', $documentType)[0]); // "AADHAR"
+        $datetime = date('dmYHi');
+        $extension = $file->getExtension();
+        $newFileName = $prefix . '_' . $datetime . '.' . $extension;
+
+        // ✅ Move the uploaded file
+        if (!$file->move($studentFolder, $newFileName)) {
+            return redirect()->back()->with('error', 'Failed to move uploaded file.');
+        }
+
+        // ✅ Construct relative path for DB
+        $relativePath = 'assets/Stu_Docs/' . $regNo . '/' . $newFileName;
+
+        // ✅ Save in DB using your StudentModel method
+        $studentModel = new \App\Models\StudentModel();
+        $studentModel->saveStudentDocument($studentId, $documentType, $relativePath);
+
+        return redirect()->back()->with('success', 'Document uploaded successfully.');
+    }
+
 
 
  public function uploadExcelForm()

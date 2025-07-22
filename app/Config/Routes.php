@@ -62,6 +62,8 @@ $routes->post('student/update-placement-preferences', 'StudentController::update
 $routes->get('/preview', 'StudentController::studentProfilePreview');
 
 
+$routes->post('student/uploadDocument', 'StudentController::uploadDocument');
+
 
 //Admin Routes
 
