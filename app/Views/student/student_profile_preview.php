@@ -480,39 +480,64 @@
       </div>
 
       <div id="personal-info" class="section-card">
-        <h5 class="d-flex align-items-center gap-2 fw-bold mb-3 text-dark" style="font-size: 16px;">
-          <span>Personal Information</span>
-          <span class="edit icon" tabindex="0" data-bs-toggle="modal" data-bs-target="#personalInfoModal" title="Edit Personal Info">
-            <i class="fa-solid fa-pen-to-square text-primary" style="font-size: 15px;"></i>
-          </span>
-        </h5>
-        <div class="row text-muted small">
-        <div class="col-md-6 mb-2">
-          <strong>Full Name:</strong> <?= esc($student['full_name']) ?>
+          <h5 class="d-flex align-items-center gap-2 fw-bold mb-3 text-dark" style="font-size: 16px;">
+            <span>Personal Information</span>
+            <span class="edit icon" tabindex="0" data-bs-toggle="modal" data-bs-target="#personalInfoModal"
+              title="Edit Personal Info">
+              <i class="fa-solid fa-pen-to-square text-primary" style="font-size: 15px;"></i>
+            </span>
+          </h5>
+
+          <div class="row text-muted small">
+            <!-- Top Fields -->
+            <div class="col-md-6 mb-2"><strong>Full Name:</strong> <?= esc($student['full_name']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Mobile No:</strong> <?= esc($student['mobile_no']) ?></div>
+            <div class="col-md-6 mb-2"><strong>WhatsApp No:</strong> <?= esc($student['whatsapp_no']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Personal Email:</strong> <?= esc($student['personal_email']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Official Email:</strong> <?= esc($student['official_email']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Gender:</strong> <?= esc($student['gender']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Date of Birth:</strong> <?= esc($student['date_of_birth']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Native Place:</strong> <?= esc($student['native_place']) ?></div>
+            <div class="col-md-6 mb-2"><strong>PAN Number:</strong> <?= esc($student['pan_number']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Aadhar Number:</strong> <?= esc($student['aadhar_number']) ?></div>
+            <div class="col-md-6 mb-2"><strong>APPAR ID:</strong> <?= esc($student['appar_id']) ?></div>
+            <div class="col-md-6 mb-2">
+              <strong>LinkedIn:</strong>
+              <a href="<?= esc($student['linkedin']) ?>" target="_blank" class="text-decoration-none">
+                <?= esc($student['linkedin']) ?>
+              </a>
+            </div>
+            <div class="col-md-6 mb-2">
+              <strong>GitHub:</strong>
+              <a href="<?= esc($student['github']) ?>" target="_blank" class="text-decoration-none">
+                <?= esc($student['github']) ?>
+              </a>
+            </div>
+
+            <!-- Divider -->
+            <div class="col-12 mt-3 mb-2">
+              <hr>
+              <strong class="text-dark">Communication Address</strong>
+            </div>
+
+            <!-- Communication Address -->
+            <div class="col-md-12 mb-2"><strong>Address:</strong> <?= esc($student['communication_address']) ?></div>
+            <div class="col-md-6 mb-2"><strong>State:</strong> <?= esc($student['communication_state']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Pincode:</strong> <?= esc($student['communication_pincode']) ?></div>
+
+            <!-- Divider -->
+            <div class="col-12 mt-3 mb-2">
+              <hr>
+              <strong class="text-dark">Permanent Address</strong>
+            </div>
+
+            <!-- Permanent Address -->
+            <div class="col-md-12 mb-2"><strong>Address:</strong> <?= esc($student['permanent_address']) ?></div>
+            <div class="col-md-6 mb-2"><strong>State:</strong> <?= esc($student['permanent_state']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Pincode:</strong> <?= esc($student['permanent_pincode']) ?></div>
+          </div>
         </div>
-        <div class="col-md-6 mb-2">
-          <strong>Mobile No:</strong> <?= esc($student['mobile_no']) ?>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>WhatsApp No:</strong> <?= esc($student['whatsapp_no']) ?>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>Personal Email:</strong> <?= esc($student['personal_email']) ?>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>Official Email:</strong> <?= esc($student['official_email']) ?>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>Gender:</strong> <?= esc($student['gender']) ?>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>Date of Birth:</strong> <?= esc($student['date_of_birth']) ?>
-        </div>
-        <div class="col-md-6 mb-2">
-          <strong>Native Place:</strong> <?= esc($student['native_place']) ?>
-        </div>
-</div>
-      </div>
+      
       <div id="family-details" class="section-card">
         <h5>Family Details 
           <a href="#" data-bs-toggle="modal" data-bs-target="#familyDetailsModal">Add</a>
@@ -681,106 +706,7 @@
   </div>
 </div>
 
-<!--Edit Modal for personal info -->
-<div class="modal fade" id="personalInfoModal" tabindex="-1">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content" style="border-radius: 16px;">
-      <form method="post" action="<?= base_url('/student/update-personal-info') ?>">
-        <div class="modal-header border-0">
-          <h5 class="modal-title">Edit Personal Information</h5>
 
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body row g-3">
-          <div class="col-md-6">
-            <label>Full Name</label>
-            <input type="text" name="full_name" class="form-control" value="<?= esc($student['full_name']) ?>" required>
-          </div>
-          <div class="col-md-6">
-            <label>Mobile No</label>
-            <input type="text" name="mobile_no" class="form-control" value="<?= esc($student['mobile_no']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>WhatsApp No</label>
-            <input type="text" name="whatsapp_no" class="form-control" value="<?= esc($student['whatsapp_no']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>Personal Email</label>
-            <input type="email" name="personal_email" class="form-control" value="<?= esc($student['personal_email']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>Official Email</label>
-            <input type="email" name="official_email" class="form-control" value="<?= esc($student['official_email']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>Gender</label>
-            <select name="gender" class="form-control">
-              <option value="Male" <?= $student['gender'] == 'Male' ? 'selected' : '' ?>>Male</option>
-              <option value="Female" <?= $student['gender'] == 'Female' ? 'selected' : '' ?>>Female</option>
-              <option value="Other" <?= $student['gender'] == 'Other' ? 'selected' : '' ?>>Other</option>
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label>Date of Birth</label>
-            <input type="date" name="date_of_birth" class="form-control" value="<?= esc($student['date_of_birth']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>Native Place</label>
-            <input type="text" name="native_place" class="form-control" value="<?= esc($student['native_place']) ?>">
-          </div>
-          <div class="col-md-12">
-            <label>Communication Address</label>
-            <input type="text" name="communication_address" class="form-control" value="<?= esc($student['communication_address']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>State</label>
-            <input type="text" name="communication_state" class="form-control" value="<?= esc($student['communication_state']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>Pincode</label>
-            <input type="text" name="communication_pincode" class="form-control" value="<?= esc($student['communication_pincode']) ?>">
-          </div>
-          <div class="col-md-12">
-            <label>Permanent Address</label>
-            <input type="text" name="permanent_address" class="form-control" value="<?= esc($student['permanent_address']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>State</label>
-            <input type="text" name="permanent_state" class="form-control" value="<?= esc($student['permanent_state']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>Pincode</label>
-            <input type="text" name="permanent_pincode" class="form-control" value="<?= esc($student['permanent_pincode']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>PAN Number</label>
-            <input type="text" name="pan_number" class="form-control" value="<?= esc($student['pan_number']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>Aadhar Number</label>
-            <input type="text" name="aadhar_number" class="form-control" value="<?= esc($student['aadhar_number']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>APPAR ID</label>
-            <input type="text" name="appar_id" class="form-control" value="<?= esc($student['appar_id']) ?>">
-          </div>
-          <div class="col-md-6">
-            <label>LinkedIn</label>
-            <input type="url" name="linkedin" class="form-control" value="<?= esc($student['linkedin'] ?? '') ?>">
-          </div>
-          <div class="col-md-6">
-            <label>GitHub</label>
-            <input type="url" name="github" class="form-control" value="<?= esc($student['github'] ?? '') ?>">
-          </div>
-        </div>
-        <div class="modal-footer border-0">
-          <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
 <!-- Add Skill Modal -->
 <div class="modal fade" id="addSkillModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-md">
@@ -1306,6 +1232,108 @@
     </div>
   </div>
 </div>
+  
+ <!--Edit Modal for personal info -->
+<div class="modal fade" id="personalInfoModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 16px;">
+      <form method="post" action="<?= base_url('/student/update-personal-info') ?>">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">Edit Personal Information</h5>
+
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body row g-3">
+          <div class="col-md-6">
+            <label>Full Name</label>
+            <input type="text" name="full_name" class="form-control" value="<?= esc($student['full_name']) ?>" required>
+          </div>
+          <div class="col-md-6">
+            <label>Mobile No</label>
+            <input type="text" name="mobile_no" class="form-control" value="<?= esc($student['mobile_no']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>WhatsApp No</label>
+            <input type="text" name="whatsapp_no" class="form-control" value="<?= esc($student['whatsapp_no']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>Personal Email</label>
+            <input type="email" name="personal_email" class="form-control" value="<?= esc($student['personal_email']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>Official Email</label>
+            <input type="email" name="official_email" class="form-control" value="<?= esc($student['official_email']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>Gender</label>
+            <select name="gender" class="form-control">
+              <option value="Male" <?= $student['gender'] == 'Male' ? 'selected' : '' ?>>Male</option>
+              <option value="Female" <?= $student['gender'] == 'Female' ? 'selected' : '' ?>>Female</option>
+              <option value="Other" <?= $student['gender'] == 'Other' ? 'selected' : '' ?>>Other</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label>Date of Birth</label>
+            <input type="date" name="date_of_birth" class="form-control" value="<?= esc($student['date_of_birth']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>Native Place</label>
+            <input type="text" name="native_place" class="form-control" value="<?= esc($student['native_place']) ?>">
+          </div>
+          <div class="col-md-12">
+            <label>Communication Address</label>
+            <input type="text" name="communication_address" class="form-control" value="<?= esc($student['communication_address']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>State</label>
+            <input type="text" name="communication_state" class="form-control" value="<?= esc($student['communication_state']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>Pincode</label>
+            <input type="text" name="communication_pincode" class="form-control" value="<?= esc($student['communication_pincode']) ?>">
+          </div>
+          <div class="col-md-12">
+            <label>Permanent Address</label>
+            <input type="text" name="permanent_address" class="form-control" value="<?= esc($student['permanent_address']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>State</label>
+            <input type="text" name="permanent_state" class="form-control" value="<?= esc($student['permanent_state']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>Pincode</label>
+            <input type="text" name="permanent_pincode" class="form-control" value="<?= esc($student['permanent_pincode']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>PAN Number</label>
+            <input type="text" name="pan_number" class="form-control" value="<?= esc($student['pan_number']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>Aadhar Number</label>
+            <input type="text" name="aadhar_number" class="form-control" value="<?= esc($student['aadhar_number']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>APPAR ID</label>
+            <input type="text" name="appar_id" class="form-control" value="<?= esc($student['appar_id']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>LinkedIn</label>
+            <input type="url" name="linkedin" class="form-control" value="<?= esc($student['linkedin'] ?? '') ?>">
+          </div>
+          <div class="col-md-6">
+            <label>GitHub</label>
+            <input type="url" name="github" class="form-control" value="<?= esc($student['github'] ?? '') ?>">
+          </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+  
 <!-- Family Details Modal -->
 <div class="modal fade" id="familyDetailsModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
