@@ -469,41 +469,18 @@ public function overwriteAllPasswordsWithMobile()
             $incompleteSections[] = ['name' => 'Current Academic Information', 'percent' => 7];
         }
 
-    // 11. Placement Preferences (strict)
-        $placement = $db->table('students_placement_preferences')
-                        ->where('student_id', $student_id)
-                        ->get()
-                        ->getRowArray();
 
-        $hasPlacementPreferences = true;
+//placement preferences
+   $studentId = session()->get('student_id');
+    $db = \Config\Database::connect();
 
-        $requiredFields = [
-            'interested_in_placements',
-            'preferred_jobs',
-            'interested_in_higher_studies',
-            'placement_coordinator_name',
-            'coordinator_department',
-            'coordinator_mobile'
-        ];
+    // Fetch placement preferences
+    $placement = $db->table('students_placement_preferences')
+                    ->where('student_id', $studentId)
+                    ->get()
+                    ->getRowArray();
 
-        if (empty($placement)) {
-            $hasPlacementPreferences = false;
-        } else {
-            foreach ($requiredFields as $field) {
-                if (!isset($placement[$field]) || $placement[$field] === '') {
-                    $hasPlacementPreferences = false;
-                    break;
-                }
-            }
-        }
-
-        if ($hasPlacementPreferences) {
-            $completion += 7;
-        } else {
-            $incompleteSections[] = ['name' => 'Placement Preferences', 'percent' => 7];
-        }
-
-
+  
    // 12. Placement Training (strict)
         $training = $db->table('students_placement_training')
                     ->where('student_id', $student_id)
@@ -599,20 +576,22 @@ public function overwriteAllPasswordsWithMobile()
     $completionPercentage = $completion . '%';
 
         return view('student/student_profile_preview', [
-        'student' => $student,
-        'skills' => $skills,
-        'academic' => $academic,
-        'preferences' => $preferences, 
-        'training' => $training,
-        'departments' => $departments,
-        'pursuingDegrees' => $global->getPursuingDegrees(),
-        'entryTypes' => $global->getEntryTypes(),
-        'admissionModes' => $global->getAdmissionModes(),
-        'yesNoOptions' => $global->getYesNoOptions(),
-        'completionPercentage' => $completionPercentage, // ✅ Comma added here
-        'relationTypes' => $relationTypes,               // ✅ This line is now valid
-        'incompleteSections' => $incompleteSections // pass to view
-    ]);
+            'student' => $student,
+            'skills' => $skills,
+            'academic' => $academic,
+            'preferences' => $preferences,
+            'training' => $training,
+            'departments' => $departments,
+            'pursuingDegrees' => $global->getPursuingDegrees(),
+            'entryTypes' => $global->getEntryTypes(),
+            'admissionModes' => $global->getAdmissionModes(),
+            'yesNoOptions' => $global->getYesNoOptions(),
+            'completionPercentage' => $completionPercentage,
+            'relationTypes' => $relationTypes,
+            'incompleteSections' => $incompleteSections,
+            'placement' => $placement // ✅ ADD THIS HERE
+        ]);
+
 
     }
 
@@ -698,16 +677,29 @@ public function deleteSkill()
 }
 
 
+
+
+
+
     public function __construct()
     {
         $this->db = Database::connect(); // ✅ This sets up $this->db
     }
 
 
+ public function editAcademicInfo($student_id)
+    {
+        $studentModel = new StudentModel();
+        $data['academicInfo'] = $studentModel->where('student_id', $student_id)->first();
+
+        return view('student/edit_academic_info', $data);
+    }
+
     public function updateAcademicInfo()
     {
-        $studentId = session()->get('student_id');
-        $model = new StudentModel();
+        $studentModel = new StudentModel();
+
+        $student_id = $this->request->getPost('student_id');
 
         $data = [
             'pursuing_degree'     => $this->request->getPost('pursuing_degree'),
@@ -716,44 +708,163 @@ public function deleteSkill()
             'type_of_entry'       => $this->request->getPost('type_of_entry'),
             'mode_of_admission'   => $this->request->getPost('mode_of_admission'),
             'entrance_rank'       => $this->request->getPost('entrance_rank'),
-            'sem1_sgpa_cgpa'      => $this->request->getPost('sem1_sgpa_cgpa'),
-            'sem2_sgpa_cgpa'      => $this->request->getPost('sem2_sgpa_cgpa'),
-            'sem3_sgpa_cgpa'      => $this->request->getPost('sem3_sgpa_cgpa'),
-            'sem4_sgpa_cgpa'      => $this->request->getPost('sem4_sgpa_cgpa'),
-            'sem5_sgpa_cgpa'      => $this->request->getPost('sem5_sgpa_cgpa'),
-            'sem6_sgpa_cgpa'      => $this->request->getPost('sem6_sgpa_cgpa'),
-            'sem7_sgpa_cgpa'      => $this->request->getPost('sem7_sgpa_cgpa'),
-            'sem8_sgpa_cgpa'      => $this->request->getPost('sem8_sgpa_cgpa'),
-            'sem9_sgpa_cgpa'      => $this->request->getPost('sem9_sgpa_cgpa'),
-            'sem10_sgpa_cgpa'     => $this->request->getPost('sem10_sgpa_cgpa'),
             'active_backlogs'     => $this->request->getPost('active_backlogs'),
             'backlog_history'     => $this->request->getPost('backlog_history'),
-            'year_back'           => $this->request->getPost('year_back') === 'Yes' ? 1 : 0,
+            'year_back'           => $this->request->getPost('year_back'),
             'academic_gaps'       => $this->request->getPost('academic_gaps'),
-            'updated_by'          => 'self'
+            'updated_by'          => session()->get('username'),
+            'updated_on'          => date('Y-m-d H:i:s')
         ];
 
-        $model->saveAcademicInfo($studentId, $data);
+        // Save semester CGPA/SGPA (up to 10)
+        for ($i = 1; $i <= 10; $i++) {
+            $field = 'sem' . $i . '_sgpa_cgpa';
+            $value = $this->request->getPost($field);
+            if ($value !== null) {
+                $data[$field] = $value;
+            }
+        }
 
-        return redirect()->to('/student/profile')->with('success', 'Academic info updated successfully.');
+        $studentModel->set($data)->where('student_id', $student_id)->update();
+
+        return redirect()->back()->with('success', 'Academic information updated successfully.');
+    }
+public function saveAcademicInfo()
+{
+    $db = \Config\Database::connect();
+    $builder = $db->table('students_academics');
+
+    $student_id = session()->get('student_id');
+
+    $data = [
+        'student_id'         => $student_id,
+        'pursuing_degree'    => $this->request->getPost('pursuing_degree'),
+        'department_name'    => $this->request->getPost('department_name'),
+        'year_of_joining'    => $this->request->getPost('year_of_joining'),
+        'type_of_entry'      => $this->request->getPost('type_of_entry'),
+        'mode_of_admission'  => $this->request->getPost('mode_of_admission'),
+        'active_backlogs'    => $this->request->getPost('active_backlogs'),
+        'backlog_history'    => $this->request->getPost('backlog_history'),
+        'year_back'          => $this->request->getPost('year_back'),
+        'academic_gaps'      => $this->request->getPost('academic_gaps'),
+        'cgpa'               => $this->request->getPost('cgpa'),
+        'rank'               => $this->request->getPost('rank'),
+    ];
+
+  $semesters = $this->request->getPost('sem_sgpa_cgpa');
+if ($semesters && is_array($semesters)) {
+    foreach ($semesters as $i => $val) {
+        $data['sem'.$i.'_sgpa_cgpa'] = $val;
+    }
+}
+    // Check if entry exists
+    $exists = $builder->where('student_id', $student_id)->get()->getRow();
+
+    if ($exists) {
+        $builder->where('student_id', $student_id)->update($data);
+    } else {
+        $builder->insert($data);
     }
 
-    public function updatePlacementPreferences()
-    {
-        $studentId = session()->get('student_id');
+    return redirect()->back()->with('success', 'Academic info updated!');
+}
 
-        $data = [
-            'interested_in_placements' => $this->request->getPost('interested_in_placements'),
-            'preferred_jobs' => $this->request->getPost('preferred_jobs') ?? '', // comma separated string
-            'interested_in_higher_studies' => $this->request->getPost('interested_in_higher_studies'),
-            'updated_by' => 'self'
-        ];
+public function getAcademicInfo()
+{
+    $student_id = session()->get('student_id');
+    if (!$student_id) {
+        return $this->response->setJSON(['status' => false, 'message' => 'Not logged in']);
+    }
 
-        $model = new StudentModel();
-        $model->savePlacementPreferences($studentId, $data);
+    $db = \Config\Database::connect();
 
-        return redirect()->to('/student/profile')->with('success', 'Placement preferences updated successfully.');
-    }  
+    // Fetch academic info
+    $academicInfo = $db->table('student_academics')->where('student_id', $student_id)->get()->getRowArray();
+
+    if (!$academicInfo) {
+        return $this->response->setJSON(['status' => false, 'message' => 'No academic info found']);
+    }
+
+    // Calculate CGPA
+    $cgpa = 0;
+    $totalSems = 0;
+    for ($i = 1; $i <= 10; $i++) {
+        $semKey = "sem{$i}_sgpa_cgpa";
+        if (!empty($academicInfo[$semKey])) {
+            $cgpa += floatval($academicInfo[$semKey]);
+            $totalSems++;
+        }
+    }
+    $cgpa = $totalSems > 0 ? round($cgpa / $totalSems, 2) : 0;
+
+    // Calculate academic rank (on-the-fly)
+    $ranksQuery = $db->query("
+        SELECT student_id, (
+            SELECT ROUND(SUM(sem1_sgpa_cgpa + sem2_sgpa_cgpa + sem3_sgpa_cgpa + sem4_sgpa_cgpa +
+                             sem5_sgpa_cgpa + sem6_sgpa_cgpa + sem7_sgpa_cgpa + sem8_sgpa_cgpa +
+                             sem9_sgpa_cgpa + sem10_sgpa_cgpa) / 
+            NULLIF(
+                (CASE WHEN sem1_sgpa_cgpa IS NOT NULL THEN 1 ELSE 0 END +
+                 CASE WHEN sem2_sgpa_cgpa IS NOT NULL THEN 1 ELSE 0 END +
+                 CASE WHEN sem3_sgpa_cgpa IS NOT NULL THEN 1 ELSE 0 END +
+                 CASE WHEN sem4_sgpa_cgpa IS NOT NULL THEN 1 ELSE 0 END +
+                 CASE WHEN sem5_sgpa_cgpa IS NOT NULL THEN 1 ELSE 0 END +
+                 CASE WHEN sem6_sgpa_cgpa IS NOT NULL THEN 1 ELSE 0 END +
+                 CASE WHEN sem7_sgpa_cgpa IS NOT NULL THEN 1 ELSE 0 END +
+                 CASE WHEN sem8_sgpa_cgpa IS NOT NULL THEN 1 ELSE 0 END +
+                 CASE WHEN sem9_sgpa_cgpa IS NOT NULL THEN 1 ELSE 0 END +
+                 CASE WHEN sem10_sgpa_cgpa IS NOT NULL THEN 1 ELSE 0 END), 0)
+        , 2)
+        ) AS cgpa_calc
+        FROM student_academics
+        ORDER BY cgpa_calc DESC
+    ")->getResultArray();
+
+    $rank = 0;
+    foreach ($ranksQuery as $index => $row) {
+        if ($row['student_id'] == $student_id) {
+            $rank = $index + 1;
+            break;
+        }
+    }
+
+    return $this->response->setJSON([
+        'status' => true,
+        'academicInfo' => $academicInfo,
+        'cgpa' => $cgpa,
+        'rank' => $rank
+    ]);
+}
+
+  public function updatePlacementPreferences()
+{
+    $studentId = session()->get('student_id');
+
+    $data = [
+        'student_id'                   => $studentId,
+        'interested_in_placements'     => $this->request->getPost('interested_in_placements') === 'Yes' ? 1 : 0,
+        'preferred_jobs'               => $this->request->getPost('preferred_jobs'),
+        'interested_in_higher_studies' => $this->request->getPost('interested_in_higher_studies') === 'Yes' ? 1 : 0,
+        'placement_coordinator_name'   => $this->request->getPost('placement_coordinator_name'),
+        'coordinator_department'       => $this->request->getPost('coordinator_department'),
+        'coordinator_mobile'           => $this->request->getPost('coordinator_mobile'),
+    ];
+
+    $db = \Config\Database::connect();
+    $builder = $db->table('students_placement_preferences');
+
+    // Check if already exists
+    $existing = $builder->where('student_id', $studentId)->get()->getRow();
+
+    if ($existing) {
+        $builder->where('student_id', $studentId)->update($data);
+    } else {
+        $builder->insert($data);
+    }
+
+    return redirect()->to('/student/profile');
+}
+
     public function changePasswordForm()
     {
         return view('student/student_pwd', [

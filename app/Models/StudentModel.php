@@ -78,9 +78,7 @@ public function updateKeySkills($student_id, $skills)
                     ->where('id', $skillId)
                     ->where('student_id', $studentId)
                     ->delete();
-
 }
-
 public function getAcademicInfo($studentId)
 {
     return $this->db->table('students_academics sa')
@@ -92,19 +90,18 @@ public function getAcademicInfo($studentId)
 }
 
 
-public function saveAcademicInfo($studentId, $data)
+public function saveAcademicInfo(array $data)
 {
-    $builder = $this->db->table('students_academics');
-
-    $existing = $builder->where('student_id', $studentId)->get()->getRow();
+    $builder = $this->db->table('student_academics');
+    $existing = $builder->where('student_id', $data['student_id'])->get()->getRow();
 
     if ($existing) {
-        return $builder->where('student_id', $studentId)->update($data);
+        $builder->where('student_id', $data['student_id'])->update($data);
     } else {
-        $data['student_id'] = $studentId;
-        return $builder->insert($data);
+        $builder->insert($data);
     }
 }
+
 
 public function savePlacementPreferences($studentId, $data)
 {
