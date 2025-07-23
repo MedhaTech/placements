@@ -7,15 +7,9 @@ class StudentModel extends Model
 {
     // 🔹 Used for login (users table)
     protected $table = 'students';
+    protected $allowedFields = ['official_email', 'password']; // only needed if you're using `save()`, not raw query
+
     protected $primaryKey = 'id';
-    protected $allowedFields = [
-        'reg_no', 'full_name', 'mobile_no', 'whatsapp_no', 'personal_email', 'password',
-        'official_email', 'gender', 'date_of_birth', 'native_place',
-        'communication_address', 'communication_state', 'communication_pincode',
-        'permanent_address', 'permanent_state', 'permanent_pincode',
-        'pan_number', 'aadhar_number', 'appar_id', 'profile_summary',
-        'linkedin', 'github', 'created_by', 'created_on', 'updated_by', 'updated_on'
-    ];
 
     // 🔹 Handle profile summary from 'students' table
     public function getStudentById($id)
@@ -130,33 +124,31 @@ public function saveStudentDocument($studentId, $documentType, $filePath)
 {
     $builder = $this->db->table('students_documents');
 
-    // If it's a photo (replace type)
-    if ($documentType === 'Photo') {
+    // Handle PHOTO — only one record allowed
+    if (strtoupper($documentType) === 'PHOTO') {
         $existing = $builder->where('student_id', $studentId)
-                            ->where('document_type', $documentType)
+                            ->where('document_type', 'PHOTO')
                             ->get()
                             ->getRowArray();
 
         $data = [
             'student_id'    => $studentId,
-            'document_type' => $documentType,
+            'document_type' => 'PHOTO',
             'file_path'     => $filePath,
             'updated_by'    => $studentId,
             'updated_on'    => date('Y-m-d H:i:s')
         ];
 
         if ($existing) {
-            // Replace old
             return $builder->where('id', $existing['id'])->update($data);
         } else {
-            // Insert new
             $data['created_by'] = $studentId;
             $data['created_on'] = date('Y-m-d H:i:s');
             return $builder->insert($data);
         }
     }
 
-    // 📌 For other documents (allow multiple)
+    // Allow multiple uploads for other document types
     return $builder->insert([
         'student_id'    => $studentId,
         'document_type' => $documentType,
@@ -165,6 +157,7 @@ public function saveStudentDocument($studentId, $documentType, $filePath)
         'created_on'    => date('Y-m-d H:i:s')
     ]);
 }
+
 
 public function getUserById($id)
     {
@@ -181,7 +174,5 @@ public function getUserById($id)
     {
         return $this->update($id, ['password' => $hashedPassword]);
     }
-
-    
 }
 
