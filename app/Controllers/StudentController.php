@@ -8,6 +8,11 @@ use App\Libraries\GlobalData;
 use App\Models\StudentModel;
 use App\Models\FamilyDetailModel;
 use App\Models\ExperienceDetailModel;
+use App\Models\EducationDetailModel;
+use App\Models\CertificationModel;
+use App\Models\ProjectsPublicationsModel;
+use App\Models\PlacementOffersModel;
+
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
@@ -335,7 +340,7 @@ public function overwriteAllPasswordsWithMobile()
 
 
     // 8. Projects & Publications (✅ ALL entries must be complete)
-        $projects = $db->table('students_projects_publications')
+        $projectsPublications = $db->table('students_projects_publications')
                     ->where('student_id', $student_id)
                     ->get()
                     ->getResultArray();
@@ -616,6 +621,11 @@ public function overwriteAllPasswordsWithMobile()
         'incompleteSections' => $incompleteSections, // pass to view
         'familyDetails' => $familyDetails,
         'experienceDetails' => $experienceDetails,
+        'educationDetails' => $educationDetails,
+        'licensesCertifications' => $certifications,
+        'projectsPublications' => $projectsPublications,
+        'placementOffers' => $offers,
+        'studentLanguages' => $languages,
 
 
     ]);
@@ -1040,7 +1050,124 @@ public function saveExperienceDetails()
 
     return redirect()->to('/student/profile');
 }
+public function saveEducationDetails()
+{
+    $model = new EducationDetailModel();
+    $studentId = session('student_id');
 
+    $data = [
+        'student_id' => $studentId,
+        'qualification_type' => $this->request->getPost('qualification_type'),
+        'institution_name' => $this->request->getPost('institution_name'),
+        'board_university' => $this->request->getPost('board_university'),
+        'course_specialization' => $this->request->getPost('course_specialization'),
+        'course_type' => $this->request->getPost('course_type'),
+        'year_of_passing' => $this->request->getPost('year_of_passing'),
+        'grade_percentage' => $this->request->getPost('grade_percentage'),
+        'result_status' => $this->request->getPost('result_status'),
+        'created_by' => session('student_name'),
+        'created_on' => date('Y-m-d H:i:s'),
+    ];
+
+    $model->save($data);
+    return redirect()->to('/student/profile');
+}
+public function saveCertification()
+{
+    $model = new \App\Models\CertificationModel();
+
+    $data = [
+        'student_id' => session('student_id'),
+        'certificate_name' => $this->request->getPost('certificate_name'),
+        'issuing_organization' => $this->request->getPost('issuing_organization'),
+        'issue_date' => $this->request->getPost('issue_date'),
+        'expiry_date' => $this->request->getPost('expiry_date'),
+        'reg_no' => $this->request->getPost('reg_no'),
+        'url' => $this->request->getPost('url'),
+        'created_by' => session('user_id') ?? 'system',
+        'updated_by' => session('user_id') ?? 'system',
+    ];
+
+    $model->save($data);
+    return redirect()->to('/student/profile');
+}
+public function saveProjectsPublications()
+{
+    $model = new ProjectsPublicationsModel();
+
+    $data = [
+        'student_id'       => session()->get('student_id'),
+        'title'            => $this->request->getPost('title'),
+        'publishing_type'  => $this->request->getPost('publishing_type'),
+        'publisher'        => $this->request->getPost('publisher'),
+        'completion_date'  => $this->request->getPost('completion_date'),
+        'authors'          => $this->request->getPost('authors'),
+        'publication_url'  => $this->request->getPost('publication_url'),
+        'description'      => $this->request->getPost('description'),
+        'created_by'       => session()->get('username'),
+        'updated_by'       => session()->get('username')
+    ];
+
+    if ($model->save($data)) {
+        return $this->response->setJSON(['status' => 'success']);
+    } else {
+        return $this->response->setJSON([
+            'status' => 'error',
+            'message' => $model->errors()
+        ]);
+    }
+}
+
+public function savePlacementOffer()
+{
+    $session = session();
+    $studentId = $session->get('student_id'); // assumes login session
+    if (!$studentId) {
+        return redirect()->to('/student')->with('error', 'Login required.');
+    }
+
+    $model = new \App\Models\PlacementOffersModel();
+
+    $data = [
+        'student_id'     => $studentId,
+        'company_name'   => $this->request->getPost('company_name'),
+        'job_title'      => $this->request->getPost('job_title'),
+        'offered_salary' => $this->request->getPost('offered_salary'),
+        'status'         => $this->request->getPost('status'),
+        'offer_status'   => $this->request->getPost('offer_status'),
+        'created_by'     => $session->get('user_id') ?? 'system',
+        'created_on'     => date('Y-m-d H:i:s'),
+    ];
+
+    $model->save($data);
+
+    return redirect()->back()->with('success', 'Placement offer saved successfully.');
+}
+public function saveLanguage()
+{
+    $session = session();
+    $studentId = $session->get('student_id');
+    if (!$studentId) {
+        return redirect()->to('/student')->with('error', 'Login required.');
+    }
+
+    $model = new \App\Models\StudentLanguageModel();
+
+    $data = [
+        'student_id'   => $studentId,
+        'language_name'=> $this->request->getPost('language_name'),
+        'proficiency'  => $this->request->getPost('proficiency'),
+        'can_read'     => $this->request->getPost('can_read') ? 1 : 0,
+        'can_write'    => $this->request->getPost('can_write') ? 1 : 0,
+        'can_speak'    => $this->request->getPost('can_speak') ? 1 : 0,
+        'created_by'   => $session->get('user_id') ?? 'system',
+        'created_on'   => date('Y-m-d H:i:s'),
+    ];
+
+    $model->save($data);
+
+    return redirect()->back()->with('success', 'Language added successfully.');
+}
 
 
 
