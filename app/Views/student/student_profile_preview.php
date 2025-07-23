@@ -538,12 +538,38 @@
           </div>
         </div>
       
+      <!-- Family Details Section -->
       <div id="family-details" class="section-card">
-        <h5>Family Details 
+        <h5>
+          Family Details
           <a href="#" data-bs-toggle="modal" data-bs-target="#familyDetailsModal">Add</a>
         </h5>
-         <div id="familyDetailsList" class="mt-3"></div>
+
+        <div class="mt-3">
+          <?php if (!empty($familyDetails)): ?>
+            <?php foreach ($familyDetails as $detail): ?>
+              <div class="border p-3 mb-3 rounded bg-light">
+                <div class="row">
+                  <div class="col-md-4"><strong>Relation:</strong> <?= esc($detail['relation']) ?></div>
+                  <div class="col-md-4"><strong>Name:</strong> <?= esc($detail['name']) ?></div>
+                  <div class="col-md-4"><strong>Occupation:</strong> <?= esc($detail['occupation']) ?></div>
+                </div>
+                <div class="row mt-2">
+                  <div class="col-md-4"><strong>Contact:</strong> <?= esc($detail['contact']) ?></div>
+                  <div class="col-md-4"><strong>Mobile:</strong> <?= esc($detail['mobile']) ?></div>
+                  <div class="col-md-4"><strong>Email:</strong> <?= esc($detail['email']) ?></div>
+                </div>
+                <div class="row mt-2">
+                  <div class="col-md-4"><strong>Salary:</strong> ₹<?= esc(number_format((float)$detail['salary'], 2)) ?></div>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <p>No family details added yet.</p>
+          <?php endif; ?>
+        </div>
       </div>
+      <!-- Experience Details Section -->
       <div id="experience-details" class="section-card">
         <h5>Experience Details 
           <a href="#" data-bs-toggle="modal" data-bs-target="#experienceDetailsModal">Add</a>
@@ -1237,7 +1263,7 @@
   </div>
 </div>
   
-  <!-- 📎 Document Upload Modal -->
+  <!--  Document Upload Modal -->
 <div class="modal fade" id="documentUploadModal" tabindex="-1" aria-labelledby="documentUploadModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <form action="<?= base_url('student/uploadDocument') ?>" method="post" enctype="multipart/form-data">
@@ -1370,70 +1396,52 @@
   
 <!-- Family Details Modal -->
 <div class="modal fade" id="familyDetailsModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content" style="border-radius: 16px;">
-      <div class="modal-header border-0">
-        <h5 class="modal-title">Family Details</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-  <p class="text-muted">Add details of your family members below.</p>
-  <div id="familyDetailsList" class="mb-3">
-  <!-- Entries will be added here -->
-</div>
-  <form id="familyForm">
-    <div class="row mb-3">
-      <div class="col-md-4">
-        <label class="form-label">Relation</label>
-        <select class="form-select" id="relation">
-          <option selected disabled>Select</option>
-          <option value="Father">Father</option>
-          <option value="Mother">Mother</option>
-          <option value="Brother">Brother</option>
-          <option value="Sister">Sister</option>
-          <!-- add more if needed -->
-        </select>
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Name</label>
-        <input type="text" class="form-control" id="name" placeholder="Full Name">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Occupation</label>
-        <input type="text" class="form-control" id="occupation" placeholder="Occupation">
-      </div>
-    </div>
+      <form method="post" action="<?= base_url('/student/save-family-details') ?>">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">Add Family Detail</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
 
-    <div class="row mb-3">
-      <div class="col-md-4">
-        <label class="form-label">Contact</label>
-        <input type="text" class="form-control" id="contact" placeholder="Contact Number">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Mobile</label>
-        <input type="text" class="form-control" id="mobile" placeholder="Mobile Number">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Email</label>
-        <input type="email" class="form-control" id="email" placeholder="Email ID">
-      </div>
-    </div>
+        <div class="modal-body row g-3">
+          <div class="col-md-6">
+            <label>Relation</label>
+            <?= (new \App\Libraries\GlobalData())->renderRelationTypeDropdown('relation', old('relation')) ?>
+          </div>
+          <div class="col-md-6">
+            <label>Name</label>
+            <input type="text" name="name" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label>Contact</label>
+            <input type="text" name="contact" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Occupation</label>
+            <input type="text" name="occupation" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Mobile</label>
+            <input type="text" name="mobile" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Email ID</label>
+            <input type="email" name="email" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Salary</label>
+            <input type="text" name="salary" class="form-control">
+          </div>
+        </div>
 
-    <div class="row mb-4">
-      <div class="col-md-4">
-        <label class="form-label">Salary</label>
-        <input type="text" class="form-control" id="salary" placeholder="Salary">
-      </div>
-      <div class="col-md-8 d-flex align-items-end justify-content-end">
-        <button type="button" class="btn btn-link">+ Add More</button>
-      </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
     </div>
-
-    <div class="d-flex justify-content-end">
-      <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
-      <button type="button" class="btn btn-primary" id="saveFamilyBtn">Save</button>
-    </div>
-  </form>
+  </div>
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -1571,45 +1579,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 });
-</script>
-<script>
-  document.getElementById('saveFamilyBtn').addEventListener('click', function () {
-    const relation = document.getElementById('relation').value;
-    const name = document.getElementById('name').value;
-    const occupation = document.getElementById('occupation').value;
-    const contact = document.getElementById('contact').value;
-    const mobile = document.getElementById('mobile').value;
-    const email = document.getElementById('email').value;
-    const salary = document.getElementById('salary').value;
-
-    if (!relation || !name || !contact) {
-      alert('Please fill in all required fields (Relation, Name, Contact).');
-      return;
-    }
-
-    const card = document.createElement('div');
-    card.className = 'card mb-3';
-    card.innerHTML = `
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-2"><strong>Relation:</strong><br>${relation}</div>
-          <div class="col-md-2"><strong>Name:</strong><br>${name}</div>
-          <div class="col-md-2"><strong>Contact:</strong><br>${contact}</div>
-          <div class="col-md-2"><strong>Occupation:</strong><br>${occupation}</div>
-          <div class="col-md-2"><strong>Mobile:</strong><br>${mobile}</div>
-          <div class="col-md-2"><strong>Email:</strong><br>${email}</div>
-        </div>
-        <div class="row mt-2">
-          <div class="col-md-12"><strong>Salary:</strong> ${salary}</div>
-        </div>
-      </div>
-    `;
-
-    document.getElementById('familyDetailsList').appendChild(card);
-
-    // Clear form fields
-    document.getElementById('familyForm').reset();
-  });
 </script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {

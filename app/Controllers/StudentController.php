@@ -6,6 +6,7 @@ use CodeIgniter\Database\Config;
 use Config\Database;
 use App\Libraries\GlobalData;
 use App\Models\StudentModel;
+use App\Models\FamilyDetailModel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
@@ -611,7 +612,9 @@ public function overwriteAllPasswordsWithMobile()
         'yesNoOptions' => $global->getYesNoOptions(),
         'completionPercentage' => $completionPercentage, // ✅ Comma added here
         'relationTypes' => $relationTypes,               // ✅ This line is now valid
-        'incompleteSections' => $incompleteSections // pass to view
+        'incompleteSections' => $incompleteSections, // pass to view
+        'familyDetails' => $familyDetails,
+
     ]);
 
     }
@@ -981,27 +984,38 @@ public function uploadExcel()
 
     return redirect()->back()->with('error', 'Invalid file.');
 }
-
-  
-  public function saveFamilyDetails()
+public function saveFamilyDetails()
 {
-    $studentId = session()->get('student_id');
+    $familyModel = new FamilyDetailModel();
 
-    $fatherName = $this->request->getPost('father_name');
-    $motherName = $this->request->getPost('mother_name');
-    $fatherOccupation = $this->request->getPost('father_occupation');
-    $motherOccupation = $this->request->getPost('mother_occupation');
+    $data = [
+        'student_id' => session('student_id'),
+        'relation'   => $this->request->getPost('relation'),
+        'name'       => $this->request->getPost('name'),
+        'contact'    => $this->request->getPost('contact'),
+        'occupation' => $this->request->getPost('occupation'),
+        'mobile'     => $this->request->getPost('mobile'),
+        'email'      => $this->request->getPost('email'),
+        'salary'     => $this->request->getPost('salary'),
+    ];
 
-    $model = new \App\Models\StudentModel();
-    $model->update($studentId, [
-        'father_name' => $fatherName,
-        'mother_name' => $motherName,
-        'father_occupation' => $fatherOccupation,
-        'mother_occupation' => $motherOccupation,
-    ]);
+    if (!empty($data['relation']) && !empty($data['name'])) {
+        $familyModel->insert($data);
+        return redirect()->back()->with('success', 'Family detail saved.');
+    }
 
-    return redirect()->to('/student/dashboard')->with('success', 'Family details saved successfully.');
-
+    return redirect()->back()->with('error', 'Failed to save family detail.');
 }
+public function studentProfile()
+{
+    $studentId = session('student_id');
+    $familyModel = new FamilyDetailMode();
+
+    $data['familyDetails'] = $familyModel->where('student_id', $studentId)->findAll();
+    // Load your profile view and pass $data
+    return view('student/student_profile_preview', $data);
+    return redirect()->to('/student/profile'); // or whatever your route is
+}
+
 
 }

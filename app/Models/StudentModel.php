@@ -160,22 +160,6 @@ public function saveStudentDocument($studentId, $documentType, $filePath)
         'created_on'    => date('Y-m-d H:i:s')
     ]);
 }
-
-
-public function getUserById($id)
-    {
-        return $this->where('id', $id)->first();
-    }
-
-    public function getPassword($id)
-    {
-        $user = $this->select('password')->where('id', $id)->first();
-        return $user['password'] ?? null;
-    }
-
-    public function updatePassword($id, $hashedPassword)
-    {
-        return $this->update($id, ['password' => $hashedPassword]);
-    }
 }
+
 
