@@ -12,6 +12,7 @@ use App\Models\EducationDetailModel;
 use App\Models\CertificationModel;
 use App\Models\ProjectsPublicationsModel;
 use App\Models\PlacementOffersModel;
+use App\Models\StudentLanguageModel;
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
