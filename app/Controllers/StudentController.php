@@ -255,7 +255,7 @@ public function overwriteAllPasswordsWithMobile()
         }
 
 
-    // 6. Education Details (✅ ALL entries must be complete)
+    // 6. Education Details (✅ STRICT: All 8 fields must be filled for every row)
         $educationDetails = $db->table('students_education')
                             ->where('student_id', $student_id)
                             ->get()
@@ -267,19 +267,27 @@ public function overwriteAllPasswordsWithMobile()
             $hasAllEducationComplete = false;
         } else {
             foreach ($educationDetails as $entry) {
-                if (
-                    empty($entry['qualification_type']) ||
-                    empty($entry['institution_name']) ||
-                    empty($entry['board_university']) ||
-                    empty($entry['course_specialization']) ||
-                    empty($entry['course_type']) ||
-                    empty($entry['year_of_passing']) ||
-                    empty($entry['grade_percentage']) ||
-                    empty($entry['result_status'])
-                ) {
-                    $hasAllEducationComplete = false;
-                    break;
+                // List of strictly required fields
+                $requiredFields = [
+                    'qualification_type',
+                    'institution_name',
+                    'board_university',
+                    'course_specialization',
+                    'course_type',
+                    'year_of_passing',
+                    'grade_percentage',
+                    'result_status'
+                ];
+
+                // Check each field is non-empty
+                foreach ($requiredFields as $field) {
+                    if (!isset($entry[$field]) || trim($entry[$field]) === '') {
+                        $hasAllEducationComplete = false;
+                        break 2; // break from both loops immediately
+                    }
                 }
+
+                // (Optional) Add pair logic here if needed
             }
         }
 
@@ -288,6 +296,7 @@ public function overwriteAllPasswordsWithMobile()
         } else {
             $incompleteSections[] = ['name' => 'Education Details', 'percent' => 7];
         }
+
 
 
     // 7. Licenses & Certifications (✅ ALL entries must be complete)
@@ -391,7 +400,7 @@ public function overwriteAllPasswordsWithMobile()
         }
 
 
-    // 10. Current Academic Info (Strict check)
+    // 10. Current Academic Information (✅ Must be completely filled + SGPA till current sem + Entrance Rank conditionally)
         $academicInfo = $db->table('students_academics')
                         ->where('student_id', $student_id)
                         ->get()
@@ -399,19 +408,57 @@ public function overwriteAllPasswordsWithMobile()
 
         $hasAcademicInfoComplete = true;
 
-        if (empty($academicInfo)) {
+        if (!$academicInfo) {
             $hasAcademicInfoComplete = false;
         } else {
+            // Basic required fields
             $requiredFields = [
-                'pursuing_degree', 'department_id', 'year_of_joining', 'type_of_entry', 
-                'mode_of_admission', 'sem1_sgpa_cgpa', 'active_backlogs', 
-                'backlog_history', 'year_back', 'academic_gaps'
+                'pursuing_degree',
+                'department_id',
+                'year_of_joining',
+                'type_of_entry',
+                'mode_of_admission',
+                'active_backlogs',
+                'backlog_history',
+                'year_back',
+                'academic_gaps'
             ];
 
             foreach ($requiredFields as $field) {
-                if (empty($academicInfo[$field]) && $academicInfo[$field] !== "0") {
+                if (!isset($academicInfo[$field]) || trim($academicInfo[$field]) === '') {
                     $hasAcademicInfoComplete = false;
                     break;
+                }
+            }
+
+            // Entrance Rank required if admission is through entrance
+            if (
+                $hasAcademicInfoComplete &&
+                strtolower(trim($academicInfo['mode_of_admission'])) === 'through entrance' &&
+                (empty($academicInfo['entrance_rank']) && $academicInfo['entrance_rank'] !== '0')
+            ) {
+                $hasAcademicInfoComplete = false;
+            }
+
+            // SGPA/CGPA fields validation till current semester
+            if ($hasAcademicInfoComplete) {
+                $currentSem = 0;
+
+                for ($i = 1; $i <= 10; $i++) {
+                    $field = 'sem' . $i . '_sgpa_cgpa';
+                    if (!empty($academicInfo[$field])) {
+                        $currentSem = $i;
+                    } else {
+                        break;
+                    }
+                }
+
+                for ($i = 1; $i <= $currentSem; $i++) {
+                    $field = 'sem' . $i . '_sgpa_cgpa';
+                    if (!isset($academicInfo[$field]) || trim($academicInfo[$field]) === '') {
+                        $hasAcademicInfoComplete = false;
+                        break;
+                    }
                 }
             }
         }
@@ -421,8 +468,6 @@ public function overwriteAllPasswordsWithMobile()
         } else {
             $incompleteSections[] = ['name' => 'Current Academic Information', 'percent' => 7];
         }
-
-
 
     // 11. Placement Preferences (strict)
         $placement = $db->table('students_placement_preferences')
@@ -512,7 +557,7 @@ public function overwriteAllPasswordsWithMobile()
             $incompleteSections[] = ['name' => 'Placement Offers', 'percent' => 7];
         }
 
-
+    
 
     // 14. Documents (✅ STRICT: All entries must have document_type and file_path)
         $documents = $db->table('students_documents')
@@ -541,6 +586,14 @@ public function overwriteAllPasswordsWithMobile()
         } else {
             $incompleteSections[] = ['name' => 'Documents', 'percent' => 7];
         }
+
+        // 15. Resume Upload (✅ 2% if resume_url is uploaded)
+    if (!empty($student['resume_url'])) {
+        $completion += 2;
+    } else {
+        $incompleteSections[] = ['name' => 'Resume Upload', 'percent' => 2];
+    }
+
 
 
     $completionPercentage = $completion . '%';
@@ -772,60 +825,76 @@ public function deleteSkill()
 
 
   public function uploadDocument()
-    {
-        $session = session();
-        $studentId = $session->get('student_id');
+{
+    date_default_timezone_set('Asia/Kolkata'); // ✅ Ensure correct local time
 
-        if (!$this->request->is('post')) {
-            return redirect()->back()->with('error', 'Invalid request method');
-        }
+    $session = session();
+    $studentId = $session->get('student_id');
+    $regNo = trim($session->get('reg_no'));
 
-        $documentType = $this->request->getPost('document_type');
-        $file = $this->request->getFile('document_file');
-
-        if (!$file || !$file->isValid()) {
-            return redirect()->back()->with('error', 'Please upload a valid file.');
-        }
-
-        // ✅ Get reg_no from session
-        $regNo = $session->get('reg_no');
-        if (empty($regNo)) {
-            return redirect()->back()->with('error', 'Student registration number not found in session.');
-        }
-
-        // ✅ Construct folder path (use WRITEPATH fallback if FCPATH is blank)
-        $basePath = rtrim(FCPATH ?: WRITEPATH . '../public/', '/') . '/assets/Stu_Docs/';
-        $studentFolder = $basePath . $regNo . '/';
-
-        // ✅ Create folder if not exists
-        if (!is_dir($studentFolder)) {
-            if (!mkdir($studentFolder, 0777, true) && !is_dir($studentFolder)) {
-                return redirect()->back()->with('error', 'Failed to create folder: ' . $studentFolder);
-            }
-        }
-
-        // ✅ Rename file: e.g. AADHAR_210720251854.jpg
-        $prefix = strtoupper(explode(' ', $documentType)[0]); // "AADHAR"
-        $datetime = date('dmYHi');
-        $extension = $file->getExtension();
-        $newFileName = $prefix . '_' . $datetime . '.' . $extension;
-
-        // ✅ Move the uploaded file
-        if (!$file->move($studentFolder, $newFileName)) {
-            return redirect()->back()->with('error', 'Failed to move uploaded file.');
-        }
-
-        // ✅ Construct relative path for DB
-        $relativePath = 'assets/Stu_Docs/' . $regNo . '/' . $newFileName;
-
-        // ✅ Save in DB using your StudentModel method
-        $studentModel = new \App\Models\StudentModel();
-        $studentModel->saveStudentDocument($studentId, $documentType, $relativePath);
-
-        return redirect()->back()->with('success', 'Document uploaded successfully.');
+    // 🔴 Check session data
+    if (empty($regNo)) {
+        return redirect()->back()->with('error', '❌ Registration number missing in session.');
     }
 
+    // 🔴 Only POST requests allowed
+    if (!$this->request->is('post')) {
+        return redirect()->back()->with('error', '❌ Invalid request method.');
+    }
 
+    $documentType = strtoupper($this->request->getPost('document_type'));
+    $file = $this->request->getFile('document_file');
+
+    // 🔴 File validation
+    if (!$file || !$file->isValid()) {
+        return redirect()->back()->with('error', '❌ Please upload a valid file.');
+    }
+
+    // ✅ Upload folder path
+    $uploadPath = FCPATH . 'assets/Stu_Docs/' . $regNo . '/';
+
+    // 🔧 Create folder if not exists
+    if (!is_dir($uploadPath)) {
+        try {
+            mkdir($uploadPath, 0777, true);
+        } catch (\Throwable $e) {
+            return redirect()->back()->with('error', '❌ Failed to create folder: ' . $uploadPath);
+        }
+    }
+
+   // ✅ Format: MMDDYYYY + HHMM (24-hour format, no underscore)
+        $timestamp = date('mdY') . date('Hi'); // 'Hi' = HourMinute in 24hr format
+        $ext = $file->getExtension();
+        $newFileName = $documentType . '_' . $timestamp . '.' . $ext;
+        $fullPath = $uploadPath . $newFileName;
+
+
+    // ✅ If PHOTO: delete old file(s)
+    if ($documentType === 'PHOTO') {
+        $existingFiles = glob($uploadPath . 'PHOTO_*');
+        foreach ($existingFiles as $oldFile) {
+            if (is_file($oldFile)) {
+                unlink($oldFile);
+            }
+        }
+        // No need to delete DB — handled in model
+    }
+
+    // ✅ Move the uploaded file
+    if (!$file->move($uploadPath, $newFileName)) {
+        return redirect()->back()->with('error', '❌ Failed to move uploaded file.');
+    }
+
+    // ✅ Save relative path to DB
+    $relativePath = 'assets/Stu_Docs/' . $regNo . '/' . $newFileName;
+
+    // ✅ Save/Replace in DB
+    $studentModel = new \App\Models\StudentModel();
+    $studentModel->saveStudentDocument($studentId, $documentType, $relativePath);
+
+    return redirect()->back()->with('success', '✅ Document uploaded successfully!');
+
+}
 
  public function uploadExcelForm()
 {
