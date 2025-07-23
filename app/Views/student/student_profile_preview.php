@@ -570,20 +570,32 @@
         </div>
       </div>
       <!-- Experience Details Section -->
-      <div id="experience-details" class="section-card">
-        <h5>Experience Details 
+      <div id="experience-details" class="section-card mt-4">
+        <h5>
+          Experience Details
           <a href="#" data-bs-toggle="modal" data-bs-target="#experienceDetailsModal">Add</a>
         </h5>
-        <div id="experienceDetailsList" class="mt-3"></div>
+        <div class="mt-3">
+          <?php if (!empty($experienceDetails)): ?>
+            <?php foreach ($experienceDetails as $exp): ?>
+              <div class="border p-2 mb-2 rounded bg-light">
+                <strong><?= esc($exp['title']) ?></strong> at <?= esc($exp['organization']) ?> <br>
+                <?= esc($exp['employment_type']) ?> | <?= esc($exp['location_type']) ?> | <?= esc($exp['location']) ?><br>
+                From <?= date('F Y', strtotime($exp['joining_date'])) ?>
+                <?php if (!$exp['is_current']): ?>
+                  to <?= date('F Y', strtotime($exp['end_date'])) ?>
+                <?php else: ?>
+                  (Currently working)
+                <?php endif; ?><br>
+                <em><?= esc($exp['remarks']) ?></em>
+              </div>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <p>No experience details added yet.</p>
+          <?php endif; ?>
+        </div>
       </div>
-      <div id="education-details" class="section-card">
-        <h5>
-          Education Details 
-          <a href="#" data-bs-toggle="modal" data-bs-target="#educationDetailsModal">Add</a>
-        </h5>
-        <div id="educationDetailsList" class="mt-3"></div>
-      </div>
-      
+      <!--Skills Section-->
       <div id="skills" class="section-card">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h5 class="fw-bold text-dark mb-0">Skills</h5>
@@ -966,86 +978,65 @@
         <h5 class="modal-title">Experience Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <div class="modal-body">
-        <p class="text-muted">Add your work experience below.</p>
-        
-        <!-- Experience List -->
-        <div id="experienceDetailsList" class="mb-3">
-          <!-- Appended entries will appear here -->
-        </div>
-
-        <!-- Experience Form -->
-        <form id="experienceForm">
+      <form method="post" action="<?= site_url('student/save-experience-details') ?>">
+        <div class="modal-body">
           <div class="row mb-3">
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label class="form-label">Title</label>
-              <input type="text" class="form-control" id="expTitle" placeholder="Job Title">
+              <input type="text" class="form-control" name="title" required>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label class="form-label">Employment Type</label>
-              <select class="form-select" id="employmentType">
-                <option selected disabled>Select</option>
-                <option>Full-time</option>
-                <option>Part-time</option>
-                <option>Self-Employed</option>
-                <option>Freelance</option>
-                <option>Internship</option>
-                <option>Trainee</option>
-              </select>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Company / Organisation</label>
-              <input type="text" class="form-control" id="company" placeholder="Company Name">
+              <?= (new \App\Libraries\GlobalData())->renderEmploymentTypeDropdown ('employment_type', old('employment_type')) ?>
             </div>
           </div>
-
           <div class="row mb-3">
-            <div class="col-md-4">
-              <label class="form-label">Joining Date</label>
-              <input type="month" class="form-control" id="joiningDate">
+            <div class="col-md-6">
+              <label class="form-label">Organization</label>
+              <input type="text" class="form-control" name="organization">
             </div>
-            <div class="col-md-4">
-              <label class="form-label d-block">Currently Working?</label>
+            <div class="col-md-6">
+              <label class="form-label">Joining Date</label>
+              <input type="month" class="form-control" name="joining_date">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
               <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="currentlyWorking">
-                <label class="form-check-label" for="currentlyWorking">I am currently working in this role</label>
+                <input class="form-check-input" type="checkbox" value="1" name="is_current" id="is_current">
+                <label class="form-check-label" for="is_current">
+                  I am currently working in this role
+                </label>
               </div>
             </div>
-            <div class="col-md-4">
-              <label class="form-label">Worked Till</label>
-              <input type="month" class="form-control" id="workedTill">
+            <div class="col-md-6">
+              <label class="form-label">End Date</label>
+              <input type="month" class="form-control" name="end_date">
             </div>
           </div>
-
           <div class="row mb-3">
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label class="form-label">Location</label>
-              <input type="text" class="form-control" id="location" placeholder="Location">
+              <input type="text" class="form-control" name="location">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label class="form-label">Location Type</label>
-              <select class="form-select" id="locationType">
-                <option selected disabled>Select</option>
-                <option>On-site</option>
-                <option>Hybrid</option>
-                <option>Remote</option>
-              </select>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Remarks</label>
-              <input type="text" class="form-control" id="remarks" placeholder="Optional notes">
+              <?= (new \App\Libraries\GlobalData())->renderLocationTypeDropdown ('location', old('location')) ?>
             </div>
           </div>
-
-          <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" id="saveExperienceBtn">Save</button>
+          <div class="mb-3">
+            <label class="form-label">Remarks</label>
+            <textarea class="form-control" name="remarks" rows="3"></textarea>
           </div>
-        </form>
-      </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
+
 <!-- Education Details Modal -->
 <div class="modal fade" id="educationDetailsModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
