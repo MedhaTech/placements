@@ -159,7 +159,7 @@ class GlobalData
         return $this->renderSelect($name, $this->getResultStatuses(), $selected);
     }
 
-    public function renderQualificationTypeDropdown($name = 'qualification', $selected = null)
+    public function renderQualificationTypeDropdown($name = 'qualification_type', $selected = null)
     {
         return $this->renderSelect($name, $this->getQualificationTypes(), $selected);
     }
