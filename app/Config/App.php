@@ -18,11 +18,11 @@ class App extends BaseConfig
      */
 
     #public string $baseURL = 'http://localhost/placement/placements/public/';
-    #public string $baseURL = 'http://localhost/Placements/public/';
+    public string $baseURL = 'http://localhost/Placements/public/';
     #public string $baseURL = 'http://localhost/placement-tool/placements/public/';
 
     // For live server, you can use the following baseURL.
-    public string $baseURL = 'https://medhatech.in/placements/';
+    #public string $baseURL = 'https://medhatech.in/placements/';
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.

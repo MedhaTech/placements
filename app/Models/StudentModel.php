@@ -160,6 +160,16 @@ public function saveStudentDocument($studentId, $documentType, $filePath)
         'created_on'    => date('Y-m-d H:i:s')
     ]);
 }
+public function insertExperienceDetail($data)
+{
+    return $this->db->table('students_experience')->insert($data);
+}
+
+public function getExperienceDetails($studentId)
+{
+    return $this->db->table('students_experience')->where('student_id', $studentId)->get()->getResultArray();
+}
+
 }
 
 
