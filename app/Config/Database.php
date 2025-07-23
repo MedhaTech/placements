@@ -25,7 +25,7 @@ class Database extends Config
      * @var array<string, mixed>
      */
 
-   /* public array $default = [
+    /*public array $default = [
 
         'DSN'          => '',
         'hostname'     => 'localhost',
@@ -51,7 +51,7 @@ class Database extends Config
             'datetime' => 'Y-m-d H:i:s',
             'time'     => 'H:i:s',
         ],
-    ];*/
+    ]; */
 
     #for live server, you can use the following database settings.
     
@@ -76,7 +76,6 @@ class Database extends Config
         'time'     => 'H:i:s',
          ],
     ];
-
     //    /**
     //     * Sample database connection for SQLite3.
     //     *
