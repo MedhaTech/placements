@@ -54,13 +54,8 @@ $routes->post('/student/update-skills', 'StudentController::updateSkills');
 $routes->post('/student/delete-skill', 'StudentController::deleteSkill');
 $routes->post('/student/add-skill', 'StudentController::addSkill');
 
-$routes->get('/student/edit-academic-info/(:num)', 'StudentController::editAcademicInfo/$1');
+//Academics info
 $routes->post('/student/update-academic-info', 'StudentController::updateAcademicInfo');
-$routes->post('/student/save-academic-info', 'StudentController::saveAcademicInfo');
-$routes->get('/student/get-academic-info', 'StudentController::getAcademicInfo');
-
-$routes->post('/student/update-personal-info', 'StudentController::updatePersonalInfo'); // For your modal form
-
 
 //placement preferences
 $routes->post('student/update-placement-preferences', 'StudentController::updatePlacementPreferences');
