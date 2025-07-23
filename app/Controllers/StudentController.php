@@ -147,7 +147,19 @@ public function overwriteAllPasswordsWithMobile()
 
     // ✅ Added relation types
     $relationTypes = ['Father', 'Mother', 'Guardian', 'Brother', 'Sister'];
+
     
+    // ✅ Fetch profile photo from students_documents table
+    $photo = $db->table('students_documents')
+        ->where('student_id', $student_id)
+        ->where('document_type', 'PHOTO')
+        ->get()
+        ->getRowArray();
+
+    $photoUrl = $photo && !empty($photo['file_path'])
+        ? base_url($photo['file_path'])
+        : base_url('assets/default_user.png'); // fallback image
+   
      // ✅ Calculate profile completion
     $incompleteSections = [];
     $completion = 0;
@@ -611,7 +623,8 @@ public function overwriteAllPasswordsWithMobile()
         'yesNoOptions' => $global->getYesNoOptions(),
         'completionPercentage' => $completionPercentage, // ✅ Comma added here
         'relationTypes' => $relationTypes,               // ✅ This line is now valid
-        'incompleteSections' => $incompleteSections // pass to view
+        'incompleteSections' => $incompleteSections, // pass to view
+        'photoUrl' => $photoUrl 
     ]);
 
     }

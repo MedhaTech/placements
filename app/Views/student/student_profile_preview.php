@@ -333,7 +333,7 @@
         </svg>
 
         <!-- Profile photo sits centered in ring -->
-        <div class="profile-photo" style="background-image: url('<?= $student['profile_photo'] ?? '' ?>');"></div>
+        <div class="profile-photo" style="background-image: url('<?= esc($photoUrl) ?>');"></div>
       </div>
 
       <!-- Percentage label below -->
@@ -1299,12 +1299,8 @@
             <input type="email" name="official_email" class="form-control" value="<?= esc($student['official_email']) ?>">
           </div>
           <div class="col-md-6">
-            <label>Gender</label>
-            <select name="gender" class="form-control">
-              <option value="Male" <?= $student['gender'] == 'Male' ? 'selected' : '' ?>>Male</option>
-              <option value="Female" <?= $student['gender'] == 'Female' ? 'selected' : '' ?>>Female</option>
-              <option value="Other" <?= $student['gender'] == 'Other' ? 'selected' : '' ?>>Other</option>
-            </select>
+             <label for="gender" class="form-label">Gender</label>
+             <?= (new \App\Libraries\GlobalData())->renderGenderDropdown('gender', old('gender', $student['gender'] ?? '')) ?>
           </div>
           <div class="col-md-6">
             <label>Date of Birth</label>

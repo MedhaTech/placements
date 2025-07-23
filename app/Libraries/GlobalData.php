@@ -108,6 +108,11 @@ class GlobalData
         ];
     }
 
+    public function getGenderOptions()
+    {
+        return ['Male', 'Female', 'Other'];
+    }
+
 
     // ✅ Below are reusable dropdown generators
 
@@ -198,6 +203,11 @@ class GlobalData
     public function renderDocumentTypeDropdown($name = 'document_type', $selected = null)
     {
         return $this->renderSelect($name, $this->getDocumentTypes(), $selected);
+    }
+
+    public function renderGenderDropdown($name = 'gender', $selected = null)
+    {
+        return $this->renderSelect($name, $this->getGenderOptions(), $selected);
     }
 
    public function renderStateDropdown($name, $selected = null, $class = 'form-select')
