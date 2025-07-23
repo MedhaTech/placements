@@ -7,7 +7,6 @@ use Config\Database;
 use App\Libraries\GlobalData;
 use App\Models\StudentModel;
 use App\Models\FamilyDetailModel;
-use App\Models\ExperienceDetailModel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
@@ -615,8 +614,6 @@ public function overwriteAllPasswordsWithMobile()
         'relationTypes' => $relationTypes,               // ✅ This line is now valid
         'incompleteSections' => $incompleteSections, // pass to view
         'familyDetails' => $familyDetails,
-        'experienceDetails' => $experienceDetails,
-
 
     ]);
 
@@ -1019,29 +1016,6 @@ public function studentProfile()
     return view('student/student_profile_preview', $data);
     return redirect()->to('/student/profile'); // or whatever your route is
 }
-public function saveExperienceDetails()
-{
-    $experienceModel = new ExperienceDetailModel();
-
-    $data = [
-        'student_id'       => session('student_id'),
-        'title'            => $this->request->getPost('title'),
-        'employment_type'  => $this->request->getPost('employment_type'),
-        'organization'     => $this->request->getPost('organization'),
-        'joining_date'     => $this->request->getPost('joining_date'),
-        'is_current'       => $this->request->getPost('is_current') ? 1 : 0,
-        'end_date'         => $this->request->getPost('end_date'),
-        'location'         => $this->request->getPost('location'),
-        'location_type'    => $this->request->getPost('location_type'),
-        'remarks'          => $this->request->getPost('remarks'),
-    ];
-
-    $experienceModel->insert($data);
-
-    return redirect()->to('/student/profile');
-}
-
-
 
 
 }
