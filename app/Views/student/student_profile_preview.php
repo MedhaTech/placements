@@ -562,13 +562,13 @@ $globalData = new GlobalData();
       <div id="family-details" class="section-card">
         <h5>
           Family Details
-          <a href="#" data-bs-toggle="modal" data-bs-target="#familyDetailsModal">Add</a>
+          <a href="#" data-bs-toggle="modal" data-bs-target="#editFamilyModal" onclick="openFamilyModal()">Add</a>
         </h5>
 
         <div class="mt-3">
           <?php if (!empty($familyDetails)): ?>
             <?php foreach ($familyDetails as $detail): ?>
-              <div class="border p-3 mb-3 rounded bg-light">
+              <div class="border p-3 mb-3 rounded bg-light position-relative">
                 <div class="row">
                   <div class="col-md-4"><strong>Relation:</strong> <?= esc($detail['relation']) ?></div>
                   <div class="col-md-4"><strong>Name:</strong> <?= esc($detail['name']) ?></div>
@@ -582,6 +582,15 @@ $globalData = new GlobalData();
                 <div class="row mt-2">
                   <div class="col-md-4"><strong>Salary:</strong> ₹<?= esc(number_format((float)$detail['salary'], 2)) ?></div>
                 </div>
+
+                <div class="position-absolute top-0 end-0 mt-2 me-2 d-flex gap-2">
+                  <a href="javascript:void(0);" onclick='editFamily(<?= json_encode($detail, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)' class="text-primary" title="Edit">
+                    <i class="bi bi-pencil-square fs-5"></i>
+                  </a>
+                  <a href="javascript:void(0);" onclick='confirmDeleteFamily(<?= $detail["id"] ?>, "<?= esc(addslashes($detail["name"])) ?>")' class="text-danger" title="Delete">
+                    <i class="bi bi-trash fs-5"></i>
+                  </a>
+                </div>
               </div>
             <?php endforeach; ?>
           <?php else: ?>
@@ -589,6 +598,8 @@ $globalData = new GlobalData();
           <?php endif; ?>
         </div>
       </div>
+
+
       <!-- Experience Details Section -->
       <div id="experience-details" class="section-card mt-4">
         <h5>
@@ -1662,6 +1673,79 @@ $globalData = new GlobalData();
   </div>
 </div>
 
+<!-- Family Details Edit Modal -->
+<div class="modal fade" id="editFamilyModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 16px;">
+      <form id="familyDetailsForm" method="post" action="<?= base_url('/student/save-family-detail') ?>">
+        <input type="hidden" name="family_id" id="family_id">
+        <div class="modal-header border-0">
+          <h5 class="modal-title" id="familyModalTitle">Add Family Detail</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body row g-3">
+          <div class="col-md-6">
+            <label for="relation" class="form-label">Relation</label>
+            <?= (new \App\Libraries\GlobalData())->renderRelationTypeDropdown('relation', old('relation')) ?>
+          </div>
+          <div class="col-md-6">
+            <label>Name</label>
+            <input type="text" name="name" id="family_name" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label>Occupation</label>
+            <input type="text" name="occupation" id="family_occupation" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Contact</label>
+            <input type="text" name="contact" id="family_contact" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Mobile</label>
+            <input type="text" name="mobile" id="family_mobile" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Email ID</label>
+            <input type="email" name="email" id="family_email" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Salary</label>
+            <input type="number" name="salary" id="family_salary" class="form-control">
+          </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Family Detail Modal -->
+<div class="modal fade" id="deleteFamilyModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 16px;">
+      <form id="deleteFamilyForm" method="post" action="<?= base_url('/student/delete-family-detail') ?>">
+        <input type="hidden" name="delete_family_id" id="delete_family_id">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">Delete Family Member</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center">
+          <p class="mb-0">
+            Are you sure you want to delete <strong id="delete_family_name_label">this family member</strong>?
+          </p>
+        </div>
+        <div class="modal-footer border-0 justify-content-center">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   const allSkills = [
@@ -1813,225 +1897,6 @@ function reloadSkills() {
 </script>
 
 <script>
-  document.getElementById('saveFamilyBtn').addEventListener('click', function () {
-    const relation = document.getElementById('relation').value;
-    const name = document.getElementById('name').value;
-    const occupation = document.getElementById('occupation').value;
-    const contact = document.getElementById('contact').value;
-    const mobile = document.getElementById('mobile').value;
-    const email = document.getElementById('email').value;
-    const salary = document.getElementById('salary').value;
-
-    if (!relation || !name || !contact) {
-      alert('Please fill in all required fields (Relation, Name, Contact).');
-      return;
-    }
-
-    const card = document.createElement('div');
-    card.className = 'card mb-3';
-    card.innerHTML = `
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-2"><strong>Relation:</strong><br>${relation}</div>
-          <div class="col-md-2"><strong>Name:</strong><br>${name}</div>
-          <div class="col-md-2"><strong>Contact:</strong><br>${contact}</div>
-          <div class="col-md-2"><strong>Occupation:</strong><br>${occupation}</div>
-          <div class="col-md-2"><strong>Mobile:</strong><br>${mobile}</div>
-          <div class="col-md-2"><strong>Email:</strong><br>${email}</div>
-        </div>
-        <div class="row mt-2">
-          <div class="col-md-12"><strong>Salary:</strong> ${salary}</div>
-        </div>
-      </div>
-    `;
-
-    document.getElementById('familyDetailsList').appendChild(card);
-
-    // Clear form fields
-    document.getElementById('familyForm').reset();
-  });
-</script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const saveBtn = document.getElementById("saveEducationBtn");
-    const educationDetailsList = document.getElementById("educationDetailsList");
-
-    if (saveBtn && educationDetailsList) {
-      saveBtn.addEventListener("click", function () {
-        const qualificationType = document.getElementById("qualificationType")?.value || "";
-        const institutionName = document.getElementById("institutionName")?.value || "";
-        const board = document.getElementById("board")?.value || "";
-        const course = document.getElementById("course")?.value || "";
-        const courseType = document.getElementById("courseType")?.value || "";
-        const yearOfPassing = document.getElementById("yearOfPassing")?.value || "";
-        const grade = document.getElementById("grade")?.value || "";
-        const resultStatus = document.getElementById("resultStatus")?.value || "";
-
-        if (
-          !qualificationType || !institutionName || !board || !course ||
-          !courseType || !yearOfPassing || !grade || !resultStatus
-        ) {
-          alert("Please fill out all education details.");
-          return;
-        }
-
-        const educationHTML = `
-          <div class="border rounded p-3 mb-2">
-            <h6 class="mb-1">${qualificationType} - ${course}</h6>
-            <p class="mb-1"><strong>${institutionName}</strong>, ${board}</p>
-            <p class="mb-1">${courseType} | ${yearOfPassing}</p>
-            <p class="mb-1">Grade: ${grade}</p>
-            <p class="mb-0 text-muted">Status: ${resultStatus}</p>
-          </div>
-        `;
-
-        educationDetailsList.insertAdjacentHTML("beforeend", educationHTML);
-
-        // Clear form inputs
-        document.getElementById("educationForm").reset();
-      });
-    }
-  });
-</script>
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const modal = new bootstrap.Modal(document.getElementById('educationDetailsModal'));
-    document.getElementById('addEducationBtn').addEventListener('click', () => modal.show());
-  });
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const form = document.getElementById("experienceForm");
-  const saveBtn = document.getElementById("saveExperienceBtn");
-  const list = document.getElementById("experienceDetailsList");
-  const workedTill = document.getElementById("workedTill");
-  const currentCheckbox = document.getElementById("currentlyWorking");
-
-  // ✅ Defensive check to prevent the script from breaking
-  if (!form || !saveBtn || !list) {
-    console.warn("❌ Experience modal elements not found in DOM.");
-    return;
-  }
-
-  saveBtn.addEventListener("click", function () {
-    const title = document.getElementById("expTitle")?.value;
-    const type = document.getElementById("employmentType")?.value;
-    const company = document.getElementById("company")?.value;
-    const joining = document.getElementById("joiningDate")?.value;
-    const isCurrent = currentCheckbox?.checked;
-    const till = workedTill?.value;
-    const location = document.getElementById("location")?.value;
-    const locationType = document.getElementById("locationType")?.value;
-    const remarks = document.getElementById("remarks")?.value;
-
-    if (!title || !type || !company || !joining || (!isCurrent && !till)) {
-      alert("Please fill out required fields.");
-      return;
-    }
-
-    const period = isCurrent ? "Present" : till;
-
-    const experienceHTML = `
-  <div class="border rounded p-3 mb-2">
-    <h6 class="mb-1">${title || "N/A"} (${type || "N/A"})</h6>
-    <p class="mb-1"><strong>${company || "N/A"}</strong></p>
-    <p class="mb-1">${joining || "Start"} – ${period || "End"}</p>
-    <p class="mb-1">Location: ${location || "Unknown"} (${locationType || "Type"})</p>
-    ${remarks ? `<p class="mb-0 text-muted">Remarks: ${remarks}</p>` : ""}
-  </div>`;
-
-
-    list.insertAdjacentHTML("beforeend", experienceHTML);
-    form.reset();
-    if (workedTill) workedTill.disabled = false;
-  });
-
-  if (currentCheckbox && workedTill) {
-    currentCheckbox.addEventListener("change", function () {
-      workedTill.disabled = this.checked;
-    });
-  }
-});
-</script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const licenseForm = document.getElementById("licenseForm");
-    const saveBtn = document.getElementById("saveLicenseBtn");
-    const displaySection = document.getElementById("displayLicenses");
-
-    saveBtn.addEventListener("click", function () {
-      const name = document.getElementById("licenseName").value.trim();
-      const org = document.getElementById("issuingOrg").value.trim();
-      const issue = document.getElementById("issueDate").value;
-      const expiry = document.getElementById("expiryDate").value;
-      const id = document.getElementById("licenseId").value.trim();
-      const url = document.getElementById("licenseUrl").value.trim();
-
-      if (!name || !org || !issue) {
-        alert("Please fill in all required fields (*)");
-        return;
-      }
-
-      const container = document.createElement("div");
-      container.className = "col-md-6";
-
-      container.innerHTML = `
-        <div class="border p-3 rounded shadow-sm bg-light">
-          <h6 class="mb-1">${name}</h6>
-          <p class="mb-0"><strong>Issued by:</strong> ${org}</p>
-          <p class="mb-0"><strong>Issued:</strong> ${issue}${expiry ? ` | <strong>Expires:</strong> ${expiry}` : ''}</p>
-          ${id ? `<p class="mb-0"><strong>ID:</strong> ${id}</p>` : ''}
-          ${url ? `<p class="mb-0"><strong>URL:</strong> <a href="${url}" target="_blank">${url}</a></p>` : ''}
-        </div>
-      `;
-
-      displaySection.appendChild(container);
-
-      // Clear form
-      licenseForm.reset();
-
-      // Close modal
-      const modal = bootstrap.Modal.getInstance(document.getElementById('licenseModal'));
-      modal.hide();
-    });
-  });
-</script>
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('saveProjectBtn').addEventListener('click', function () {
-      const title = document.getElementById('title').value;
-      const type = document.querySelector('input[name="type"]:checked')?.value;
-      const publisher = document.getElementById('publisher').value;
-      const completionDate = document.getElementById('completionDate').value;
-      const authors = document.getElementById('authors').value;
-      const url = document.getElementById('url').value;
-      const description = document.getElementById('description').value;
-
-      if (!title || !type || !publisher || !completionDate || !authors || !url || !description) {
-        alert('Please fill all fields before saving.');
-        return;
-      }
-
-      const entryHTML = `
-        <div class="card mb-3">
-          <div class="card-body">
-            <h5 class="card-title">${title}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">${type} | ${publisher} | ${completionDate}</h6>
-            <p class="card-text"><strong>Authors:</strong> ${authors}</p>
-            <p class="card-text"><strong>Description:</strong> ${description}</p>
-            <a href="${url}" target="_blank" class="card-link">View ${type}</a>
-          </div>
-        </div>
-      `;
-
-      document.getElementById('projectList').insertAdjacentHTML('beforeend', entryHTML);
-
-      // Reset the form
-      document.getElementById('projectForm').reset();
-    });
-  });
-</script>
-<script>
   document.addEventListener("DOMContentLoaded", function () {
     const container = document.getElementById("semesterInputs");
     const addBtn = document.getElementById("addSemesterBtn");
@@ -2065,6 +1930,42 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   });
+</script>
+
+<script>
+  function openFamilyModal() {
+    document.getElementById("familyDetailsForm").reset();
+    document.getElementById("family_id").value = "";
+    document.getElementById("familyModalTitle").textContent = "Add Family Detail";
+  }
+
+  function editFamily(data) {
+    const modal = new bootstrap.Modal(document.getElementById('editFamilyModal'));
+    document.getElementById("familyModalTitle").textContent = "Edit Family Detail";
+
+    document.getElementById("family_id").value = data.id;
+    document.getElementById("family_name").value = data.name;
+    document.getElementById("family_occupation").value = data.occupation;
+    document.getElementById("family_contact").value = data.contact;
+    document.getElementById("family_mobile").value = data.mobile;
+    document.getElementById("family_email").value = data.email;
+    document.getElementById("family_salary").value = data.salary;
+
+    // Set dropdown
+    document.querySelector("#familyDetailsForm select[name='relation']").value = data.relation;
+
+    modal.show();
+  }
+
+</script>
+
+<script>
+  function confirmDeleteFamily(id, name) {
+    document.getElementById('delete_family_id').value = id;
+    document.getElementById('delete_family_name_label').textContent = name;
+    const modal = new bootstrap.Modal(document.getElementById('deleteFamilyModal'));
+    modal.show();
+  }
 </script>
 
 <!-- Bootstrap JS -->
