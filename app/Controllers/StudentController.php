@@ -632,7 +632,7 @@ public function overwriteAllPasswordsWithMobile()
         'completionPercentage' => $completionPercentage, // ✅ Comma added here
         'relationTypes' => $relationTypes,               // ✅ This line is now valid
         'incompleteSections' => $incompleteSections, // pass to view
-        'photoUrl' => $photoUrl 
+        'photoUrl' => $photoUrl, 
         'familyDetails' => $familyDetails,
         'experienceDetails' => $experienceDetails,
         'educationDetails' => $educationDetails,
