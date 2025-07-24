@@ -80,4 +80,21 @@ $routes->post('/student/save-family-details', 'StudentController::saveFamilyDeta
 $routes->get('/admin/change_pwd', 'AdminController::changePasswordForm');
 $routes->post('/admin/change_pwd', 'AdminController::updatePassword');
 
+//Student Experience Details save
+$routes->post('/student/save-experience-details', 'StudentController::saveExperienceDetails');
+
+//Student Education Details save
+$routes->post('student/save-education-details', 'StudentController::saveEducationDetails');
+
+//Student Certifications Save
+$routes->post('/student/save-certification', 'StudentController::saveCertification');
+
+//Student Projects Save
+$routes->post('/save-projects-publications', 'StudentController::saveProjectsPublications');
+
+//Student Placement offers save
+$routes->post('student/savePlacementOffer', 'StudentController::savePlacementOffer');
+
+//Student Languages Save
+$routes->post('student/save-language', 'StudentController::saveLanguage');
 

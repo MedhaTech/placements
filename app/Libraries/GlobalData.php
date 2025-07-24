@@ -108,6 +108,11 @@ class GlobalData
         ];
     }
 
+    public function getGenderOptions()
+    {
+        return ['Male', 'Female', 'Other'];
+    }
+
 
     // ✅ Below are reusable dropdown generators
 
@@ -118,16 +123,20 @@ class GlobalData
 
     // 🔽 Generic dropdown renderer
     public function renderSelect($name, $options, $selected = null, $class = 'form-select')
-    {
-        $html = "<select name='$name' class='$class'>\n";
-        $html .= "<option value=''>Select</option>\n";
-        foreach ($options as $opt) {
-            $isSelected = $selected === $opt ? 'selected' : '';
-            $html .= "<option value='" . esc($opt) . "' $isSelected>" . esc($opt) . "</option>\n";
-        }
-        $html .= "</select>";
-        return $html;
+{
+    $html = "<select name='$name' id='$name' class='$class'>\n";
+    $html .= "<option value=''>Select</option>\n";
+
+    foreach ($options as $opt) {
+        $isSelected = ($selected === $opt || $selected === (string) $opt) ? 'selected' : '';
+        $escapedOpt = esc($opt);
+        $html .= "<option value='$escapedOpt' $isSelected>$escapedOpt</option>\n";
     }
+
+    $html .= "</select>";
+    return $html;
+}
+
 
     // 🔽 Render dropdowns for all datasets
     public function renderRelationTypeDropdown($name = 'relation', $selected = null)
@@ -155,7 +164,7 @@ class GlobalData
         return $this->renderSelect($name, $this->getResultStatuses(), $selected);
     }
 
-    public function renderQualificationTypeDropdown($name = 'qualification', $selected = null)
+    public function renderQualificationTypeDropdown($name = 'qualification_type', $selected = null)
     {
         return $this->renderSelect($name, $this->getQualificationTypes(), $selected);
     }
@@ -198,6 +207,11 @@ class GlobalData
     public function renderDocumentTypeDropdown($name = 'document_type', $selected = null)
     {
         return $this->renderSelect($name, $this->getDocumentTypes(), $selected);
+    }
+
+    public function renderGenderDropdown($name = 'gender', $selected = null)
+    {
+        return $this->renderSelect($name, $this->getGenderOptions(), $selected);
     }
 
    public function renderStateDropdown($name, $selected = null, $class = 'form-select')
