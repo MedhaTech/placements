@@ -489,39 +489,16 @@ public function overwriteAllPasswordsWithMobile()
             $incompleteSections[] = ['name' => 'Current Academic Information', 'percent' => 7];
         }
 
-    // 11. Placement Preferences (strict)
-        $placement = $db->table('students_placement_preferences')
-                        ->where('student_id', $student_id)
-                        ->get()
-                        ->getRowArray();
+//placement preferences
+   $studentId = session()->get('student_id');
+    $db = \Config\Database::connect();
 
-        $hasPlacementPreferences = true;
+    // Fetch placement preferences
+    $placement = $db->table('students_placement_preferences')
+                    ->where('student_id', $studentId)
+                    ->get()
+                    ->getRowArray();
 
-        $requiredFields = [
-            'interested_in_placements',
-            'preferred_jobs',
-            'interested_in_higher_studies',
-            'placement_coordinator_name',
-            'coordinator_department',
-            'coordinator_mobile'
-        ];
-
-        if (empty($placement)) {
-            $hasPlacementPreferences = false;
-        } else {
-            foreach ($requiredFields as $field) {
-                if (!isset($placement[$field]) || $placement[$field] === '') {
-                    $hasPlacementPreferences = false;
-                    break;
-                }
-            }
-        }
-
-        if ($hasPlacementPreferences) {
-            $completion += 7;
-        } else {
-            $incompleteSections[] = ['name' => 'Placement Preferences', 'percent' => 7];
-        }
 
 
    // 12. Placement Training (strict)
@@ -639,6 +616,7 @@ public function overwriteAllPasswordsWithMobile()
         'licensesCertifications' => $certifications,
         'projectsPublications' => $projectsPublications,
         'placementOffers' => $offers,
+        'placement' => $placement , // ✅ ADD THIS HERE
         'studentLanguages' => $languages,
     ]);
 
@@ -732,39 +710,39 @@ public function deleteSkill()
     }
 
 
-    public function updateAcademicInfo()
-    {
-        $studentId = session()->get('student_id');
-        $model = new StudentModel();
+   public function updateAcademicInfo()
+{
+    $studentId = session()->get('student_id');
+    $model = new StudentModel();
 
-        $data = [
-            'pursuing_degree'     => $this->request->getPost('pursuing_degree'),
-            'department_id'       => $this->request->getPost('department_id'),
-            'year_of_joining'     => $this->request->getPost('year_of_joining'),
-            'type_of_entry'       => $this->request->getPost('type_of_entry'),
-            'mode_of_admission'   => $this->request->getPost('mode_of_admission'),
-            'entrance_rank'       => $this->request->getPost('entrance_rank'),
-            'sem1_sgpa_cgpa'      => $this->request->getPost('sem1_sgpa_cgpa'),
-            'sem2_sgpa_cgpa'      => $this->request->getPost('sem2_sgpa_cgpa'),
-            'sem3_sgpa_cgpa'      => $this->request->getPost('sem3_sgpa_cgpa'),
-            'sem4_sgpa_cgpa'      => $this->request->getPost('sem4_sgpa_cgpa'),
-            'sem5_sgpa_cgpa'      => $this->request->getPost('sem5_sgpa_cgpa'),
-            'sem6_sgpa_cgpa'      => $this->request->getPost('sem6_sgpa_cgpa'),
-            'sem7_sgpa_cgpa'      => $this->request->getPost('sem7_sgpa_cgpa'),
-            'sem8_sgpa_cgpa'      => $this->request->getPost('sem8_sgpa_cgpa'),
-            'sem9_sgpa_cgpa'      => $this->request->getPost('sem9_sgpa_cgpa'),
-            'sem10_sgpa_cgpa'     => $this->request->getPost('sem10_sgpa_cgpa'),
-            'active_backlogs'     => $this->request->getPost('active_backlogs'),
-            'backlog_history'     => $this->request->getPost('backlog_history'),
-            'year_back'           => $this->request->getPost('year_back') === 'Yes' ? 1 : 0,
-            'academic_gaps'       => $this->request->getPost('academic_gaps'),
-            'updated_by'          => 'self'
-        ];
+    $data = [
+        'pursuing_degree'     => $this->request->getPost('pursuing_degree'),
+        'department_id'       => $this->request->getPost('department_id'),
+        'year_of_joining'     => $this->request->getPost('year_of_joining'),
+        'type_of_entry'       => $this->request->getPost('type_of_entry'),
+        'mode_of_admission'   => $this->request->getPost('mode_of_admission'),
+        'entrance_rank'       => $this->request->getPost('entrance_rank'),
+        'active_backlogs'     => $this->request->getPost('active_backlogs'),
+        'backlog_history'     => $this->request->getPost('backlog_history'),
+        'year_back'           => $this->request->getPost('year_back') === 'Yes' ? 1 : 0,
+        'academic_gaps'       => $this->request->getPost('academic_gaps'),
+        'updated_by'          => 'self'
+    ];
 
-        $model->saveAcademicInfo($studentId, $data);
-
-        return redirect()->to('/student/profile')->with('success', 'Academic info updated successfully.');
+    // Map the sem_sgpa_cgpa[] array into sem1_sgpa_cgpa, sem2_sgpa_cgpa...
+    $semesters = $this->request->getPost('sem_sgpa_cgpa');
+    if (is_array($semesters)) {
+        foreach ($semesters as $index => $value) {
+            $key = 'sem' . ($index + 1) . '_sgpa_cgpa';
+            $data[$key] = trim($value);
+        }
     }
+
+    $model->saveAcademicInfo($studentId, $data);
+
+    return redirect()->to('/student/profile')->with('success', 'Academic info updated successfully.');
+}
+
 
     public function updatePlacementPreferences()
     {
