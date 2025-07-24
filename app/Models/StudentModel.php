@@ -50,6 +50,7 @@ class StudentModel extends Model
             'pan_number' => $data['pan_number'],
             'aadhar_number' => $data['aadhar_number'],
             'appar_id' => $data['appar_id'],
+            'reg_no' => $data['reg_no'],
             'linkedin' => $data['linkedin'],
             'github' => $data['github'],
             'updated_on' => $data['updated_on'],
@@ -122,44 +123,47 @@ public function savePlacementPreferences($studentId, $data)
     }
 }
 
-// 📁 Save or update student document
 public function saveStudentDocument($studentId, $documentType, $filePath)
 {
     $builder = $this->db->table('students_documents');
+    $upperType = strtoupper($documentType); // Make it consistent
 
-    // Handle PHOTO — only one record allowed
-    if (strtoupper($documentType) === 'PHOTO') {
+    // For PHOTO and RESUME — only one file allowed (replace if already exists)
+    if (in_array($upperType, ['PHOTO', 'RESUME'])) {
         $existing = $builder->where('student_id', $studentId)
-                            ->where('document_type', 'PHOTO')
+                            ->where('document_type', $upperType) // ✅ Use actual type (not hardcoded PHOTO)
                             ->get()
                             ->getRowArray();
 
         $data = [
             'student_id'    => $studentId,
-            'document_type' => 'PHOTO',
+            'document_type' => $upperType,
             'file_path'     => $filePath,
             'updated_by'    => $studentId,
             'updated_on'    => date('Y-m-d H:i:s')
         ];
 
         if ($existing) {
+            // ✅ Update the existing PHOTO or RESUME
             return $builder->where('id', $existing['id'])->update($data);
         } else {
+            // ✅ Insert new PHOTO or RESUME
             $data['created_by'] = $studentId;
             $data['created_on'] = date('Y-m-d H:i:s');
             return $builder->insert($data);
         }
     }
 
-    // Allow multiple uploads for other document types
+    // All other document types (multiple uploads allowed)
     return $builder->insert([
         'student_id'    => $studentId,
-        'document_type' => $documentType,
+        'document_type' => $upperType,
         'file_path'     => $filePath,
         'created_by'    => $studentId,
         'created_on'    => date('Y-m-d H:i:s')
     ]);
 }
+
 public function insertExperienceDetail($data)
 {
     return $this->db->table('students_experience')->insert($data);

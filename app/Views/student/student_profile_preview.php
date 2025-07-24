@@ -379,8 +379,13 @@
 
             <div class="info-row mb-2">
               <i class="fa fa-id-badge me-2"></i>
-              <span><?= esc($student['appar_id'] ?? 'Roll No not added') ?></span>
+              <?php if (!empty($student['reg_no'])): ?>
+                <span><?= esc($student['reg_no']) ?></span>
+              <?php else: ?>
+                <span class="text-danger">Fill Reg No in Personal Info</span>
+              <?php endif; ?>
             </div>
+
           </div>
 
           <!-- RIGHT -->
@@ -403,15 +408,25 @@
                <?php endif; ?>  
             </div>
 
-             <div class="info-row mb-2">
+            <div class="info-row mb-2">
               <i class="fa fa-file-lines me-2"></i>
-              <?php if (!empty($student['resume_url'])): ?>
-                <a href="<?= esc($student['resume_url']) ?>" download target="_blank">Resume Download</a>
+
+              <?php if (!empty($resumeUrl)): ?>
+                <?php
+                  $resumeName = basename($resumeUrl); // Extract filename from the full path
+                ?>
+                <a href="<?= esc($resumeUrl) ?>" download="<?= esc($resumeName) ?>" target="_blank">
+                  <?= esc($resumeName) ?>
+                </a>
+                <a href="#" class="ms-3 text-primary" data-bs-toggle="modal" data-bs-target="#resumeUploadModal">
+                  Reupload
+                </a>
               <?php else: ?>
-                <span class="text-muted">Resume not uploaded</span>
+                <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#resumeUploadModal">
+                  Upload
+                </a>
               <?php endif; ?>
             </div>
-
           </div>
         </div>
       </div>
@@ -501,6 +516,7 @@
             <div class="col-md-6 mb-2"><strong>PAN Number:</strong> <?= esc($student['pan_number']) ?></div>
             <div class="col-md-6 mb-2"><strong>Aadhar Number:</strong> <?= esc($student['aadhar_number']) ?></div>
             <div class="col-md-6 mb-2"><strong>APPAR ID:</strong> <?= esc($student['appar_id']) ?></div>
+            <div class="col-md-6 mb-2"><strong>Reg no/Roll no:</strong> <?= esc($student['reg_no']) ?></div>
             <div class="col-md-6 mb-2">
               <strong>LinkedIn:</strong>
               <a href="<?= esc($student['linkedin']) ?>" target="_blank" class="text-decoration-none">
@@ -984,7 +1000,7 @@
 
           <div class="col-md-6">
             <label>Entrance Rank (Optional)</label>
-            <input type="text" name="entrance_rank" class="form-control" value="<?= isset($academic['entrance_rank']) ? esc($academic['entrance_rank']) : '' ?>">
+            <input type="text" name="enterance_rank" class="form-control" value="<?= isset($academic['enterance_rank']) ? esc($academic['enterance_rank']) : '' ?>">
           </div>
 
           <?php for ($i = 1; $i <= 10; $i++): ?>
@@ -1349,6 +1365,33 @@
     </form>
   </div>
 </div>
+
+<!-- Resume Upload Modal -->
+<div class="modal fade" id="resumeUploadModal" tabindex="-1" aria-labelledby="resumeUploadModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="<?= base_url('student/uploadDocument') ?>" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="document_type" value="RESUME">
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="resumeUploadModalLabel">Upload Resume</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <label for="resumeFile" class="form-label">Choose your resume file</label>
+          <input type="file" id="resumeFile" name="document_file" class="form-control" accept=".pdf,.doc,.docx" required>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Upload</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
   
  <!--Edit Modal for personal info -->
 <div class="modal fade" id="personalInfoModal" tabindex="-1">
@@ -1428,6 +1471,10 @@
           <div class="col-md-6">
             <label>APPAR ID</label>
             <input type="text" name="appar_id" class="form-control" value="<?= esc($student['appar_id']) ?>">
+          </div>
+          <div class="col-md-6">
+            <label>Reg no/Roll no</label>
+            <input type="text" name="reg_no" class="form-control" value="<?= esc($student['reg_no']) ?>">
           </div>
           <div class="col-md-6">
             <label>LinkedIn</label>
