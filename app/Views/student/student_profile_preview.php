@@ -1,3 +1,7 @@
+<?php
+use App\Libraries\GlobalData;
+$globalData = new GlobalData();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -558,31 +562,33 @@
         <div id="educationDetailsList" class="mt-3"></div>
       </div>
       
-      <div id="skills" class="section-card">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h5 class="fw-bold text-dark mb-0">Skills</h5>
-          <a href="#" data-bs-toggle="modal" data-bs-target="#addSkillModal" class="text-primary fw-semibold">Add</a>
-        </div>
-        <?php if (!empty($skills)): ?>
-          <div class="list-group">
-            <?php foreach ($skills as $skill): ?>
-              <div class="list-group-item d-flex justify-content-between align-items-center rounded mb-2" style="background: #f9f9f9;">
-                <span class="text-dark"><?= esc($skill['skill_name']) ?></span>
-                <button 
-                  class="btn btn-sm text-danger deleteSkillBtn" 
-                  data-id="<?= $skill['id'] ?>" 
-                  data-skill="<?= esc($skill['skill_name']) ?>"
-                  data-bs-toggle="modal" 
-                  data-bs-target="#deleteSkillModal">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </div>
-            <?php endforeach; ?>
+        <div id="skills" class="section-card"> 
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold text-dark mb-0">Skills</h5>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#addSkillModal" class="text-primary fw-semibold">Add</a>
           </div>
-        <?php else: ?>
-          <p class="text-muted small">You haven't added any skills yet.</p>
-        <?php endif; ?>
-      </div>
+          <?php if (!empty($skills)): ?>
+            <div class="d-flex flex-wrap gap-2" id="skillsList">
+              <?php foreach ($skills as $skill): ?>
+                <div class="badge rounded-pill px-3 py-2 border text-dark d-flex align-items-center" style="font-size: 14px; background-color: #f4f3f8;">
+                  <?= esc($skill['skill_name']) ?>
+                <button 
+                    type="button"
+                    class="btn btn-sm btn-link text-dark ms-2 p-0 deleteSkillBtn" 
+                    data-id="<?= $skill['id'] ?>" 
+                    data-skill="<?= esc($skill['skill_name']) ?>"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#deleteSkillModal"
+                    style="line-height: 1; text-decoration: none;">
+                    &times;
+                  </button>
+                </div>
+              <?php endforeach; ?>
+            </div>
+          <?php else: ?>
+            <p class="text-muted small">You haven't added any skills yet.</p>
+          <?php endif; ?>
+        </div>
       <div id="certifications" class="section-card">
         <h5>
           Licenses & Certifications 
@@ -621,12 +627,19 @@
               <div class="col-12">
                 <strong>SGPA/CGPA:</strong>
                 <ul class="mb-2">
-                  <?php for ($i = 1; $i <= 10; $i++): ?>
-                    <?php $sem = 'sem'.$i.'_sgpa_cgpa'; ?>
-                    <?php if (!empty($academic[$sem])): ?>
-                      <li>Sem <?= $i ?>: <?= esc($academic[$sem]) ?></li>
-                    <?php endif; ?>
-                  <?php endfor; ?>
+               <?php for ($i = 1; $i <= 10; $i++): ?>
+                  <?php
+                    $key = "sem{$i}_sgpa_cgpa";
+                    $value = isset($academic[$key]) ? trim($academic[$key]) : '';
+                  ?>
+                  <?php if (!empty($value)): ?>
+                    <div class="col-md-6 mb-2">
+                      <strong>Semester <?= $i ?> SGPA/CGPA:</strong>
+                      <?= esc($value) ?>
+                    </div>
+                  <?php endif; ?>
+                <?php endfor; ?>
+
                 </ul>
               </div>
               <div class="col-md-4 mb-2"><strong>Current Active Backlogs:</strong> <?= esc($academic['active_backlogs']) ?></div>
@@ -774,6 +787,7 @@
 </div>
 
 <!-- Academic Info Modal -->
+
 <div class="modal fade" id="academicInfoModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content" style="border-radius: 16px;">
@@ -786,11 +800,7 @@
         <div class="modal-body row g-3 px-4">
           <div class="col-md-6">
             <label>Pursuing Degree</label>
-            <select name="pursuing_degree" class="form-control" required>
-              <?php foreach ($pursuingDegrees as $deg): ?>
-                <option value="<?= $deg ?>" <?= isset($academic['pursuing_degree']) && $academic['pursuing_degree'] == $deg ? 'selected' : '' ?>><?= $deg ?></option>
-              <?php endforeach; ?>
-            </select>
+            <?= $globalData->renderSelect('pursuing_degree', $pursuingDegrees, $academic['pursuing_degree'] ?? '') ?>
           </div>
 
           <div class="col-md-6">
@@ -806,63 +816,74 @@
 
           <div class="col-md-6">
             <label>Year of Joining</label>
-            <input type="number" name="year_of_joining" class="form-control" value="<?= isset($academic['year_of_joining']) ? esc($academic['year_of_joining']) : '' ?>">
+            <input type="number" name="year_of_joining" class="form-control" value="<?= esc($academic['year_of_joining'] ?? '') ?>">
           </div>
 
           <div class="col-md-6">
             <label>Type of Entry</label>
-            <select name="type_of_entry" class="form-control">
-              <?php foreach ($entryTypes as $type): ?>
-                <option value="<?= $type ?>" <?= isset($academic['type_of_entry']) && $academic['type_of_entry'] == $type ? 'selected' : '' ?>><?= $type ?></option>
-              <?php endforeach; ?>
-            </select>
+            <?= $globalData->renderSelect('type_of_entry', $entryTypes, $academic['type_of_entry'] ?? '') ?>
           </div>
 
           <div class="col-md-6">
             <label>Mode of Admission</label>
-            <select name="mode_of_admission" class="form-control">
-              <?php foreach ($admissionModes as $mode): ?>
-                <option value="<?= $mode ?>" <?= isset($academic['mode_of_admission']) && $academic['mode_of_admission'] == $mode ? 'selected' : '' ?>><?= $mode ?></option>
-              <?php endforeach; ?>
-            </select>
+            <?= $globalData->renderSelect('mode_of_admission', $admissionModes, $academic['mode_of_admission'] ?? '') ?>
           </div>
 
           <div class="col-md-6">
             <label>Entrance Rank (Optional)</label>
-            <input type="text" name="entrance_rank" class="form-control" value="<?= isset($academic['entrance_rank']) ? esc($academic['entrance_rank']) : '' ?>">
+            <input type="text" name="entrance_rank" class="form-control" value="<?= esc($academic['entrance_rank'] ?? '') ?>">
           </div>
 
-          <?php for ($i = 1; $i <= 10; $i++): ?>
-            <div class="col-md-6">
-              <label>Semester <?= $i ?> SGPA/CGPA</label>
-              <input type="text" name="sem<?= $i ?>_sgpa_cgpa" class="form-control" value="<?= isset($academic['sem' . $i . '_sgpa_cgpa']) ? esc($academic['sem' . $i . '_sgpa_cgpa']) : '' ?>">
+          <!-- Dynamic Semester Inputs -->
+          <div class="col-md-12">
+            <label class="form-label">Semester SGPA/CGPA</label>
+            <div id="semesterInputs">
+              <?php
+                $hasSemester = false;
+                for ($i = 1; $i <= 10; $i++):
+                  $key = 'sem' . $i . '_sgpa_cgpa';
+                  if (!empty($academic[$key])): $hasSemester = true;
+              ?>
+                <div class="d-flex align-items-center mb-2 semester-group">
+                  <input type="text" name="sem_sgpa_cgpa[]" class="form-control me-2" value="<?= esc($academic[$key]) ?>" placeholder="Semester <?= $i ?> SGPA/CGPA">
+                  <button type="button" class="btn btn-danger btn-sm remove-semester">X</button>
+                </div>
+              <?php
+                  endif;
+                endfor;
+
+                // If no semesters exist, show one empty input by default
+                if (!$hasSemester):
+              ?>
+                <div class="d-flex align-items-center mb-2 semester-group">
+                  <input type="text" name="semesters[]" class="form-control me-2" placeholder="Semester 1 SGPA/CGPA">
+                  <button type="button" class="btn btn-danger btn-sm remove-semester d-none">X</button>
+                </div>
+              <?php endif; ?>
             </div>
-          <?php endfor; ?>
+
+            <button type="button" id="addSemesterBtn" class="btn btn-outline-primary btn-sm mt-2">+ Add Semester</button>
+          </div>
 
           <div class="col-md-6">
             <label>Current Active Backlogs</label>
-            <input type="number" name="active_backlogs" class="form-control" value="<?= isset($academic['active_backlogs']) ? esc($academic['active_backlogs']) : '' ?>">
+            <input type="number" name="active_backlogs" class="form-control" value="<?= esc($academic['active_backlogs'] ?? '') ?>">
           </div>
 
           <div class="col-md-6">
             <label>Backlog History</label>
-            <input type="number" name="backlog_history" class="form-control" value="<?= isset($academic['backlog_history']) ? esc($academic['backlog_history']) : '' ?>">
+            <input type="number" name="backlog_history" class="form-control" value="<?= esc($academic['backlog_history'] ?? '') ?>">
           </div>
 
           <div class="col-md-6">
             <label>Year Back</label>
-            <select name="year_back" class="form-control">
-              <?php foreach ($yesNoOptions as $opt): ?>
-                <option value="<?= $opt ?>" <?= isset($academic['year_back']) && $academic['year_back'] == $opt ? 'selected' : '' ?>><?= $opt ?></option>
-              <?php endforeach; ?>
-            </select>
+            <?= $globalData->renderYesNoDropdown('year_back', $academic['year_back'] ?? '') ?>
           </div>
 
           <div class="col-md-6">
             <label>Academic Gaps (Before/During Degree)</label>
-            <input type="number" name="academic_gaps" class="form-control" value="<?= isset($academic['academic_gaps']) ? esc($academic['academic_gaps']) : '' ?>">
+            <input type="number" name="academic_gaps" class="form-control" value="<?= esc($academic['academic_gaps'] ?? '') ?>">
           </div>
-
         </div>
 
         <div class="modal-footer border-0">
@@ -1492,19 +1513,27 @@ document.addEventListener('DOMContentLoaded', function () {
       successView.classList.remove('d-none');
 
       // Add to DOM
-      const listGroup = document.querySelector("#skills .list-group");
-      if (listGroup) {
-        const newItem = document.createElement("div");
-        newItem.className = "list-group-item d-flex justify-content-between align-items-center rounded mb-2";
-        newItem.style.background = "#f9f9f9";
-        newItem.innerHTML = `
-          <span class="text-dark">${skillName}</span>
-          <button class="btn btn-sm text-danger deleteSkillBtn" data-id="TEMP" data-skill="${skillName}" data-bs-toggle="modal" data-bs-target="#deleteSkillModal">
-            <i class="bi bi-trash"></i>
+      const skillList = document.querySelector("#skillList");
+      if (skillList) {
+        const newSkill = document.createElement("div");
+        newSkill.className = "badge rounded-pill px-3 py-2 border text-dark d-flex align-items-center";
+        newSkill.style.fontSize = "14px";
+        newSkill.style.backgroundColor = "#f4f3f8";
+        newSkill.innerHTML = `
+          ${skillName}
+          <button 
+            type="button"
+            class="btn btn-sm btn-link text-dark ms-2 p-0 deleteSkillBtn" 
+            data-id="${skillId}"  <!-- set this dynamically -->
+            data-skill="${skillName}" 
+            data-bs-toggle="modal" 
+            data-bs-target="#deleteSkillModal"
+            style="line-height: 1; text-decoration: none;">&times;
           </button>`;
-        listGroup.appendChild(newItem);
-      }
+        skillList.appendChild(newSkill);
+        reloadSkills();
 
+      }
       // Reset input
       skillInput.value = '';
       filterSkills();
@@ -1571,6 +1600,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 });
+function reloadSkills() {
+  $('#skills-container').load("<?= base_url('student/reload-skills') ?>");
+}
+
 </script>
 <script>
   document.getElementById('saveFamilyBtn').addEventListener('click', function () {
@@ -1788,6 +1821,41 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Reset the form
       document.getElementById('projectForm').reset();
+    });
+  });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const container = document.getElementById("semesterInputs");
+    const addBtn = document.getElementById("addSemesterBtn");
+
+    addBtn.addEventListener("click", function () {
+      const count = container.querySelectorAll(".semester-group").length + 1;
+
+      const group = document.createElement("div");
+      group.className = "d-flex align-items-center mb-2 semester-group";
+
+      const input = document.createElement("input");
+      input.type = "text";
+      input.name = "sem_sgpa_cgpa[]";
+      input.className = "form-control me-2";
+      input.placeholder = `Semester ${count} SGPA/CGPA`;
+
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "btn btn-danger btn-sm remove-semester";
+      removeBtn.innerText = "X";
+      removeBtn.onclick = () => group.remove();
+
+      group.appendChild(input);
+      group.appendChild(removeBtn);
+      container.appendChild(group);
+    });
+
+    container.addEventListener("click", function (e) {
+      if (e.target.classList.contains("remove-semester")) {
+        e.target.closest(".semester-group").remove();
+      }
     });
   });
 </script>
