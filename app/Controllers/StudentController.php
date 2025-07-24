@@ -167,7 +167,21 @@ public function overwriteAllPasswordsWithMobile()
     $photoUrl = $photo && !empty($photo['file_path'])
         ? base_url($photo['file_path'])
         : base_url('assets/default_user.png'); // fallback image
-   
+
+    $data['photoUrl'] = $photoUrl;    
+
+    // ✅ Fetch resume document (only one allowed)
+    $resumeDoc = $db->table('students_documents')
+        ->where('student_id', $student_id)
+        ->where('document_type', 'RESUME')
+        ->get()
+        ->getRowArray();
+
+    $resumeUrl = $resumeDoc && !empty($resumeDoc['file_path'])
+        ? base_url($resumeDoc['file_path'])
+        : null; // null means no resume uploaded
+
+
      // ✅ Calculate profile completion
     $incompleteSections = [];
     $completion = 0;
@@ -585,7 +599,7 @@ public function overwriteAllPasswordsWithMobile()
         }
 
         // 15. Resume Upload (✅ 2% if resume_url is uploaded)
-    if (!empty($student['resume_url'])) {
+    if (!empty($resumeUrl)) {
         $completion += 2;
     } else {
         $incompleteSections[] = ['name' => 'Resume Upload', 'percent' => 2];
@@ -609,7 +623,8 @@ public function overwriteAllPasswordsWithMobile()
         'completionPercentage' => $completionPercentage, // ✅ Comma added here
         'relationTypes' => $relationTypes,               // ✅ This line is now valid
         'incompleteSections' => $incompleteSections, // pass to view
-        'photoUrl' => $photoUrl, 
+        'photoUrl' => $photoUrl,
+        'resumeUrl'=> $resumeUrl, // ✅ Pass resume download link
         'familyDetails' => $familyDetails,
         'experienceDetails' => $experienceDetails,
         'educationDetails' => $educationDetails,
@@ -868,22 +883,33 @@ public function deleteSkill()
         }
     }
 
-   // ✅ Format: MMDDYYYY + HHMM (24-hour format, no underscore)
-        $timestamp = date('mdY') . date('Hi'); // 'Hi' = HourMinute in 24hr format
-        $ext = $file->getExtension();
-        $newFileName = $documentType . '_' . $timestamp . '.' . $ext;
-        $fullPath = $uploadPath . $newFileName;
+   $ext = $file->getExtension();
 
-
-    // ✅ If PHOTO: delete old file(s)
-    if ($documentType === 'PHOTO') {
+    // 🔥 RESUME Special Handling
+    if ($documentType === 'RESUME') {
+        // Overwrite previous resume
+        $newFileName = 'RESUME_' . $regNo . '.' . $ext;
+        $existingFiles = glob($uploadPath . 'RESUME_' . $regNo . '.*');
+        foreach ($existingFiles as $oldFile) {
+            if (is_file($oldFile)) {
+                unlink($oldFile); // delete old resume
+            }
+        }
+    } 
+    // 🖼️ PHOTO logic (only if document type is PHOTO)
+    else if ($documentType === 'PHOTO') {
+        $newFileName = 'PHOTO_' . $regNo . '.' . $ext;
         $existingFiles = glob($uploadPath . 'PHOTO_*');
         foreach ($existingFiles as $oldFile) {
             if (is_file($oldFile)) {
-                unlink($oldFile);
+                unlink($oldFile); // delete old photo
             }
         }
-        // No need to delete DB — handled in model
+    } 
+    // 📝 For other documents, include timestamp
+    else {
+        $timestamp = date('mdY') . date('Hi');
+        $newFileName = $documentType . '_' . $timestamp . '.' . $ext;
     }
 
     // ✅ Move the uploaded file
