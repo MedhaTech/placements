@@ -1185,6 +1185,38 @@ public function saveLanguage()
     return redirect()->back()->with('success', 'Language added successfully.');
 }
 
+public function saveFamilyDetail()
+{
+    $model = new \App\Models\FamilyDetailModel();
+    $data = $this->request->getPost();
+
+    $saveData = [
+        'student_id' => session()->get('student_id'),
+        'relation'   => $data['relation'],
+        'name'       => $data['name'],
+        'occupation' => $data['occupation'],
+        'contact'    => $data['contact'],
+        'mobile'     => $data['mobile'],
+        'email'      => $data['email'],
+        'salary'     => $data['salary'],
+    ];
+
+    if (!empty($data['family_id'])) {
+        $model->update($data['family_id'], $saveData);
+    } else {
+        $model->insert($saveData);
+    }
+
+    return redirect()->back()->with('success', 'Family detail saved.');
+}
+
+public function deleteFamilyDetail()
+{
+    $model = new \App\Models\FamilyDetailModel();
+    $id = $this->request->getPost('delete_family_id');
+    $model->delete($id);
+    return redirect()->back()->with('success', 'Family detail deleted.');
+}
 
 
 }

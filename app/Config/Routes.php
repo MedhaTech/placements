@@ -98,3 +98,6 @@ $routes->post('student/savePlacementOffer', 'StudentController::savePlacementOff
 //Student Languages Save
 $routes->post('student/save-language', 'StudentController::saveLanguage');
 
+//Student Family details Edit and Delete
+$routes->post('/student/save-family-detail', 'StudentController::saveFamilyDetail');
+$routes->post('/student/delete-family-detail', 'StudentController::deleteFamilyDetail');
