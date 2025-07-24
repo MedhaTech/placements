@@ -538,26 +538,87 @@
           </div>
         </div>
       
+      <!-- Family Details Section -->
       <div id="family-details" class="section-card">
-        <h5>Family Details 
+        <h5>
+          Family Details
           <a href="#" data-bs-toggle="modal" data-bs-target="#familyDetailsModal">Add</a>
         </h5>
-         <div id="familyDetailsList" class="mt-3"></div>
+
+        <div class="mt-3">
+          <?php if (!empty($familyDetails)): ?>
+            <?php foreach ($familyDetails as $detail): ?>
+              <div class="border p-3 mb-3 rounded bg-light">
+                <div class="row">
+                  <div class="col-md-4"><strong>Relation:</strong> <?= esc($detail['relation']) ?></div>
+                  <div class="col-md-4"><strong>Name:</strong> <?= esc($detail['name']) ?></div>
+                  <div class="col-md-4"><strong>Occupation:</strong> <?= esc($detail['occupation']) ?></div>
+                </div>
+                <div class="row mt-2">
+                  <div class="col-md-4"><strong>Contact:</strong> <?= esc($detail['contact']) ?></div>
+                  <div class="col-md-4"><strong>Mobile:</strong> <?= esc($detail['mobile']) ?></div>
+                  <div class="col-md-4"><strong>Email:</strong> <?= esc($detail['email']) ?></div>
+                </div>
+                <div class="row mt-2">
+                  <div class="col-md-4"><strong>Salary:</strong> ₹<?= esc(number_format((float)$detail['salary'], 2)) ?></div>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <p>No family details added yet.</p>
+          <?php endif; ?>
+        </div>
       </div>
-      <div id="experience-details" class="section-card">
-        <h5>Experience Details 
+      <!-- Experience Details Section -->
+      <div id="experience-details" class="section-card mt-4">
+        <h5>
+          Experience Details
           <a href="#" data-bs-toggle="modal" data-bs-target="#experienceDetailsModal">Add</a>
         </h5>
-        <div id="experienceDetailsList" class="mt-3"></div>
+        <div class="mt-3">
+          <?php if (!empty($experienceDetails)): ?>
+            <?php foreach ($experienceDetails as $exp): ?>
+              <div class="border p-2 mb-2 rounded bg-light">
+                <strong><?= esc($exp['title']) ?></strong> at <?= esc($exp['organization']) ?> <br>
+                <?= esc($exp['employment_type']) ?> | <?= esc($exp['location_type']) ?> | <?= esc($exp['location']) ?><br>
+                From <?= date('F Y', strtotime($exp['joining_date'])) ?>
+                <?php if (!$exp['is_current']): ?>
+                  to <?= date('F Y', strtotime($exp['end_date'])) ?>
+                <?php else: ?>
+                  (Currently working)
+                <?php endif; ?><br>
+                <em><?= esc($exp['remarks']) ?></em>
+              </div>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <p>No experience details added yet.</p>
+          <?php endif; ?>
+        </div>
       </div>
-      <div id="education-details" class="section-card">
+      <!-- Education Details Section -->
+      <div id="education-details" class="section-card mt-4">
         <h5>
-          Education Details 
+          Education Details
           <a href="#" data-bs-toggle="modal" data-bs-target="#educationDetailsModal">Add</a>
         </h5>
-        <div id="educationDetailsList" class="mt-3"></div>
+        <div class="mt-3">
+          <?php if (!empty($educationDetails)): ?>
+            <?php foreach ($educationDetails as $edu): ?>
+              <div class="border p-2 mb-2 rounded bg-light">
+                <strong><?= esc($edu['qualification_type']) ?>:</strong>
+                <?= esc($edu['institution_name']) ?> (<?= esc($edu['board_university']) ?>),
+                <?= esc($edu['course_specialization']) ?>, <?= esc($edu['course_type']) ?>,
+                <?= esc($edu['year_of_passing']) ?>,
+                Grade: <?= esc($edu['grade_percentage']) ?>,
+                Status: <?= esc($edu['result_status']) ?>
+              </div>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <p>No education details added yet.</p>
+          <?php endif; ?>
+        </div>
       </div>
-      
+      <!--Skills Section-->
       <div id="skills" class="section-card">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h5 class="fw-bold text-dark mb-0">Skills</h5>
@@ -583,22 +644,89 @@
           <p class="text-muted small">You haven't added any skills yet.</p>
         <?php endif; ?>
       </div>
-      <div id="certifications" class="section-card">
-        <h5>
-          Licenses & Certifications 
-          <a href="#" data-bs-toggle="modal" data-bs-target="#licenseModal">Add</a>
+      <!-- Licenses & Certifications Section -->
+      <div id="certifications-section" class="section-card">
+        <h5>Licenses & Certifications 
+          <a href="#" data-bs-toggle="modal" data-bs-target="#certificationModal">Add</a>
         </h5>
-      </div>
-      <div id="projects-publications" class="section-card">
-        <h5>
-          Projects & Publications 
-          <a href="#" data-bs-toggle="modal" data-bs-target="#projectsModal">Add</a>
-        </h5>
-        <div id="projectList" class="mt-3">
-          <!-- Project/Publication cards will be appended here -->
+        <div id="certificationsList" class="mt-3">
+          <?php if (!empty($licensesCertifications)) : ?>
+            <ul class="list-group">
+              <?php foreach ($licensesCertifications as $cert) : ?>
+                <li class="list-group-item">
+                  <strong><?= esc($cert['certificate_name']) ?></strong> - <?= esc($cert['issuing_organization']) ?><br>
+                  <b>Issued:</b> <?= date('M Y', strtotime($cert['issue_date'])) ?> 
+                  <?= $cert['expiry_date'] ? ' | Expires: ' . date('M Y', strtotime($cert['expiry_date'])) : '' ?><br>
+                  <b>Id:</b><?= esc($cert['reg_no']) ?> 
+                  <?= $cert['url'] ? ' | <a href="' . esc($cert['url']) . '" target="_blank">Link</a>' : '' ?>
+                </li>
+              <?php endforeach; ?>
+            </ul>
+          <?php else : ?>
+            <p>No certifications added yet.</p>
+          <?php endif; ?>
         </div>
       </div>
-      <div id="languages" class="section-card"><h5>Languages <a href="#">Add</a></h5></div>
+      <!-- Projects & Publication Section -->
+      <div id="projects-publications-section" class="section-card mt-4">
+        <h5>Projects & Publications
+          <a href="#" data-bs-toggle="modal" data-bs-target="#projectsPublicationsModal">Add</a>
+        </h5>
+        <div id="projectsPublicationsList" class="mt-3">
+          <?php if (!empty($projectsPublications)): ?>
+            <?php foreach ($projectsPublications as $item): ?>
+              <div class="card mb-2">
+                <div class="card-body">
+                  <h6 class="card-title"><?= esc($item['title']) ?> <span class="badge bg-info"><?= esc($item['publishing_type']) ?></span></h6>
+                  <?php if (!empty($item['publisher'])): ?>
+                    <p><strong>Publisher:</strong> <?= esc($item['publisher']) ?></p>
+                  <?php endif; ?>
+                  <?php if (!empty($item['completion_date'])): ?>
+                    <p><strong>Completion Date:</strong> <?= esc(date('d-m-Y', strtotime($item['completion_date']))) ?></p>
+                  <?php endif; ?>
+                  <?php if (!empty($item['authors'])): ?>
+                    <p><strong>Authors / Co-Authors:</strong> <?= esc($item['authors']) ?></p>
+                  <?php endif; ?>
+                  <?php if (!empty($item['publication_url'])): ?>
+                    <p><strong>URL:</strong> <a href="<?= esc($item['publication_url']) ?>" target="_blank"><?= esc($item['publication_url']) ?></a></p>
+                  <?php endif; ?>
+                  <?php if (!empty($item['description'])): ?>
+                    <p><strong>Description:</strong> <?= esc($item['description']) ?></p>
+                  <?php endif; ?>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <p class="text-muted">No projects or publications added yet.</p>
+          <?php endif; ?>
+        </div>
+      </div>
+      <!-- Languages Section -->
+      <div class="section-card mt-4">
+        <h5>Languages 
+          <a href="#" data-bs-toggle="modal" data-bs-target="#languagesModal" class="float-end">Add</a>
+        </h5>
+
+        <?php if (!empty($studentLanguages)): ?>
+          <?php foreach ($studentLanguages as $lang): ?>
+            <div class="card mb-2">
+              <div class="card-body">
+                <h6 class="card-title">
+                  <?= esc($lang['language_name']) ?> — <?= esc($lang['proficiency']) ?>
+                </h6>
+                <p class="mb-0">
+                  <strong>Can Read:</strong> <?= $lang['can_read'] ? 'Yes' : 'No' ?> &nbsp; | 
+                  <strong>Can Write:</strong> <?= $lang['can_write'] ? 'Yes' : 'No' ?> &nbsp; | 
+                  <strong>Can Speak:</strong> <?= $lang['can_speak'] ? 'Yes' : 'No' ?>
+                </p>
+              </div>
+            </div>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <p class="text-muted">No languages added yet.</p>
+        <?php endif; ?>
+      </div>
+
       <?php
         // 🔹 Place this block where you're rendering student dashboard sections
         ?>
@@ -678,7 +806,34 @@
         <?php endif; ?>
       </div>
 
-      <div id="offers" class="section-card"><h5>Placement Offers <a href="#">Add</a></h5></div>
+      <!-- Placement Offers Section -->
+      <div id="placementOffersSection" class="section-card">
+        <h5>
+          Placement Offers 
+          <a href="#" data-bs-toggle="modal" data-bs-target="#placementOffersModal">Add</a>
+        </h5>
+
+        <div id="placementOffersList" class="mt-1">
+          <?php if (!empty($placementOffers)): ?>
+            <?php foreach ($placementOffers as $offer): ?>
+              <div class="card mb-2">
+                <div class="card-body">
+                  <h6 class="card-title">
+                    <?= esc($offer['company_name']) ?> — <?= esc($offer['job_title']) ?>
+                    <span class="badge bg-success float-end"><?= esc($offer['offer_status']) ?></span>
+                  </h6>
+
+                  <p><strong>Offered Salary (LPA):</strong> <?= esc($offer['offered_salary']) ?></p>
+                  <p><strong>Status:</strong> <?= esc($offer['status']) ?></p>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <p class="text-muted">No placement offers added yet.</p>
+          <?php endif; ?>
+        </div>
+      </div>
+
       <div id="documents" class="section-card">
         <h5>Documents 
           <a href="#" data-bs-toggle="modal" data-bs-target="#documentUploadModal">Upload</a>
@@ -932,6 +1087,7 @@
     </div>
   </div>
 </div>
+
 <!-- Experience Details Modal -->
 <div class="modal fade" id="experienceDetailsModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -940,86 +1096,65 @@
         <h5 class="modal-title">Experience Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <div class="modal-body">
-        <p class="text-muted">Add your work experience below.</p>
-        
-        <!-- Experience List -->
-        <div id="experienceDetailsList" class="mb-3">
-          <!-- Appended entries will appear here -->
-        </div>
-
-        <!-- Experience Form -->
-        <form id="experienceForm">
+      <form method="post" action="<?= site_url('student/save-experience-details') ?>">
+        <div class="modal-body">
           <div class="row mb-3">
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label class="form-label">Title</label>
-              <input type="text" class="form-control" id="expTitle" placeholder="Job Title">
+              <input type="text" class="form-control" name="title" required>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label class="form-label">Employment Type</label>
-              <select class="form-select" id="employmentType">
-                <option selected disabled>Select</option>
-                <option>Full-time</option>
-                <option>Part-time</option>
-                <option>Self-Employed</option>
-                <option>Freelance</option>
-                <option>Internship</option>
-                <option>Trainee</option>
-              </select>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Company / Organisation</label>
-              <input type="text" class="form-control" id="company" placeholder="Company Name">
+              <?= (new \App\Libraries\GlobalData())->renderEmploymentTypeDropdown ('employment_type', old('employment_type')) ?>
             </div>
           </div>
-
           <div class="row mb-3">
-            <div class="col-md-4">
-              <label class="form-label">Joining Date</label>
-              <input type="month" class="form-control" id="joiningDate">
+            <div class="col-md-6">
+              <label class="form-label">Organization</label>
+              <input type="text" class="form-control" name="organization">
             </div>
-            <div class="col-md-4">
-              <label class="form-label d-block">Currently Working?</label>
+            <div class="col-md-6">
+              <label class="form-label">Joining Date</label>
+              <input type="month" class="form-control" name="joining_date">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
               <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="currentlyWorking">
-                <label class="form-check-label" for="currentlyWorking">I am currently working in this role</label>
+                <input class="form-check-input" type="checkbox" value="1" name="is_current" id="is_current">
+                <label class="form-check-label" for="is_current">
+                  I am currently working in this role
+                </label>
               </div>
             </div>
-            <div class="col-md-4">
-              <label class="form-label">Worked Till</label>
-              <input type="month" class="form-control" id="workedTill">
+            <div class="col-md-6">
+              <label class="form-label">End Date</label>
+              <input type="month" class="form-control" name="end_date">
             </div>
           </div>
-
           <div class="row mb-3">
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label class="form-label">Location</label>
-              <input type="text" class="form-control" id="location" placeholder="Location">
+              <input type="text" class="form-control" name="location">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label class="form-label">Location Type</label>
-              <select class="form-select" id="locationType">
-                <option selected disabled>Select</option>
-                <option>On-site</option>
-                <option>Hybrid</option>
-                <option>Remote</option>
-              </select>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Remarks</label>
-              <input type="text" class="form-control" id="remarks" placeholder="Optional notes">
+              <?= (new \App\Libraries\GlobalData())->renderLocationTypeDropdown ('location', old('location')) ?>
             </div>
           </div>
-
-          <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" id="saveExperienceBtn">Save</button>
+          <div class="mb-3">
+            <label class="form-label">Remarks</label>
+            <textarea class="form-control" name="remarks" rows="3"></textarea>
           </div>
-        </form>
-      </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
+
 <!-- Education Details Modal -->
 <div class="modal fade" id="educationDetailsModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -1028,216 +1163,164 @@
         <h5 class="modal-title">Education Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <div class="modal-body">
-        <p class="text-muted">Add your educational qualifications below.</p>
-        <div id="educationDetailsList" class="mb-3">
-          <!-- Entries will be added here -->
-        </div>
-
-        <form id="educationForm">
-          <div class="row mb-3">
-            <div class="col-md-4">
+      <form action="<?= site_url('student/save-education-details') ?>" method="post">
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-md-6">
               <label class="form-label">Qualification Type</label>
-              <select class="form-select" id="qualificationType">
-                <option selected disabled>Select</option>
-                <option value="X / SSC">X / SSC</option>
-                <option value="XII / PUC">XII / PUC</option>
-                <option value="Diploma">Diploma</option>
-                <option value="Graduation">Graduation</option>
-                <option value="Post Graduation">Post Graduation</option>
-                <option value="Ph.D">Ph.D</option>
-              </select>
+              <?= (new \App\Libraries\GlobalData())->renderQualificationTypeDropdown('qualification_type', old('qualification_type')) ?>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label class="form-label">Institution Name</label>
-              <input type="text" class="form-control" id="institutionName" placeholder="Institution Name">
+              <input type="text" name="institution_name" class="form-control">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label class="form-label">Board / University</label>
-              <input type="text" class="form-control" id="board" placeholder="Board / University">
+              <input type="text" name="board_university" class="form-control">
             </div>
-          </div>
-
-          <div class="row mb-3">
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label class="form-label">Course / Specialization</label>
-              <input type="text" class="form-control" id="course" placeholder="Course or Specialization">
+              <input type="text" name="course_specialization" class="form-control">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label class="form-label">Course Type</label>
-              <select class="form-select" id="courseType">
-                <option selected disabled>Select</option>
-                <option value="Full Time">Full Time</option>
-                <option value="Part Time">Part Time</option>
-                <option value="Correspondence">Correspondence</option>
-                <option value="Distance Learning">Distance Learning</option>
-              </select>
+              <?= (new \App\Libraries\GlobalData())->renderCourseTypeDropdown('course_type', old('course_type')) ?>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label class="form-label">Year of Passing</label>
-              <input type="text" class="form-control" id="yearOfPassing" placeholder="Year of Passing">
+              <input type="number" name="year_of_passing" class="form-control">
             </div>
-          </div>
-
-          <div class="row mb-4">
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label class="form-label">Grade / Percentage</label>
-              <input type="text" class="form-control" id="grade" placeholder="Grade or Percentage">
+              <input type="text" name="grade_percentage" class="form-control">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label class="form-label">Result Status</label>
-              <select class="form-select" id="resultStatus">
-                <option selected disabled>Select</option>
-                <option value="Passed">Passed</option>
-                <option value="Pursuing">Pursuing</option>
-                <option value="Waiting for Results">Waiting for Results</option>
-              </select>
-            </div>
-            <div class="col-md-4 d-flex align-items-end justify-content-end">
-              <button type="button" class="btn btn-link">+ Add More</button>
+              <?= (new \App\Libraries\GlobalData())->renderResultStatusDropdown('result_status', old('result_status')) ?>
             </div>
           </div>
-
-          <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" id="saveEducationBtn">Save</button>
-          </div>
-        </form>
-      </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="submit" class="btn btn-primary">Save Details</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
+
 <!-- Licenses & Certifications Modal -->
-<div class="modal fade" id="licenseModal" tabindex="-1">
+<div class="modal fade" id="certificationModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content" style="border-radius: 16px;">
-      <div class="modal-header border-0">
-        <h5 class="modal-title">Licenses & Certifications</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <p class="text-muted">Add details of your licenses or certifications below.</p>
-        <div id="licenseList" class="mb-3">
-          <!-- Entries will be added here -->
+      <form action="<?= base_url('/student/save-certification') ?>" method="post">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">Add License / Certification</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <form id="licenseForm">
+        <div class="modal-body pt-0">
           <div class="row mb-3">
             <div class="col-md-6">
-              <label class="form-label">Name of the Licence / Certificate *</label>
-              <input type="text" class="form-control" id="licenseName" placeholder="e.g., AWS Certified Developer">
+              <label class="form-label">Name of the Certificate *</label>
+              <input type="text" name="certificate_name" class="form-control" required>
             </div>
             <div class="col-md-6">
               <label class="form-label">Issuing Organization *</label>
-              <input type="text" class="form-control" id="issuingOrg" placeholder="e.g., Amazon Web Services">
+              <input type="text" name="issuing_organization" class="form-control" required>
             </div>
           </div>
 
           <div class="row mb-3">
             <div class="col-md-6">
-              <label class="form-label">Issue Date (Month & Year) *</label>
-              <input type="month" class="form-control" id="issueDate">
+              <label class="form-label">Issue Date</label>
+              <input type="month" name="issue_date" class="form-control">
             </div>
             <div class="col-md-6">
-              <label class="form-label">Expiry Date (Month & Year)</label>
-              <input type="month" class="form-control" id="expiryDate">
+              <label class="form-label">Expiry Date</label>
+              <input type="month" name="expiry_date" class="form-control">
             </div>
           </div>
 
           <div class="row mb-3">
             <div class="col-md-6">
               <label class="form-label">ID / Number</label>
-              <input type="text" class="form-control" id="licenseId" placeholder="License ID or Certificate Number">
+              <input type="text" name="reg_no" class="form-control">
             </div>
             <div class="col-md-6">
               <label class="form-label">URL</label>
-              <input type="url" class="form-control" id="licenseUrl" placeholder="Optional URL to verify">
+              <input type="url" name="url" class="form-control">
             </div>
           </div>
-
-          <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" id="saveLicenseBtn">Save</button>
-          </div>
-        </form>
-      </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
+
 <!-- Projects & Publications Modal -->
-<div class="modal fade" id="projectsModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content" style="border-radius: 16px;">
-      <div class="modal-header border-0">
-        <h5 class="modal-title">Projects & Publications</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <div class="modal-body">
-        <p class="text-muted">Add your project or publication details below.</p>
-
-        <!-- Appended List -->
-        <div id="projectList" class="mb-4">
-          <!-- Entries will appear here -->
+<div class="modal fade" id="projectsPublicationsModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form id="projectsPublicationsForm">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Project / Publication</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input type="text" class="form-control" name="title" required>
+          </div>
 
-        <form id="projectForm">
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label class="form-label">Title</label>
-              <input type="text" class="form-control" id="title" placeholder="Enter title">
+          <div class="mb-3">
+            <label class="form-label">Type</label><br>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="publishing_type" value="Project" required>
+              <label class="form-check-label">Project</label>
             </div>
-            <div class="col-md-6">
-              <label class="form-label d-block">Type</label>
-              <div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="type" id="projectType" value="Project">
-                  <label class="form-check-label" for="projectType">Project</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="type" id="publicationType" value="Publication">
-                  <label class="form-check-label" for="publicationType">Publication</label>
-                </div>
-              </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="publishing_type" value="Publication" required>
+              <label class="form-check-label">Publication</label>
             </div>
           </div>
 
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label class="form-label">Publisher</label>
-              <input type="text" class="form-control" id="publisher" placeholder="Publisher">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Completion Date</label>
-              <input type="date" class="form-control" id="completionDate">
-            </div>
+          <div class="mb-3">
+            <label class="form-label">Publisher</label>
+            <input type="text" class="form-control" name="publisher">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Completion Date</label>
+            <input type="date" class="form-control" name="completion_date">
           </div>
 
           <div class="mb-3">
             <label class="form-label">Authors / Co-Authors</label>
-            <input type="text" class="form-control" id="authors" placeholder="Enter names separated by commas">
+            <textarea class="form-control" name="authors"></textarea>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Publication / Project URL</label>
-            <input type="url" class="form-control" id="url" placeholder="https://example.com">
+            <input type="url" class="form-control" name="publication_url">
           </div>
 
-          <div class="mb-4">
+          <div class="mb-3">
             <label class="form-label">Description</label>
-            <textarea class="form-control" id="description" rows="3" placeholder="Brief description"></textarea>
+            <textarea class="form-control" name="description"></textarea>
           </div>
-
-          <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" id="saveProjectBtn">Save</button>
-          </div>
-        </form>
-      </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" id="saveProjectsPublicationsBtn" class="btn btn-primary">Save</button>
+        </div>
+      </form>
     </div>
   </div>
-</div>
-  
-  <!-- 📎 Document Upload Modal -->
+</div> 
+
+  <!--  Document Upload Modal -->
 <div class="modal fade" id="documentUploadModal" tabindex="-1" aria-labelledby="documentUploadModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <form action="<?= base_url('student/uploadDocument') ?>" method="post" enctype="multipart/form-data">
@@ -1366,71 +1449,149 @@
   
 <!-- Family Details Modal -->
 <div class="modal fade" id="familyDetailsModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content" style="border-radius: 16px;">
-      <div class="modal-header border-0">
-        <h5 class="modal-title">Family Details</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-  <p class="text-muted">Add details of your family members below.</p>
-  <div id="familyDetailsList" class="mb-3">
-  <!-- Entries will be added here -->
+      <form method="post" action="<?= base_url('/student/save-family-details') ?>">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">Add Family Detail</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body row g-3">
+          <div class="col-md-6">
+            <label>Relation</label>
+            <?= (new \App\Libraries\GlobalData())->renderRelationTypeDropdown('relation', old('relation')) ?>
+          </div>
+          <div class="col-md-6">
+            <label>Name</label>
+            <input type="text" name="name" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label>Contact</label>
+            <input type="text" name="contact" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Occupation</label>
+            <input type="text" name="occupation" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Mobile</label>
+            <input type="text" name="mobile" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Email ID</label>
+            <input type="email" name="email" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Salary</label>
+            <input type="text" name="salary" class="form-control">
+          </div>
+        </div>
+
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
-  <form id="familyForm">
-    <div class="row mb-3">
-      <div class="col-md-4">
-        <label class="form-label">Relation</label>
-        <select class="form-select" id="relation">
-          <option selected disabled>Select</option>
-          <option value="Father">Father</option>
-          <option value="Mother">Mother</option>
-          <option value="Brother">Brother</option>
-          <option value="Sister">Sister</option>
-          <!-- add more if needed -->
-        </select>
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Name</label>
-        <input type="text" class="form-control" id="name" placeholder="Full Name">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Occupation</label>
-        <input type="text" class="form-control" id="occupation" placeholder="Occupation">
-      </div>
-    </div>
 
-    <div class="row mb-3">
-      <div class="col-md-4">
-        <label class="form-label">Contact</label>
-        <input type="text" class="form-control" id="contact" placeholder="Contact Number">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Mobile</label>
-        <input type="text" class="form-control" id="mobile" placeholder="Mobile Number">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Email</label>
-        <input type="email" class="form-control" id="email" placeholder="Email ID">
-      </div>
-    </div>
+<!-- Placement Offers Modal -->
+<div class="modal fade" id="placementOffersModal" tabindex="-1" aria-labelledby="placementOffersModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <form action="<?= base_url('student/savePlacementOffer') ?>" method="post">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Placement Offer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Company Name</label>
+              <input type="text" name="company_name" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Job Title</label>
+              <input type="text" name="job_title" class="form-control" required>
+            </div>
+          </div>
+          
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Offered Salary (LPA)</label>
+              <input type="number" step="0.1" name="offered_salary" class="form-control">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Application Status</label>
+              <?= (new \App\Libraries\GlobalData())->renderApplicationStatusDropdown('status', old('status')) ?>
+            </div>
+          </div>
 
-    <div class="row mb-4">
-      <div class="col-md-4">
-        <label class="form-label">Salary</label>
-        <input type="text" class="form-control" id="salary" placeholder="Salary">
-      </div>
-      <div class="col-md-8 d-flex align-items-end justify-content-end">
-        <button type="button" class="btn btn-link">+ Add More</button>
-      </div>
-    </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Offer Status</label>
+              <?= (new \App\Libraries\GlobalData())->renderOfferStatusDropdown('offer_status', old('offer_status')) ?>
+            </div>
+          </div>
 
-    <div class="d-flex justify-content-end">
-      <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
-      <button type="button" class="btn btn-primary" id="saveFamilyBtn">Save</button>
-    </div>
-  </form>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
+
+<!-- Languages Modal -->
+<div class="modal fade" id="languagesModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 16px;">
+      <form method="post" action="<?= base_url('/student/save-language') ?>">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">Add Language</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body row g-3">
+          <div class="col-md-6">
+            <label>Language</label>
+            <?= (new \App\Libraries\GlobalData())->renderSelect('language_name', ['English', 'Hindi', 'Tamil', 'Telugu', 'Kannada'], old('language_name')) ?>
+          </div>
+
+          <div class="col-md-6">
+            <label>Proficiency</label>
+            <?= (new \App\Libraries\GlobalData())->renderProficiencyLevelDropdown('proficiency', old('proficiency')) ?>
+          </div>
+
+          <div class="col-md-4 form-check">
+            <input class="form-check-input" type="checkbox" name="can_read" id="can_read" value="1">
+            <label class="form-check-label" for="can_read">Can Read</label>
+          </div>
+
+          <div class="col-md-4 form-check">
+            <input class="form-check-input" type="checkbox" name="can_write" id="can_write" value="1">
+            <label class="form-check-label" for="can_write">Can Write</label>
+          </div>
+
+          <div class="col-md-4 form-check">
+            <input class="form-check-input" type="checkbox" name="can_speak" id="can_speak" value="1">
+            <label class="form-check-label" for="can_speak">Can Speak</label>
+          </div>
+        </div>
+
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   const allSkills = [
@@ -1568,226 +1729,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 </script>
-<script>
-  document.getElementById('saveFamilyBtn').addEventListener('click', function () {
-    const relation = document.getElementById('relation').value;
-    const name = document.getElementById('name').value;
-    const occupation = document.getElementById('occupation').value;
-    const contact = document.getElementById('contact').value;
-    const mobile = document.getElementById('mobile').value;
-    const email = document.getElementById('email').value;
-    const salary = document.getElementById('salary').value;
-
-    if (!relation || !name || !contact) {
-      alert('Please fill in all required fields (Relation, Name, Contact).');
-      return;
-    }
-
-    const card = document.createElement('div');
-    card.className = 'card mb-3';
-    card.innerHTML = `
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-2"><strong>Relation:</strong><br>${relation}</div>
-          <div class="col-md-2"><strong>Name:</strong><br>${name}</div>
-          <div class="col-md-2"><strong>Contact:</strong><br>${contact}</div>
-          <div class="col-md-2"><strong>Occupation:</strong><br>${occupation}</div>
-          <div class="col-md-2"><strong>Mobile:</strong><br>${mobile}</div>
-          <div class="col-md-2"><strong>Email:</strong><br>${email}</div>
-        </div>
-        <div class="row mt-2">
-          <div class="col-md-12"><strong>Salary:</strong> ${salary}</div>
-        </div>
-      </div>
-    `;
-
-    document.getElementById('familyDetailsList').appendChild(card);
-
-    // Clear form fields
-    document.getElementById('familyForm').reset();
-  });
-</script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const saveBtn = document.getElementById("saveEducationBtn");
-    const educationDetailsList = document.getElementById("educationDetailsList");
-
-    if (saveBtn && educationDetailsList) {
-      saveBtn.addEventListener("click", function () {
-        const qualificationType = document.getElementById("qualificationType")?.value || "";
-        const institutionName = document.getElementById("institutionName")?.value || "";
-        const board = document.getElementById("board")?.value || "";
-        const course = document.getElementById("course")?.value || "";
-        const courseType = document.getElementById("courseType")?.value || "";
-        const yearOfPassing = document.getElementById("yearOfPassing")?.value || "";
-        const grade = document.getElementById("grade")?.value || "";
-        const resultStatus = document.getElementById("resultStatus")?.value || "";
-
-        if (
-          !qualificationType || !institutionName || !board || !course ||
-          !courseType || !yearOfPassing || !grade || !resultStatus
-        ) {
-          alert("Please fill out all education details.");
-          return;
-        }
-
-        const educationHTML = `
-          <div class="border rounded p-3 mb-2">
-            <h6 class="mb-1">${qualificationType} - ${course}</h6>
-            <p class="mb-1"><strong>${institutionName}</strong>, ${board}</p>
-            <p class="mb-1">${courseType} | ${yearOfPassing}</p>
-            <p class="mb-1">Grade: ${grade}</p>
-            <p class="mb-0 text-muted">Status: ${resultStatus}</p>
-          </div>
-        `;
-
-        educationDetailsList.insertAdjacentHTML("beforeend", educationHTML);
-
-        // Clear form inputs
-        document.getElementById("educationForm").reset();
-      });
-    }
-  });
-</script>
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const modal = new bootstrap.Modal(document.getElementById('educationDetailsModal'));
-    document.getElementById('addEducationBtn').addEventListener('click', () => modal.show());
-  });
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const form = document.getElementById("experienceForm");
-  const saveBtn = document.getElementById("saveExperienceBtn");
-  const list = document.getElementById("experienceDetailsList");
-  const workedTill = document.getElementById("workedTill");
-  const currentCheckbox = document.getElementById("currentlyWorking");
-
-  // ✅ Defensive check to prevent the script from breaking
-  if (!form || !saveBtn || !list) {
-    console.warn("❌ Experience modal elements not found in DOM.");
-    return;
-  }
-
-  saveBtn.addEventListener("click", function () {
-    const title = document.getElementById("expTitle")?.value;
-    const type = document.getElementById("employmentType")?.value;
-    const company = document.getElementById("company")?.value;
-    const joining = document.getElementById("joiningDate")?.value;
-    const isCurrent = currentCheckbox?.checked;
-    const till = workedTill?.value;
-    const location = document.getElementById("location")?.value;
-    const locationType = document.getElementById("locationType")?.value;
-    const remarks = document.getElementById("remarks")?.value;
-
-    if (!title || !type || !company || !joining || (!isCurrent && !till)) {
-      alert("Please fill out required fields.");
-      return;
-    }
-
-    const period = isCurrent ? "Present" : till;
-
-    const experienceHTML = `
-  <div class="border rounded p-3 mb-2">
-    <h6 class="mb-1">${title || "N/A"} (${type || "N/A"})</h6>
-    <p class="mb-1"><strong>${company || "N/A"}</strong></p>
-    <p class="mb-1">${joining || "Start"} – ${period || "End"}</p>
-    <p class="mb-1">Location: ${location || "Unknown"} (${locationType || "Type"})</p>
-    ${remarks ? `<p class="mb-0 text-muted">Remarks: ${remarks}</p>` : ""}
-  </div>`;
-
-
-    list.insertAdjacentHTML("beforeend", experienceHTML);
-    form.reset();
-    if (workedTill) workedTill.disabled = false;
-  });
-
-  if (currentCheckbox && workedTill) {
-    currentCheckbox.addEventListener("change", function () {
-      workedTill.disabled = this.checked;
-    });
-  }
-});
-</script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const licenseForm = document.getElementById("licenseForm");
-    const saveBtn = document.getElementById("saveLicenseBtn");
-    const displaySection = document.getElementById("displayLicenses");
-
-    saveBtn.addEventListener("click", function () {
-      const name = document.getElementById("licenseName").value.trim();
-      const org = document.getElementById("issuingOrg").value.trim();
-      const issue = document.getElementById("issueDate").value;
-      const expiry = document.getElementById("expiryDate").value;
-      const id = document.getElementById("licenseId").value.trim();
-      const url = document.getElementById("licenseUrl").value.trim();
-
-      if (!name || !org || !issue) {
-        alert("Please fill in all required fields (*)");
-        return;
-      }
-
-      const container = document.createElement("div");
-      container.className = "col-md-6";
-
-      container.innerHTML = `
-        <div class="border p-3 rounded shadow-sm bg-light">
-          <h6 class="mb-1">${name}</h6>
-          <p class="mb-0"><strong>Issued by:</strong> ${org}</p>
-          <p class="mb-0"><strong>Issued:</strong> ${issue}${expiry ? ` | <strong>Expires:</strong> ${expiry}` : ''}</p>
-          ${id ? `<p class="mb-0"><strong>ID:</strong> ${id}</p>` : ''}
-          ${url ? `<p class="mb-0"><strong>URL:</strong> <a href="${url}" target="_blank">${url}</a></p>` : ''}
-        </div>
-      `;
-
-      displaySection.appendChild(container);
-
-      // Clear form
-      licenseForm.reset();
-
-      // Close modal
-      const modal = bootstrap.Modal.getInstance(document.getElementById('licenseModal'));
-      modal.hide();
-    });
-  });
-</script>
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('saveProjectBtn').addEventListener('click', function () {
-      const title = document.getElementById('title').value;
-      const type = document.querySelector('input[name="type"]:checked')?.value;
-      const publisher = document.getElementById('publisher').value;
-      const completionDate = document.getElementById('completionDate').value;
-      const authors = document.getElementById('authors').value;
-      const url = document.getElementById('url').value;
-      const description = document.getElementById('description').value;
-
-      if (!title || !type || !publisher || !completionDate || !authors || !url || !description) {
-        alert('Please fill all fields before saving.');
-        return;
-      }
-
-      const entryHTML = `
-        <div class="card mb-3">
-          <div class="card-body">
-            <h5 class="card-title">${title}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">${type} | ${publisher} | ${completionDate}</h6>
-            <p class="card-text"><strong>Authors:</strong> ${authors}</p>
-            <p class="card-text"><strong>Description:</strong> ${description}</p>
-            <a href="${url}" target="_blank" class="card-link">View ${type}</a>
-          </div>
-        </div>
-      `;
-
-      document.getElementById('projectList').insertAdjacentHTML('beforeend', entryHTML);
-
-      // Reset the form
-      document.getElementById('projectForm').reset();
-    });
-  });
-</script>
-
 <!-- Bootstrap JS -->
 <!-- Make sure this is included at the bottom of your page (before </body>) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
