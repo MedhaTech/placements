@@ -92,7 +92,6 @@ public function getAcademicInfo($studentId)
         ->getRowArray();
 }
 
-
 public function saveAcademicInfo($studentId, $data)
 {
     $builder = $this->db->table('students_academics');
@@ -106,6 +105,9 @@ public function saveAcademicInfo($studentId, $data)
         return $builder->insert($data);
     }
 }
+
+
+
 
 public function savePlacementPreferences($studentId, $data)
 {
