@@ -1218,5 +1218,97 @@ public function deleteFamilyDetail()
     return redirect()->back()->with('success', 'Family detail deleted.');
 }
 
+public function updateLanguage()
+{
+    $model = new \App\Models\StudentLanguageModel();
+    $data = $this->request->getPost();
+
+    $updateData = [
+        'language_name' => $data['language_name'],
+        'proficiency'   => $data['proficiency'],
+        'can_read'      => isset($data['can_read']) ? 1 : 0,
+        'can_write'     => isset($data['can_write']) ? 1 : 0,
+        'can_speak'     => isset($data['can_speak']) ? 1 : 0,
+    ];
+
+    if (!empty($data['language_id'])) {
+        $model->update($data['language_id'], $updateData);
+    }
+
+    return redirect()->back()->with('success', 'Language updated successfully.');
+}
+
+
+
+public function deleteLanguageDetail()
+{
+    $model = new \App\Models\StudentLanguageModel();
+    $id = $this->request->getPost('delete_language_id');
+    $model->delete($id);
+    return redirect()->back()->with('success', 'Language deleted successfully.');
+}
+
+public function updateProjectPublication()
+{
+    $model = new \App\Models\ProjectsPublicationsModel();
+    $data = $this->request->getPost();
+
+    $updateData = [
+        'title'            => $data['title'],
+        'publishing_type'  => $data['publishing_type'],
+        'publisher'        => $data['publisher'],
+        'completion_date'  => $data['completion_date'],
+        'authors'          => $data['authors'],
+        'publication_url'  => $data['publication_url'],
+        'description'      => $data['description'],
+        'updated_at'       => date('Y-m-d H:i:s')
+    ];
+
+    if (!empty($data['id'])) {
+        $model->update($data['id'], $updateData);
+    }
+
+    return redirect()->back()->with('success', 'Project / Publication updated.');
+}
+
+
+public function deleteProject()
+{
+    $model = new \App\Models\ProjectsPublicationsModel(); // 🔁 change to your actual model name
+    $id = $this->request->getPost('delete_project_id');
+    $model->delete($id);
+    return redirect()->back()->with('success', 'Project or publication deleted successfully.');
+}
+
+public function updatePlacementOffer()
+{
+    $model = new \App\Models\PlacementOffersModel();
+    $data = $this->request->getPost();
+
+    $updateData = [
+        'company_name'   => $data['company_name'],
+        'job_title'      => $data['job_title'],
+        'offered_salary' => $data['offered_salary'],
+        'offer_status'   => $data['offer_status'],
+        'status'         => $data['status'],
+    ];
+
+    if (!empty($data['offer_id'])) {
+        $model->update($data['offer_id'], $updateData);
+    }
+
+    return redirect()->back()->with('success', 'Placement offer updated.');
+}
+
+
+public function deletePlacementOffer()
+{
+    $model = new \App\Models\PlacementOffersModel();
+    $id = $this->request->getPost('delete_placement_id');
+    $model->delete($id);
+    return redirect()->back()->with('success', 'Placement offer deleted.');
+}
+
+
 
 }
