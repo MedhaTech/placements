@@ -101,3 +101,18 @@ $routes->post('student/save-language', 'StudentController::saveLanguage');
 //Student Family details Edit and Delete
 $routes->post('/student/save-family-detail', 'StudentController::saveFamilyDetail');
 $routes->post('/student/delete-family-detail', 'StudentController::deleteFamilyDetail');
+
+//language 
+$routes->post('student/update-language', 'StudentController::updateLanguage');
+$routes->post('student/delete-language-detail', 'StudentController::deleteLanguageDetail');
+
+//project and publication
+$routes->post('/student/update-project-publication', 'StudentController::updateProjectPublication');
+$routes->post('student/delete-project', 'StudentController::deleteProject');
+
+
+//placement offer
+$routes->post('/student/update-placement-offer', 'StudentController::updatePlacementOffer');
+$routes->post('/student/delete-placement-offer', 'StudentController::deletePlacementOffer');
+
+
