@@ -1309,6 +1309,97 @@ public function deletePlacementOffer()
     return redirect()->back()->with('success', 'Placement offer deleted.');
 }
 
+public function updateExperience()
+{
+    $model = new \App\Models\ExperienceDetailModel();
+    $data = $this->request->getPost();
 
+    $updateData = [
+    'title'          => $data['title'],
+    'employment_type'=> $data['employment_type'],
+    'organization'   => $data['organization'],
+    'joining_date'   => $data['joining_date'],
+    'is_current'     => isset($data['is_current']) ? 1 : 0,
+    'end_date'       => $data['end_date'],
+    'location'       => $data['location'],
+    'location_type'  => $data['location_type'] ?? '',
+    'remarks'        => $data['remarks'],
+];
+
+    if (!empty($data['experience_id'])) {
+        $model->update($data['experience_id'], $updateData);
+    }
+
+    return redirect()->back()->with('success', 'Experience details updated.');
+}
+
+public function deleteExperience()
+{
+    $model = new \App\Models\ExperienceDetailModel();
+    $id = $this->request->getPost('delete_experience_id');
+    $model->delete($id);
+    return redirect()->back()->with('success', 'Experience entry deleted.');
+}
+
+public function updateEducation()
+{
+    $model = new \App\Models\EducationDetailModel();
+    $data = $this->request->getPost();
+
+    $updateData = [
+    'qualification_type'   => $data['qualification_type'],
+    'institution_name'     => $data['institution_name'],
+    'board_university'     => $data['board_university'],
+    'course_specialization'=> $data['course_specialization'],
+    'course_type'          => $data['course_type'],
+    'year_of_passing'      => $data['year_of_passing'],
+    'grade_percentage'     => $data['grade_percentage'],
+    'result_status'        => $data['result_status'],
+];
+
+
+    if (!empty($data['education_id'])) {
+        $model->update($data['education_id'], $updateData);
+    }
+
+    return redirect()->back()->with('success', 'Education details updated.');
+}
+
+public function deleteEducation()
+{
+    $model = new \App\Models\EducationDetailModel();
+    $id = $this->request->getPost('delete_education_id');
+    $model->delete($id);
+    return redirect()->back()->with('success', 'Education entry deleted.');
+}
+
+public function updateCertification()
+{
+    $model = new \App\Models\CertificationModel();
+    $data = $this->request->getPost();
+
+    $updateData = [
+        'certificate_name'     => $data['certificate_name'],
+        'issuing_organization' => $data['issuing_organization'],
+        'issue_date'           => $data['issue_date'],
+        'expiry_date'          => $data['expiry_date'],
+        'reg_no'               => $data['reg_no'],
+        'url'                  => $data['url'],
+    ];
+
+    if (!empty($data['certification_id'])) {
+        $model->update($data['certification_id'], $updateData);
+    }
+
+    return redirect()->back()->with('success', 'Certification updated.');
+}
+
+public function deleteCertification()
+{
+    $model = new \App\Models\CertificationModel();
+    $id = $this->request->getPost('delete_certification_id');
+    $model->delete($id);
+    return redirect()->back()->with('success', 'Certification deleted.');
+}
 
 }
