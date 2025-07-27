@@ -602,53 +602,101 @@ $globalData = new GlobalData();
 
       <!-- Experience Details Section -->
       <div id="experience-details" class="section-card mt-4">
-        <h5>
-          Experience Details
-          <a href="#" data-bs-toggle="modal" data-bs-target="#experienceDetailsModal">Add</a>
-        </h5>
-        <div class="mt-3">
-          <?php if (!empty($experienceDetails)): ?>
-            <?php foreach ($experienceDetails as $exp): ?>
-              <div class="border p-2 mb-2 rounded bg-light">
-                <strong><?= esc($exp['title']) ?></strong> at <?= esc($exp['organization']) ?> <br>
-                <?= esc($exp['employment_type']) ?> | <?= esc($exp['location_type']) ?> | <?= esc($exp['location']) ?><br>
-                From <?= date('F Y', strtotime($exp['joining_date'])) ?>
-                <?php if (!$exp['is_current']): ?>
-                  to <?= date('F Y', strtotime($exp['end_date'])) ?>
-                <?php else: ?>
-                  (Currently working)
-                <?php endif; ?><br>
-                <em><?= esc($exp['remarks']) ?></em>
-              </div>
-            <?php endforeach; ?>
-          <?php else: ?>
-            <p>No experience details added yet.</p>
+  <h5>
+    Experience Details
+    <a href="#" data-bs-toggle="modal" data-bs-target="#experienceDetailsModal">Add</a>
+  </h5>
+
+  <div class="mt-3">
+    <?php if (!empty($experienceDetails)) : ?>
+      <?php foreach ($experienceDetails as $exp) : ?>
+        <div class="border rounded bg-light p-2 mb-2 position-relative small">
+          <!-- Header Row -->
+          <div class="d-flex justify-content-between align-items-start mb-1">
+            <div><strong><?= esc($exp['title']) ?></strong></div>
+            <div class="d-flex gap-2">
+              <a href="javascript:void(0);" onclick='editExperience(<?= json_encode($exp, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)' class="text-primary" title="Edit">
+                <i class="bi bi-pencil-square fs-6"></i>
+              </a>
+              <a href="javascript:void(0);" onclick='confirmDeleteExperience(<?= $exp["id"] ?>, "<?= esc(addslashes($exp["title"])) ?>")' class="text-danger" title="Delete">
+                <i class="bi bi-trash fs-6"></i>
+              </a>
+            </div>
+          </div>
+
+          <div><b>Organization:</b> <?= esc($exp['organization']) ?></div>
+          <div><b>Type:</b> <?= esc($exp['employment_type']) ?> | <?= esc($exp['location_type']) ?></div>
+          <div><b>Location:</b> <?= esc($exp['location']) ?></div>
+          <div>
+            <b>Duration:</b>
+            <?= date('M Y', strtotime($exp['joining_date'])) ?>
+            <?php if (!$exp['is_current']) : ?>
+              to <?= date('M Y', strtotime($exp['end_date'])) ?>
+            <?php else : ?>
+              (Currently working)
+            <?php endif; ?>
+          </div>
+          <?php if (!empty($exp['remarks'])) : ?>
+            <div><b>Remarks:</b> <em><?= esc($exp['remarks']) ?></em></div>
           <?php endif; ?>
         </div>
-      </div>
+      <?php endforeach; ?>
+    <?php else : ?>
+      <p>No experience details added yet.</p>
+    <?php endif; ?>
+  </div>
+</div>
+
+
+
       <!-- Education Details Section -->
       <div id="education-details" class="section-card mt-4">
         <h5>
           Education Details
           <a href="#" data-bs-toggle="modal" data-bs-target="#educationDetailsModal">Add</a>
         </h5>
-        <div class="mt-3">
+        <div class="mt-3 d-flex flex-wrap gap-3">
           <?php if (!empty($educationDetails)): ?>
             <?php foreach ($educationDetails as $edu): ?>
-              <div class="border p-2 mb-2 rounded bg-light">
-                <strong><?= esc($edu['qualification_type']) ?>:</strong>
-                <?= esc($edu['institution_name']) ?> (<?= esc($edu['board_university']) ?>),
-                <?= esc($edu['course_specialization']) ?>, <?= esc($edu['course_type']) ?>,
-                <?= esc($edu['year_of_passing']) ?>,
-                Grade: <?= esc($edu['grade_percentage']) ?>,
-                Status: <?= esc($edu['result_status']) ?>
+              <div class="border p-3 mb-3 rounded bg-light position-relative" style="width: 300px; min-height: 200px;">
+              <div><strong>Qualification:</strong> <?= esc($edu['qualification_type']) ?></div>
+              <div><strong>Institution:</strong> <?= esc($edu['institution_name']) ?></div>
+              <div><strong>Board / University:</strong> <?= esc($edu['board_university']) ?></div>
+              <div><strong>Specialization:</strong> <?= esc($edu['course_specialization']) ?></div>
+              <div><strong>Course Type:</strong> <?= esc($edu['course_type']) ?></div>
+              <div><strong>Year of Passing:</strong> <?= esc($edu['year_of_passing']) ?></div>
+              <div><strong>Grade / Percentage:</strong> <?= esc($edu['grade_percentage']) ?></div>
+
+              <?php
+                $status = strtolower($edu['result_status']);
+                $badgeClass = 'bg-secondary';
+                if ($status === 'passed') {
+                  $badgeClass = 'bg-success';
+                } elseif ($status === 'awaiting results') {
+                  $badgeClass = 'bg-warning text-dark';
+                } elseif ($status === 'pursuing') {
+                  $badgeClass = 'bg-info text-dark';
+                }
+              ?>
+              <div><strong>Status:</strong> <span class="badge <?= $badgeClass ?>"><?= esc($edu['result_status']) ?></span></div>
+
+              <!-- Icons -->
+              <div class="position-absolute top-0 end-0 mt-2 me-2 d-flex gap-2">
+                <a href="javascript:void(0);" onclick='editEducation(<?= json_encode($edu, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)' class="text-primary" title="Edit">
+                  <i class="bi bi-pencil-square fs-5"></i>
+                </a>
+                <a href="javascript:void(0);" onclick='confirmDeleteEducation(<?= $edu["id"] ?>, "<?= esc(addslashes($edu["qualification_type"])) ?>")' class="text-danger" title="Delete">
+                  <i class="bi bi-trash fs-5"></i>
+                </a>
               </div>
+            </div>
             <?php endforeach; ?>
           <?php else: ?>
             <p>No education details added yet.</p>
           <?php endif; ?>
         </div>
       </div>
+
 
         <!--Skills Section-->
         <div id="skills" class="section-card"> 
@@ -684,24 +732,45 @@ $globalData = new GlobalData();
         <h5>Licenses & Certifications 
           <a href="#" data-bs-toggle="modal" data-bs-target="#certificationModal">Add</a>
         </h5>
-        <div id="certificationsList" class="mt-3">
+        <div id="certificationsList" class="mt-3 d-flex flex-wrap gap-3">
           <?php if (!empty($licensesCertifications)) : ?>
-            <ul class="list-group">
-              <?php foreach ($licensesCertifications as $cert) : ?>
-                <li class="list-group-item">
-                  <strong><?= esc($cert['certificate_name']) ?></strong> - <?= esc($cert['issuing_organization']) ?><br>
-                  <b>Issued:</b> <?= date('M Y', strtotime($cert['issue_date'])) ?> 
-                  <?= $cert['expiry_date'] ? ' | Expires: ' . date('M Y', strtotime($cert['expiry_date'])) : '' ?><br>
-                  <b>Id:</b><?= esc($cert['reg_no']) ?> 
-                  <?= $cert['url'] ? ' | <a href="' . esc($cert['url']) . '" target="_blank">Link</a>' : '' ?>
-                </li>
-              <?php endforeach; ?>
-            </ul>
+            <?php foreach ($licensesCertifications as $cert) : ?>
+              <div class="border rounded bg-light p-3" style="width: 360px; min-height: 200px;">
+                <!-- Header row with title and icons -->
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <strong><?= esc($cert['certificate_name']) ?></strong>
+                  <div class="d-flex gap-2">
+                    <a href="javascript:void(0);" onclick='editCertification(<?= json_encode($cert, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)' class="text-primary" title="Edit">
+                      <i class="bi bi-pencil-square fs-5"></i>
+                    </a>
+                    <a href="javascript:void(0);" onclick='confirmDeleteCertification(<?= $cert["id"] ?>, "<?= esc(addslashes($cert["certificate_name"])) ?>")' class="text-danger" title="Delete">
+                      <i class="bi bi-trash fs-5"></i>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- Card Content -->
+                <div>
+                  <div><strong>Issued By:</strong> <?= esc($cert['issuing_organization']) ?></div>
+                  <div><strong>Issue Date:</strong> <?= date('M Y', strtotime($cert['issue_date'])) ?></div>
+                  <?php if ($cert['expiry_date']) : ?>
+                    <div><strong>Expiry:</strong> <?= date('M Y', strtotime($cert['expiry_date'])) ?></div>
+                  <?php endif; ?>
+                  <?php if ($cert['reg_no']) : ?>
+                    <div><strong>ID:</strong> <?= esc($cert['reg_no']) ?></div>
+                  <?php endif; ?>
+                  <?php if ($cert['url']) : ?>
+                    <div><strong>URL:</strong> <a href="<?= esc($cert['url']) ?>" target="_blank">Link</a></div>
+                  <?php endif; ?>
+                </div>
+              </div>
+            <?php endforeach; ?>
           <?php else : ?>
             <p>No certifications added yet.</p>
           <?php endif; ?>
         </div>
       </div>
+
       <!-- Projects & Publication Section -->
       <div id="projects-publications-section" class="section-card mt-4">
         <h5>Projects & Publications
@@ -1257,6 +1326,90 @@ $globalData = new GlobalData();
     </div>
   </div>
 </div>
+<!-- Edit Experience Modal -->
+<div class="modal fade" id="editExperienceDetailsModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 16px;">
+      <form id="editExperienceForm" method="post" action="<?= base_url('/student/update-experience') ?>">
+        <input type="hidden" name="experience_id" id="experience_id">
+
+        <div class="modal-header border-0">
+          <h5 class="modal-title" id="editExperienceModalTitle">Edit Experience</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body row g-3">
+          <div class="col-md-6">
+            <label>Title</label>
+            <input type="text" name="title" id="experience_title" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label>Employment Type</label>
+            <?= (new \App\Libraries\GlobalData())->renderEmploymentTypeDropdown('employment_type', old('employment_type')) ?>
+          </div>
+          <div class="col-md-6">
+            <label>Organization</label>
+            <input type="text" name="organization" id="experience_organization" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Joining Date</label>
+            <input type="date" name="joining_date" id="experience_joining_date" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>End Date</label>
+            <input type="date" name="end_date" id="experience_end_date" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Currently Working?</label><br>
+            <input type="checkbox" name="is_current" id="experience_is_current">
+          </div>
+          <div class="col-md-6">
+            <label>Location</label>
+            <input type="text" name="location" id="experience_location" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Location Type</label>
+            <?= (new \App\Libraries\GlobalData())->renderLocationTypeDropdown('location_type', old('location_type')) ?>
+          </div>
+          <div class="col-md-12">
+            <label>Remarks</label>
+            <textarea name="remarks" id="experience_remarks" class="form-control"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Delete Experience Modal -->
+<div class="modal fade" id="deleteExperienceModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 16px;">
+      <form id="deleteExperienceForm" method="post" action="<?= base_url('/student/delete-experience') ?>">
+        <input type="hidden" name="delete_experience_id" id="delete_experience_id">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">Delete Experience</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center">
+          <p class="mb-0">
+            Are you sure you want to delete the experience titled 
+            <strong id="delete_experience_title_label">this title</strong>?
+          </p>
+        </div>
+        <div class="modal-footer border-0 justify-content-center">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 
 <!-- Education Details Modal -->
 <div class="modal fade" id="educationDetailsModal" tabindex="-1">
@@ -1310,6 +1463,86 @@ $globalData = new GlobalData();
     </div>
   </div>
 </div>
+<!-- Edit Education Modal -->
+<div class="modal fade" id="editEducationDetailsModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 16px;">
+      <form id="editEducationForm" method="post" action="<?= base_url('/student/update-education') ?>">
+        <input type="hidden" name="education_id" id="education_id">
+
+        <div class="modal-header border-0">
+          <h5 class="modal-title" id="editEducationModalTitle">Edit Education</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body row g-3">
+          <div class="col-md-6">
+            <label>Qualification Type</label>
+            <?= (new \App\Libraries\GlobalData())->renderQualificationTypeDropdown('qualification_type', old('qualification_type')) ?>
+          </div>
+          <div class="col-md-6">
+            <label>Institution Name</label>
+            <input type="text" name="institution_name" id="education_institution_name" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Board / University</label>
+            <input type="text" name="board_university" id="education_board_university" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Course / Specialization</label>
+            <input type="text" name="course_specialization" id="education_course_specialization" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Course Type</label>
+            <?= (new \App\Libraries\GlobalData())->renderCourseTypeDropdown('course_type', old('course_type')) ?>
+          </div>
+          <div class="col-md-6">
+            <label>Year of Passing</label>
+            <input type="text" name="year_of_passing" id="education_year_of_passing" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Grade / Percentage</label>
+            <input type="text" name="grade_percentage" id="education_grade_percentage" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Result Status</label>
+            <?= (new \App\Libraries\GlobalData())->renderResultStatusDropdown('result_status', old('result_status')) ?>
+          </div>
+        </div>
+
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Delete Education Modal -->
+<div class="modal fade" id="deleteEducationModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 16px;">
+      <form id="deleteEducationForm" method="post" action="<?= base_url('/student/delete-education') ?>">
+        <input type="hidden" name="delete_education_id" id="delete_education_id">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">Delete Education</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center">
+          <p class="mb-0">
+            Are you sure you want to delete the education record: 
+            <strong id="delete_education_title_label">this qualification</strong>?
+          </p>
+        </div>
+        <div class="modal-footer border-0 justify-content-center">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 
 <!-- Licenses & Certifications Modal -->
 <div class="modal fade" id="certificationModal" tabindex="-1">
@@ -1362,6 +1595,78 @@ $globalData = new GlobalData();
     </div>
   </div>
 </div>
+<!-- Edit Certification Modal -->
+<div class="modal fade" id="editCertificationModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 16px;">
+      <form id="editCertificationForm" method="post" action="<?= base_url('/student/update-certification') ?>">
+        <input type="hidden" name="certification_id" id="certification_id">
+
+        <div class="modal-header border-0">
+          <h5 class="modal-title" id="editCertificationModalTitle">Edit Certification</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body row g-3">
+          <div class="col-md-6">
+            <label>Certificate Name</label>
+            <input type="text" name="certificate_name" id="certification_name" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Issuing Organization</label>
+            <input type="text" name="issuing_organization" id="certification_organization" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Issue Date</label>
+            <input type="date" name="issue_date" id="certification_issue_date" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>Expiry Date</label>
+            <input type="date" name="expiry_date" id="certification_expiry_date" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>ID / Number</label>
+            <input type="text" name="reg_no" id="certification_reg_no" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label>URL</label>
+            <input type="url" name="url" id="certification_url" class="form-control">
+          </div>
+        </div>
+
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Delete Certification Modal -->
+<div class="modal fade" id="deleteCertificationModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 16px;">
+      <form id="deleteCertificationForm" method="post" action="<?= base_url('/student/delete-certification') ?>">
+        <input type="hidden" name="delete_certification_id" id="delete_certification_id">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">Delete Certification</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center">
+          <p class="mb-0">
+            Are you sure you want to delete the certification: 
+            <strong id="delete_certification_title_label">this certificate</strong>?
+          </p>
+        </div>
+        <div class="modal-footer border-0 justify-content-center">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 
 <!-- Projects & Publications Modal -->
 <div class="modal fade" id="projectsPublicationsModal" tabindex="-1">
@@ -2363,6 +2668,89 @@ function reloadSkills() {
   }
 </script>
 
+<script>
+  function editExperience(data) {
+    const modal = new bootstrap.Modal(document.getElementById('editExperienceDetailsModal'));
+    document.getElementById("editExperienceModalTitle").textContent = "Edit Experience";
+
+    document.getElementById("experience_id").value = data.id;
+    document.getElementById("experience_title").value = data.title;
+    document.getElementById("employment_type").value = data.employment_type;
+    document.getElementById("experience_organization").value = data.organization;
+    document.getElementById("experience_joining_date").value = (data.joining_date && data.joining_date !== '0000-00-00') ? data.joining_date : '';
+    document.getElementById("experience_end_date").value = (data.end_date && data.end_date !== '0000-00-00') ? data.end_date : '';
+    document.getElementById("location_type").value = data.location_type;
+    document.getElementById("experience_location").value = data.location;
+    document.getElementById("experience_remarks").value = data.remarks;
+    document.getElementById("experience_is_current").checked = data.is_current == 1;
+
+    modal.show();
+  }
+</script>
+
+
+<script>
+  function confirmDeleteExperience(id, title) {
+    document.getElementById('delete_experience_id').value = id;
+    document.getElementById('delete_experience_title_label').textContent = title;
+    const modal = new bootstrap.Modal(document.getElementById('deleteExperienceModal'));
+    modal.show();
+  }
+</script>
+
+<script>
+  function editEducation(data) {
+  const modal = new bootstrap.Modal(document.getElementById('editEducationDetailsModal'));
+  document.getElementById("editEducationModalTitle").textContent = "Edit Education";
+
+  document.getElementById("education_id").value = data.id;
+  document.querySelector('[name="qualification_type"]').value = data.qualification_type;
+  document.getElementById("education_institution_name").value = data.institution_name;
+  document.getElementById("education_board_university").value = data.board_university;
+  document.getElementById("education_course_specialization").value = data.course_specialization;
+  document.querySelector('[name="course_type"]').value = data.course_type;
+  document.getElementById("education_year_of_passing").value = data.year_of_passing;
+  document.getElementById("education_grade_percentage").value = data.grade_percentage;
+  document.querySelector('[name="result_status"]').value = data.result_status;
+
+  modal.show();
+}
+</script>
+
+<script>
+  function confirmDeleteEducation(id, qualification) {
+    document.getElementById('delete_education_id').value = id;
+    document.getElementById('delete_education_title_label').textContent = qualification;
+    const modal = new bootstrap.Modal(document.getElementById('deleteEducationModal'));
+    modal.show();
+  }
+</script>
+
+<script>
+  function editCertification(data) {
+    const modal = new bootstrap.Modal(document.getElementById('editCertificationModal'));
+    document.getElementById("editCertificationModalTitle").textContent = "Edit Certification";
+
+    document.getElementById("certification_id").value = data.id;
+    document.getElementById("certification_name").value = data.certificate_name;
+    document.getElementById("certification_organization").value = data.issuing_organization;
+    document.getElementById("certification_issue_date").value = data.issue_date;
+    document.getElementById("certification_expiry_date").value = data.expiry_date;
+    document.getElementById("certification_reg_no").value = data.reg_no;
+    document.getElementById("certification_url").value = data.url;
+
+    modal.show();
+  }
+</script>
+
+<script>
+  function confirmDeleteCertification(id, title) {
+    document.getElementById('delete_certification_id').value = id;
+    document.getElementById('delete_certification_title_label').textContent = title;
+    const modal = new bootstrap.Modal(document.getElementById('deleteCertificationModal'));
+    modal.show();
+  }
+</script>
 
 <!-- Bootstrap JS -->
 <!-- Make sure this is included at the bottom of your page (before </body>) -->

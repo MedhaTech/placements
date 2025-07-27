@@ -115,4 +115,15 @@ $routes->post('student/delete-project', 'StudentController::deleteProject');
 $routes->post('/student/update-placement-offer', 'StudentController::updatePlacementOffer');
 $routes->post('/student/delete-placement-offer', 'StudentController::deletePlacementOffer');
 
+// Experience edit and delete Details
+$routes->post('/student/update-experience', 'StudentController::updateExperience');
+$routes->post('/student/delete-experience', 'StudentController::deleteExperience');
+
+// Education edit and delete Details
+$routes->post('/student/update-education', 'StudentController::updateEducation');
+$routes->post('/student/delete-education', 'StudentController::deleteEducation');
+
+// Licenses & Certifications edit and delete
+$routes->post('/student/update-certification', 'StudentController::updateCertification');
+$routes->post('/student/delete-certification', 'StudentController::deleteCertification');
 
