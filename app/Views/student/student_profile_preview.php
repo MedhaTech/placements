@@ -849,27 +849,35 @@ $globalData = new GlobalData();
         </div>
 
       <!-- Placement Preferences Section -->
-      <div id="preferences" class="section-card">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <h5 class="fw-bold text-dark mb-0">Placement Preferences</h5>
-          <a href="#" data-bs-toggle="modal" data-bs-target="#placementPreferencesModal" class="text-danger">
-            <i class="bi bi-pencil-square text-primary"></i>
-          </a>
-        </div>
-
-        <?php if (!empty($preferences)): ?>
-          <div class="row">
-            <div class="col-md-6 mb-2"><strong>Interested in Placements:</strong> <?= esc($preferences['interested_in_placements'] ? 'Yes' : 'No') ?></div>
-            <div class="col-md-6 mb-2"><strong>Preferred Jobs:</strong> <?= esc($preferences['preferred_jobs']) ?: '—' ?></div>
-            <div class="col-md-6 mb-2"><strong>Interested in Higher Studies:</strong> <?= esc($preferences['interested_in_higher_studies'] ? 'Yes' : 'No') ?></div>
-            <div class="col-md-6 mb-2"><strong>Placement Coordinator Name:</strong> <?= esc($preferences['placement_coordinator_name']) ?></div>
-            <div class="col-md-6 mb-2"><strong>Department:</strong> <?= esc($preferences['coordinator_department']) ?></div>
-            <div class="col-md-6 mb-2"><strong>Mobile:</strong> <?= esc($preferences['coordinator_mobile']) ?></div>
+        <div id="preferences" class="section-card">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="fw-bold text-dark mb-0">Placement Preferences</h5>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#placementPreferencesModal" class="text-danger">
+              <i class="bi bi-pencil-square text-primary"></i>
+            </a>
           </div>
-        <?php else: ?>
-          <p class="text-muted small">You haven't filled placement preferences yet.</p>
-        <?php endif; ?>
-      </div>
+              <?php if (!empty($placement)) : ?>
+              <div class="row">
+                <!-- Left Column -->
+                <div class="col-md-6">
+                  <p><strong>Interested in Placements:</strong> <?= $placement['interested_in_placements'] ? 'Yes' : 'No' ?></p>
+                  <p><strong>Preferred Jobs:</strong> <?= esc($placement['preferred_jobs']) ?></p>
+                  <p><strong>Interested in Higher Studies:</strong> <?= $placement['interested_in_higher_studies'] ? 'Yes' : 'No' ?></p>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-6">
+                  <p><strong>Placement Coordinator Name:</strong> <?= esc($placement['placement_coordinator_name']) ?></p>
+                  <p><strong>Department:</strong> <?= esc($placement['coordinator_department']) ?></p>
+                  <p><strong>Mobile:</strong> <?= esc($placement['coordinator_mobile']) ?></p>
+                </div>
+              </div>
+            <?php else : ?>
+              <p>No placement preferences set yet.</p>
+            <?php endif; ?>
+
+
+        </div>
       <div id="training" class="section-card">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h5 class="fw-bold text-dark mb-0">Placement Training</h5>
@@ -1068,7 +1076,7 @@ $globalData = new GlobalData();
 
           <div class="col-md-6">
             <label>Entrance Rank (Optional)</label>
-            <input type="text" name="enterance_rank" class="form-control" value="<?= isset($academic['enterance_rank']) ? esc($academic['enterance_rank']) : '' ?>">
+            <input type="text" name="entrance_rank" class="form-control" value="<?= isset($academic['enterance_rank']) ? esc($academic['enterance_rank']) : '' ?>">
           </div>
 
           <!-- Dynamic Semester Inputs -->
@@ -1082,7 +1090,7 @@ $globalData = new GlobalData();
                   if (!empty($academic[$key])): $hasSemester = true;
               ?>
                 <div class="d-flex align-items-center mb-2 semester-group">
-                  <input type="text" name="sem_sgpa_cgpa[]" class="form-control me-2" value="<?= esc($academic[$key]) ?>" placeholder="Semester <?= $i ?> SGPA/CGPA">
+                  <input type="text" name="semesters[]" class="form-control me-2" value="<?= esc($academic[$key]) ?>" placeholder="Semester <?= $i ?> SGPA/CGPA">
                   <button type="button" class="btn btn-danger btn-sm remove-semester">X</button>
                 </div>
               <?php
@@ -2090,27 +2098,41 @@ document.addEventListener('DOMContentLoaded', function () {
       successView.classList.remove('d-none');
 
       // Add to DOM
-      const skillList = document.querySelector("#skillList");
-      if (skillList) {
-        const newSkill = document.createElement("div");
-        newSkill.className = "badge rounded-pill px-3 py-2 border text-dark d-flex align-items-center";
-        newSkill.style.fontSize = "14px";
-        newSkill.style.backgroundColor = "#f4f3f8";
-        newSkill.innerHTML = `
-          ${skillName}
-          <button 
-            type="button"
-            class="btn btn-sm btn-link text-dark ms-2 p-0 deleteSkillBtn" 
-            data-id="${skillId}"  <!-- set this dynamically -->
-            data-skill="${skillName}" 
-            data-bs-toggle="modal" 
-            data-bs-target="#deleteSkillModal"
-            style="line-height: 1; text-decoration: none;">&times;
-          </button>`;
-        skillList.appendChild(newSkill);
-        reloadSkills();
+      const listGroup = document.querySelector("#skills .d-flex.flex-wrap.gap-2");
+      if (listGroup) {
+        const newItem = document.createElement("div");
+        newItem.className = "badge rounded-pill bg-light text-dark border d-flex align-items-center";
+          newItem.style.fontSize = "14px";
+          newItem.style.padding = "10px 14px";
+          newItem.innerHTML = `
+            ${skillName}
+            <button type="button"
+                    class="btn-close btn-close-sm ms-2"
+                    aria-label="Remove"
+                    style="font-size: 10px;"
+                    data-id="TEMP"
+                    data-skill="${skillName}"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteSkillModal"></button>
+          `;
 
+        newItem.style.background = "#f9f9f9";
+        newItem.innerHTML = `
+          <span class="text-dark">${skillName}</span>
+          <button 
+              type="button"
+              class="btn btn-sm btn-link text-dark ms-2 p-0 deleteSkillBtn"
+              data-id="TEMP"
+              data-skill="${skillName}"
+              data-bs-toggle="modal"
+              data-bs-target="#deleteSkillModal"
+              style="line-height: 1; text-decoration: none;">
+              &times;
+            </button>
+            `;
+        listGroup.appendChild(newItem);
       }
+
       // Reset input
       skillInput.value = '';
       filterSkills();
@@ -2132,9 +2154,9 @@ document.addEventListener('DOMContentLoaded', function () {
     formContainer.classList.remove('d-none');
     successView.classList.add('d-none');
     filterSkills();
-  });
 
-  // 6. Delete Skill Logic
+  });
+ // 6. Delete Skill Logic
   let selectedSkillId = null;
   const deleteInput = document.getElementById('deleteSkillId');
   const skillNameLabel = document.getElementById('skillNameLabel');
@@ -2145,7 +2167,7 @@ document.addEventListener('DOMContentLoaded', function () {
       selectedSkillId = btn.getAttribute('data-id');
       const skillName = btn.getAttribute('data-skill');
       deleteInput.value = selectedSkillId;
-      skillNameLabel.textContent = skillName;
+      
     }
   });
 
@@ -2167,7 +2189,7 @@ document.addEventListener('DOMContentLoaded', function () {
           const modal = bootstrap.Modal.getInstance(document.getElementById('deleteSkillModal'));
           modal.hide();
 
-          const skillItem = document.querySelector(`.deleteSkillBtn[data-id="${skillId}"]`)?.closest('.list-group-item');
+          const skillItem = document.querySelector(`.deleteSkillBtn[data-id="${skillId}"]`)?.closest('.badge');
           if (skillItem) skillItem.remove();
         } else {
           alert('Error deleting skill');
@@ -2177,47 +2199,36 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 });
-function reloadSkills() {
-  $('#skills-container').load("<?= base_url('student/reload-skills') ?>");
-}
 
 </script>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
     const container = document.getElementById("semesterInputs");
     const addBtn = document.getElementById("addSemesterBtn");
 
     addBtn.addEventListener("click", function () {
-      const count = container.querySelectorAll(".semester-group").length + 1;
+        const count = container.querySelectorAll(".semester-group").length + 1;
 
-      const group = document.createElement("div");
-      group.className = "d-flex align-items-center mb-2 semester-group";
+        const div = document.createElement("div");
+        div.className = "d-flex align-items-center mb-2 semester-group";
 
-      const input = document.createElement("input");
-      input.type = "text";
-      input.name = "sem_sgpa_cgpa[]";
-      input.className = "form-control me-2";
-      input.placeholder = `Semester ${count} SGPA/CGPA`;
+        div.innerHTML = `
+            <input type="text" name="semesters[]" class="form-control me-2" placeholder="Semester ${count} SGPA/CGPA">
+            <button type="button" class="btn btn-danger btn-sm remove-semester">X</button>
+        `;
 
-      const removeBtn = document.createElement("button");
-      removeBtn.type = "button";
-      removeBtn.className = "btn btn-danger btn-sm remove-semester";
-      removeBtn.innerText = "X";
-      removeBtn.onclick = () => group.remove();
-
-      group.appendChild(input);
-      group.appendChild(removeBtn);
-      container.appendChild(group);
+        container.appendChild(div);
     });
 
     container.addEventListener("click", function (e) {
-      if (e.target.classList.contains("remove-semester")) {
-        e.target.closest(".semester-group").remove();
-      }
+        if (e.target.classList.contains("remove-semester")) {
+            e.target.closest(".semester-group").remove();
+        }
     });
-  });
+});
 </script>
+
 
 <script>
   function openFamilyModal() {
