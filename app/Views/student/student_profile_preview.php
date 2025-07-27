@@ -310,6 +310,33 @@ $globalData = new GlobalData();
 .border-start {
   border-left: 1px solid #e0e0e0 !important;
 }
+
+.doc-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 columns */
+  gap: 12px 20px;
+  margin-top: 20px;
+}
+
+.doc-item {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  gap: 8px;
+}
+
+.doc-item .tick {
+  color: green;
+  font-size: 18px;
+}
+
+.doc-item .cross {
+  color: red;
+  font-size: 18px;
+}
+
 </style>
 </head>
 <body>
@@ -933,6 +960,31 @@ $globalData = new GlobalData();
         <h5>Documents 
           <a href="#" data-bs-toggle="modal" data-bs-target="#documentUploadModal">Upload</a>
         </h5>
+        <?php
+        $studentModel = new \App\Models\StudentModel();
+        $uploadedDocs = $studentModel->getUploadedDocumentTypes(session()->get('student_id'));
+
+        // Global document types
+        $requiredDocs = [
+            'PHOTO', 'PAN CARD', 'AADHAR CARD', 'COLLEGE ID CARD', 'RESUME',
+            'PASSPORT', 'X CERTIFICATE', 'XII CERTIFICATE', 'UG CERTIFICATE',
+            'PG CERTIFICATE', 'DIPLOMA CERTIFICATE', 'INTERNSHIP CERTIFICATE',
+            'EXPERIENCE CERTIFICATE', 'SKILL CERTIFICATE', 'OFFER LETTER'
+        ];
+        ?>
+
+       <div class="doc-grid">
+          <?php foreach ($requiredDocs as $docType): ?>
+            <div class="doc-item">
+              <?= strtoupper($docType) ?>
+              <?php if (in_array(strtoupper($docType), $uploadedDocs)): ?>
+                <i class="fa fa-circle-check text-success ms-2"></i>
+              <?php else: ?>
+                <i class="fa fa-circle-xmark text-danger ms-2"></i>
+              <?php endif; ?>
+            </div>
+          <?php endforeach; ?>
+        </div>
       </div>
     </div>
   </div>
@@ -943,7 +995,7 @@ $globalData = new GlobalData();
     <div class="modal-content" style="border-radius: 16px;">
       <form method="post" action="<?= base_url('/student/update-profile-summary') ?>">
         <div class="modal-header border-0">
-          <h5 class="modal-title">Edit Profile Summary <span class="text-success">+8%</span></h5>
+          <h5 class="modal-title">Edit Profile Summary <span class="text-success">+7%</span></h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">

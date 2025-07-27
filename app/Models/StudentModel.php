@@ -176,6 +176,18 @@ public function getExperienceDetails($studentId)
     return $this->db->table('students_experience')->where('student_id', $studentId)->get()->getResultArray();
 }
 
+public function getUploadedDocumentTypes($studentId)
+{
+    $result = $this->db->table('students_documents')
+        ->select('DISTINCT UPPER(document_type) AS document_type')
+        ->where('student_id', $studentId)
+        ->get()
+        ->getResultArray();
+
+    // Convert to simple array of UPPERCASE document types
+    return array_column($result, 'document_type');
+}
+
 }
 
 

@@ -185,10 +185,13 @@ public function overwriteAllPasswordsWithMobile()
      // ✅ Calculate profile completion
     $incompleteSections = [];
     $completion = 0;
-
+    
     // 1. Profile Summary
-    if (!empty($student['profile_summary'])) $completion += 7;
-    else $incompleteSections[] = ['name' => 'Profile Summary', 'percent' => 7];
+    if (!empty($student['profile_summary'])) {
+        $completion += 7;
+    } else {
+        $incompleteSections[] = ['name' => 'Profile Summary', 'percent' => 7];
+    }
 
     // 2. Personal Info (All fields required)
     if (
