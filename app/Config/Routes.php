@@ -73,6 +73,10 @@ $routes->post('/admin-login', 'AdminController::loginAdminUser');
 $routes->get('/admin/dashboard', 'AdminController::adminDashboard');
 $routes->get('/admin/logout', 'AdminController::adminLogout');
 
+$routes->get('/enroll-company', 'AdminController::showEnrollCompanyForm');  // Shows the form
+$routes->post('/admin/save-job-requirements', 'AdminController::saveJobRequirements');  // Handles form submission
+
+
 
 // Student Family Details Save
 $routes->post('/student/save-family-details', 'StudentController::saveFamilyDetails');

@@ -18,6 +18,9 @@
                         <i class="list-icon material-icons">business</i>
                         <span class="hide-menu">Company</span>
                     </a>
+                    <ul class="list-unstyled sub-menu">
+                    <li><a href="<?= base_url('enroll-company') ?>">Enroll</a></li>
+                    </ul>
                 </li>
 
                 <!-- Student (with dropdown) -->

@@ -26,4 +26,28 @@ class AdminModel extends Model
     {
         return $this->update($id, ['password' => $hashedPassword]);
     }
+
+    // ✅ Insert multiple job requirements at once
+    public function insertBatchJobRequirements($data)
+    {
+        $db = \Config\Database::connect();
+        return $db->table('job_requirements')->insertBatch($data);
+    }
+
+    // ✅ Get all job requirements
+    public function getAllJobRequirements()
+    {
+        $db = \Config\Database::connect();
+        return $db->table('job_requirements')->get()->getResultArray();
+    }
+
+    // ✅ Get job requirements for a specific company
+    public function getJobRequirementsByCompany($company_id)
+    {
+        $db = \Config\Database::connect();
+        return $db->table('job_requirements')
+                  ->where('company_id', $company_id)
+                  ->get()
+                  ->getResultArray();
+    }
 }

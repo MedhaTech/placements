@@ -140,6 +140,43 @@ public function adminDashboard()
         ->to('admin/dashboard')
         ->with('success', 'Password changed successfully.');
 }
+public function showEnrollCompanyForm()
+{
+    return view('admin/Enroll_company', [
+        'title' => 'Enroll Company'
+    ]);
+}
+
+public function saveJobRequirements()
+{
+    $jobModel = new \App\Models\AdminModel();
+
+    $jobProfiles = $this->request->getPost('job_profiles');
+    $vacancies   = $this->request->getPost('vacancies');
+    $locations   = $this->request->getPost('locations');
+    $ctcPackages = $this->request->getPost('salary');
+    $eligibility = $this->request->getPost('eligibility');
+
+    $data = [];
+
+    for ($i = 0; $i < count($jobProfiles); $i++) {
+        $data[] = [
+            'job_profile'          => $jobProfiles[$i],
+            'vacancies'            => $vacancies[$i],
+            'job_location'         => $locations[$i],
+            'ctc_package'          => $ctcPackages[$i],
+            'eligibility_criteria' => $eligibility[$i],
+        ];
+    }
+
+    if (!empty($data)) {
+        $jobModel->insertBatchJobRequirements($data);
+        return redirect()->back()->with('success', 'Job requirements saved successfully!');
+    }
+
+    return redirect()->back()->with('error', 'Please fill in all job details.');
+}
+
 }
 
 
