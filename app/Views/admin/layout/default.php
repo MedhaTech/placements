@@ -11,7 +11,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png" />
     <link rel="manifest" href="assets/img/site.webmanifest" />
     <link rel="stylesheet" href="<?= base_url('assets/css/pace.css') ?>">
-    <title><?= $title; ?></title>
+    <title><?= $title ?? 'Admin Panel'; ?></title>
 
     <!-- CSS -->
     <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600" rel="stylesheet">

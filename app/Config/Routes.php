@@ -73,6 +73,12 @@ $routes->post('/admin-login', 'AdminController::loginAdminUser');
 $routes->get('/admin/dashboard', 'AdminController::adminDashboard');
 $routes->get('/admin/logout', 'AdminController::adminLogout');
 
+//upload excel
+$routes->get('admin/uploadExcel', 'AdminController::uploadExcelForm');  // Form page
+$routes->post('admin/uploadExcel', 'AdminController::uploadExcel');     // Form submit
+$routes->get('admin/upload', 'AdminController::uploadExcelView');       // (Optional view, unused?)
+
+
 
 // Student Family Details Save
 $routes->post('/student/save-family-details', 'StudentController::saveFamilyDetails');
