@@ -209,6 +209,22 @@ public function uploadExcel()
     }
 }
 
+public function enrollCompanyForm()
+{
+    return view('admin/Enroll_company'); // use the correct view path
+}
+
+public function submitCompanyRegistration()
+{
+    // Set a success flash message
+    session()->setFlashdata('success', 'Company registration saved successfully!');
+
+    // Redirect back to the same form
+    return redirect()->to('/admin/dashboard');
+}
+
+
+
 }
 
 
