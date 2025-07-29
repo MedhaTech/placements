@@ -145,44 +145,6 @@ public function adminDashboard()
         ->with('success', 'Password changed successfully.');
 }
 
-public function showEnrollCompanyForm()
-{
-    return view('admin/Enroll_company', [
-        'title' => 'Enroll Company'
-    ]);
-}
-
-public function saveJobRequirements()
-{
-    $jobModel = new \App\Models\AdminModel();
-
-    $jobProfiles = $this->request->getPost('job_profiles');
-    $vacancies   = $this->request->getPost('vacancies');
-    $locations   = $this->request->getPost('locations');
-    $ctcPackages = $this->request->getPost('salary');
-    $eligibility = $this->request->getPost('eligibility');
-
-    $data = [];
-
-    for ($i = 0; $i < count($jobProfiles); $i++) {
-        $data[] = [
-            'job_profile'          => $jobProfiles[$i],
-            'vacancies'            => $vacancies[$i],
-            'job_location'         => $locations[$i],
-            'ctc_package'          => $ctcPackages[$i],
-            'eligibility_criteria' => $eligibility[$i],
-        ];
-    }
-
-    if (!empty($data)) {
-        $jobModel->insertBatchJobRequirements($data);
-        return redirect()->back()->with('success', 'Job requirements saved successfully!');
-    }
-
-    return redirect()->back()->with('error', 'Please fill in all job details.');
-}
-
-
  public function uploadExcelForm()
 {
     $data['title'] = 'Bulk Upload';
@@ -250,20 +212,50 @@ public function uploadExcel()
 
 public function enrollCompanyForm()
 {
-    return view('admin/Enroll_company'); // use the correct view path
+    return view('admin/Enroll_company', [
+        'title' => 'Enroll Company'
+    ]);
 }
 
 public function submitCompanyRegistration()
 {
-    // Set a success flash message
-    session()->setFlashdata('success', 'Company registration saved successfully!');
+    $jobModel = new \App\Models\AdminModel(); // Make sure this model has insertBatchJobRequirements()
 
-    // Redirect back to the same form
-    return redirect()->to('/admin/dashboard');
+    // Step 1: Collect posted data
+    $jobProfiles = $this->request->getPost('job_profiles');
+    $vacancies   = $this->request->getPost('vacancies');
+    $locations   = $this->request->getPost('locations');
+    $ctcPackages = $this->request->getPost('salary');
+    $eligibility = $this->request->getPost('eligibility');
+
+    // Step 2: Prepare data for insertBatch
+    $data = [];
+
+    if ($jobProfiles && is_array($jobProfiles)) {
+        for ($i = 0; $i < count($jobProfiles); $i++) {
+            if (!empty($jobProfiles[$i])) {
+                $data[] = [
+                    'job_profile'          => $jobProfiles[$i],
+                    'vacancies'            => $vacancies[$i] ?? null,
+                    'job_location'         => $locations[$i] ?? null,
+                    'ctc_package'          => $ctcPackages[$i] ?? null,
+                    'eligibility_criteria' => $eligibility[$i] ?? null,
+                    'company_id'           => $this->request->getPost('company_id') // ✅ if needed
+                ];
+            }
+        }
+    }
+
+    // Step 3: Insert to DB
+    if (!empty($data)) {
+        $jobModel->insertBatchJobRequirements($data); // 🔁 make sure this method exists in AdminModel
+        session()->setFlashdata('success', 'Company registration saved successfully!');
+        return redirect()->to('/admin/dashboard');
+    } else {
+        session()->setFlashdata('error', 'Please fill in all job details.');
+        return redirect()->to('/admin/enroll-company');
+    }
 }
-
-
-
 
 }
 

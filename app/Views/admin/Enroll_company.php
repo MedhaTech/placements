@@ -2,82 +2,6 @@
 
 <?= $this->section('content') ?>
 
-<div class="container mt-4">
-  <div class="card shadow-sm">
-    <div class="card-body p-4 bg-white">
-      <h4 class="mb-4">Add Job Requirements</h4>
-      <form method="POST" action="<?= base_url('/admin/save-job-requirements') ?>">
-        <div id="job-requirements-list">
-          <div class="job-entry border rounded p-3 mb-3 bg-light">
-            <h6 class="mb-3 fw-bold">Job Requirement</h6>
-            <div class="row">
-              <div class="col-md-4 mb-3">
-                <label class="form-label">Job Profile</label>
-                <input type="text" name="job_profiles[]" class="form-control form-control-sm" required>
-              </div>
-              <div class="col-md-4 mb-3">
-                <label class="form-label">Vacancies</label>
-                <input type="number" name="vacancies[]" class="form-control form-control-sm" required>
-              </div>
-              <div class="col-md-4 mb-3">
-                <label class="form-label">Location</label>
-                <input type="text" name="locations[]" class="form-control form-control-sm" required>
-              </div>
-              <div class="col-md-4 mb-3">
-                <label class="form-label">CTC Package</label>
-                <input type="text" name="salary[]" class="form-control form-control-sm" required>
-              </div>
-              <div class="col-md-4 mb-3">
-                <label class="form-label">Eligibility Criteria</label>
-                <input type="text" name="eligibility[]" class="form-control form-control-sm" required>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="d-flex justify-content-between mt-3">
-          <button type="button" class="btn btn-outline-primary" onclick="addJobRequirement()">+ Add More</button>
-          <button type="submit" class="btn btn-success">Submit</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<script>
-  function addJobRequirement() {
-    const container = document.getElementById('job-requirements-list');
-    const block = document.createElement('div');
-    block.classList.add('job-entry', 'border', 'rounded', 'p-3', 'mb-3', 'bg-light');
-    block.innerHTML = `
-      <h6 class="mb-3 fw-bold">Job Requirement</h6>
-      <div class="row">
-        <div class="col-md-4 mb-3">
-          <label class="form-label">Job Profile</label>
-          <input type="text" name="job_profiles[]" class="form-control form-control-sm" required>
-        </div>
-        <div class="col-md-4 mb-3">
-          <label class="form-label">Vacancies</label>
-          <input type="number" name="vacancies[]" class="form-control form-control-sm" required>
-        </div>
-        <div class="col-md-4 mb-3">
-          <label class="form-label">Location</label>
-          <input type="text" name="locations[]" class="form-control form-control-sm" required>
-        </div>
-        <div class="col-md-4 mb-3">
-          <label class="form-label">CTC Package</label>
-          <input type="text" name="salary[]" class="form-control form-control-sm" required>
-        </div>
-        <div class="col-md-4 mb-3">
-          <label class="form-label">Eligibility Criteria</label>
-          <input type="text" name="eligibility[]" class="form-control form-control-sm" required>
-        </div>
-      </div>
-    `;
-    container.appendChild(block);
-  }
-</script>
-
 
 <?php if (session()->getFlashdata('success')): ?>
     <div class="alert alert-success"><?= session()->getFlashdata('success') ?></div>
@@ -93,16 +17,8 @@
     </div>
 <?php endif; ?>
 
-<?php $recruiters = old('recruiters') ?? [[]]; ?>
-<?php foreach ($recruiters as $i => $rec): ?>
-    <div class="recruiter-block">
-        <input type="text" name="recruiters[<?= $i ?>][full_name]" value="<?= esc($rec['full_name'] ?? '') ?>" />
-        <input type="email" name="recruiters[<?= $i ?>][email]" value="<?= esc($rec['email'] ?? '') ?>" />
-        <!-- add others -->
-    </div>
-<?php endforeach; ?>
 
-<?= $this->section('content') ?>
+
 <div class="container mt-4">
   <div class="card shadow-sm">
     <div class="card-body p-4 bg-white">
@@ -110,75 +26,136 @@
 
     <form action="<?= base_url('submit-company-registration') ?>" method="POST" id="companyRegistrationForm">
         <!-- Company Info -->
-        <div class="mb-3">
-            <label class="form-label">Company Name</label>
-            <input type="text" class="form-control" name="company_name" required>
+       <h5>Company Information</h5>
+
+        <!-- First row: Company Name & Website -->
+      <div class="company-block border p-3 mb-3">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Company Name</label>
+              <input type="text" class="form-control" name="company_name" required>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Company Website</label>
+              <input type="url" class="form-control" name="company_website">
+            </div>
+          </div>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Company Website</label>
-            <input type="url" class="form-control" name="company_website">
+
+        <!-- Second row: Address -->
+        <div class="row">
+          <div class="col-6">
+            <div class="mb-3">
+              <label class="form-label">Company Address</label>
+              <textarea class="form-control" name="company_address" rows="2" required></textarea>
+            </div>
+          </div>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Company Address</label>
-            <textarea class="form-control" name="company_address" rows="2" required></textarea>
-        </div>
+      </div>  
+
 
         <!-- HR Info -->
         <h5>Information of HR</h5>
-        <div class="mb-3">
-            <label class="form-label">Point of Contact Name</label>
-            <input type="text" class="form-control" name="poc_name" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Official Email ID</label>
-            <input type="email" class="form-control" name="poc_email" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Designation of POC</label>
-            <input type="text" class="form-control" name="poc_designation" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Contact Number</label>
-            <input type="tel" class="form-control" name="poc_contact" required>
-        </div>
+      <div class="recruiter-block border p-3 mb-3">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Point of Contact Name</label>
+              <input type="text" class="form-control" name="poc_name" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Designation of POC</label>
+              <input type="text" class="form-control" name="poc_designation" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Industry Sector</label>
+              <input type="text" class="form-control" name="industry_sector">
+            </div>
+          </div>
 
-        <!-- Industry -->
-        <div class="mb-3">
-            <label class="form-label">Industry Sector</label>
-            <input type="text" class="form-control" name="industry_sector">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Official Email ID</label>
+              <input type="email" class="form-control" name="poc_email" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Contact Number</label>
+              <input type="tel" class="form-control" name="poc_contact" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">No. of Recruiters</label>
+              <input type="number" class="form-control" name="num_recruiters" id="recruiter-count" value="1" readonly>
+            </div>
+          </div>
         </div>
-        <div class="mb-3">
-            <label class="form-label">No. of Recruiters</label>
-            <input type="number" class="form-control" name="num_recruiters" id="recruiter-count" value="1" readonly>
-        </div>
+      </div>
 
         <!-- Recruiter Fields -->
         <h5>Recruiters in Drive</h5>
         <div id="recruiter-list">
-            <div class="recruiter-block border p-3 mb-3">
-                <div class="row">
-                    <div class="col-md-6 mb-2">
-                        <input type="text" class="form-control" name="recruiters[0][name]" placeholder="Full Name" required>
-                    </div>
-                    <div class="col-md-6 mb-2">
-                        <input type="email" class="form-control" name="recruiters[0][email]" placeholder="Official Email ID" required>
-                    </div>
-                    <div class="col-md-6 mb-2">
-                        <input type="text" class="form-control" name="recruiters[0][designation]" placeholder="Designation" required>
-                    </div>
-                    <div class="col-md-6 mb-2">
-                        <input type="tel" class="form-control" name="recruiters[0][contact]" placeholder="Contact Number" required>
-                    </div>
-                    <div class="col-md-6 mb-2">
-                        <input type="text" class="form-control" name="recruiters[0][signature]" placeholder="Signature" required>
+            <?php $recruiters = old('recruiters') ?? [[]]; ?>
+            <?php foreach ($recruiters as $i => $rec): ?>
+                <div class="recruiter-block border p-3 mb-3">
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <input type="text" class="form-control" name="recruiters[<?= $i ?>][name]" placeholder="Full Name" value="<?= esc($rec['name'] ?? '') ?>" required>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <input type="email" class="form-control" name="recruiters[<?= $i ?>][email]" placeholder="Official Email ID" value="<?= esc($rec['email'] ?? '') ?>" required>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <input type="text" class="form-control" name="recruiters[<?= $i ?>][designation]" placeholder="Designation" value="<?= esc($rec['designation'] ?? '') ?>" required>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <input type="tel" class="form-control" name="recruiters[<?= $i ?>][contact]" placeholder="Contact Number" value="<?= esc($rec['contact'] ?? '') ?>" required>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <input type="text" class="form-control" name="recruiters[<?= $i ?>][signature]" placeholder="Signature" value="<?= esc($rec['signature'] ?? '') ?>" required>
+                        </div>
                     </div>
                 </div>
-            </div>
+            <?php endforeach; ?>
         </div>
 
         <button type="button" class="btn btn-outline-secondary mb-0" onclick="addRecruiter()">+ Add Recruiter</button>
+        
 
-        <button type="submit" class="btn btn-primary mt-23">Submit</button>
+        <h4 class="mb-4">Job Recruiters</h4> <!-- ✅ Changed heading -->
+        <div id="job-requirements-list">
+          <div class="job-entry border p-3 mb-3"> <!-- ✅ Removed bg-light -->
+            
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Job Profile</label>
+                <input type="text" name="job_profiles[]" class="form-control form-control-sm" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Vacancies</label>
+                <input type="number" name="vacancies[]" class="form-control form-control-sm" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Location</label>
+                <input type="text" name="locations[]" class="form-control form-control-sm" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">CTC Package</label>
+                <input type="text" name="salary[]" class="form-control form-control-sm" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Eligibility Criteria</label>
+                <input type="text" name="eligibility[]" class="form-control form-control-sm" required>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-3">
+          <button type="button" class="btn btn-outline-primary" onclick="addJobRequirement()">+ Add More</button>
+          <button type="submit" class="btn btn-primary mt-23">Submit</button>
+        </div>
        </form>
     </div>
   </div>
@@ -216,4 +193,39 @@
         countField.value = recruiterIndex;
     }
 </script>
+<script>
+  function addJobRequirement() {
+    const container = document.getElementById('job-requirements-list');
+    const block = document.createElement('div');
+    block.classList.add('job-entry', 'border', 'rounded', 'p-3', 'mb-3', 'bg-light');
+    block.innerHTML = `
+      <h6 class="mb-3 fw-bold">Job Requirement</h6>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Job Profile</label>
+          <input type="text" name="job_profiles[]" class="form-control form-control-sm" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Vacancies</label>
+          <input type="number" name="vacancies[]" class="form-control form-control-sm" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Location</label>
+          <input type="text" name="locations[]" class="form-control form-control-sm" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">CTC Package</label>
+          <input type="text" name="salary[]" class="form-control form-control-sm" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Eligibility Criteria</label>
+          <input type="text" name="eligibility[]" class="form-control form-control-sm" required>
+        </div>
+      </div>
+    `;
+    container.appendChild(block);
+  }
+</script>
+
+
 <?= $this->endSection() ?>
