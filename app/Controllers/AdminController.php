@@ -4,6 +4,10 @@ namespace App\Controllers;
 
 use App\Models\AdminModel;
 use CodeIgniter\Controller;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use App\Models\StudentModel;
+
+
 
 class AdminController extends Controller
 {
@@ -140,6 +144,7 @@ public function adminDashboard()
         ->to('admin/dashboard')
         ->with('success', 'Password changed successfully.');
 }
+
 public function showEnrollCompanyForm()
 {
     return view('admin/Enroll_company', [
@@ -176,6 +181,89 @@ public function saveJobRequirements()
 
     return redirect()->back()->with('error', 'Please fill in all job details.');
 }
+
+
+ public function uploadExcelForm()
+{
+    $data['title'] = 'Bulk Upload';
+    return view('admin/upload_excel'); // adjust path if needed
+}
+public function uploadExcel()
+{
+    $file = $this->request->getFile('excel_file');
+
+    if ($file && $file->isValid() && !$file->hasMoved()) {
+        $spreadsheet = IOFactory::load($file->getTempName());
+        $sheet = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+
+        $model = new StudentModel();
+
+        for ($i = 2; $i <= count($sheet); $i++) {
+            $row = $sheet[$i];
+
+            $password = trim($row['F'] ?? '');
+            $mobile_no = trim($row['C'] ?? '');
+
+            if ($password === '') {
+                $password = password_hash($mobile_no, PASSWORD_DEFAULT);
+            } elseif (strpos($password, '$2y$') !== 0) {
+                $password = password_hash($password, PASSWORD_DEFAULT);
+            }
+
+            $data = [
+                'reg_no' => trim($row['A']),
+                'full_name' => trim($row['B']),
+                'mobile_no' => $mobile_no,
+                'whatsapp_no' => trim($row['D']),
+                'personal_email' => trim($row['E']),
+                'password' => $password,
+                'official_email' => trim($row['G']),
+                'gender' => trim($row['H']),
+                'date_of_birth' => trim($row['I']),
+                'native_place' => trim($row['J']),
+                'communication_address' => trim($row['K']),
+                'communication_state' => trim($row['L']),
+                'communication_pincode' => trim($row['M']),
+                'permanent_address' => trim($row['N']),
+                'permanent_state' => trim($row['O']),
+                'permanent_pincode' => trim($row['P']),
+                'pan_number' => trim($row['Q']),
+                'aadhar_number' => trim($row['R']),
+                'appar_id' => trim($row['S']),
+                'profile_summary' => trim($row['T']),
+                'created_by'            => 'admin',
+                'created_on'            => date('Y-m-d H:i:s'),
+                'updated_by'            => 'admin',
+                'updated_on'            => date('Y-m-d H:i:s'),
+                'linkedin'              => trim($row['Y']),
+                'github'                => trim($row['Z']),
+            ];
+
+            $model->insert($data);
+        }
+
+        return redirect()->back()->with('success', 'Excel data uploaded successfully.');
+    } else {
+        return redirect()->back()->with('error', 'Please upload a valid Excel file.');
+    }
+}
+
+public function enrollCompanyForm()
+{
+    return view('admin/Enroll_company'); // use the correct view path
+}
+
+public function submitCompanyRegistration()
+{
+    // Set a success flash message
+    session()->setFlashdata('success', 'Company registration saved successfully!');
+
+    // Redirect back to the same form
+    return redirect()->to('/admin/dashboard');
+}
+
+
+
 
 }
 

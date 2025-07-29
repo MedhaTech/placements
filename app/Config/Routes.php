@@ -73,8 +73,15 @@ $routes->post('/admin-login', 'AdminController::loginAdminUser');
 $routes->get('/admin/dashboard', 'AdminController::adminDashboard');
 $routes->get('/admin/logout', 'AdminController::adminLogout');
 
+
 $routes->get('/enroll-company', 'AdminController::showEnrollCompanyForm');  // Shows the form
 $routes->post('/admin/save-job-requirements', 'AdminController::saveJobRequirements');  // Handles form submission
+
+//upload excel
+$routes->get('admin/uploadExcel', 'AdminController::uploadExcelForm');  // Form page
+$routes->post('admin/uploadExcel', 'AdminController::uploadExcel');     // Form submit
+$routes->get('admin/upload', 'AdminController::uploadExcelView');       // (Optional view, unused?)
+
 
 
 
@@ -130,4 +137,9 @@ $routes->post('/student/delete-education', 'StudentController::deleteEducation')
 // Licenses & Certifications edit and delete
 $routes->post('/student/update-certification', 'StudentController::updateCertification');
 $routes->post('/student/delete-certification', 'StudentController::deleteCertification');
+
+//Admin company registration
+$routes->get('enroll-company', 'AdminController::enrollCompanyForm'); 
+$routes->post('submit-company-registration', 'AdminController::submitCompanyRegistration');
+
 

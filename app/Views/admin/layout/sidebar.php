@@ -30,7 +30,7 @@
                         <span class="hide-menu">Student</span>
                     </a>
                     <ul class="list-unstyled sub-menu">
-                        <li><a href="bulk-upload.php">Bulk Upload</a></li>
+                     <li><a href="<?= base_url('admin/uploadExcel') ?>">Bulk Upload</a></li>
                     </ul>
                 </li>
 
