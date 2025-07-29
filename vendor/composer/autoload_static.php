@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit8d7a526c6adc2b3d6e7f376a24ad4666
+class ComposerStaticInitff2b2b0ec3c0bc932cacb348541666bc
 {
     public static $files = array (
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
@@ -153,6 +153,13 @@ class ComposerStaticInit8d7a526c6adc2b3d6e7f376a24ad4666
         'App\\Controllers\\StudentController' => __DIR__ . '/../..' . '/app/Controllers/StudentController.php',
         'App\\Libraries\\GlobalData' => __DIR__ . '/../..' . '/app/Libraries/GlobalData.php',
         'App\\Models\\AdminModel' => __DIR__ . '/../..' . '/app/Models/AdminModel.php',
+        'App\\Models\\CertificationModel' => __DIR__ . '/../..' . '/app/Models/CertificationModel.php',
+        'App\\Models\\EducationDetailModel' => __DIR__ . '/../..' . '/app/Models/EducationDetailModel.php',
+        'App\\Models\\ExperienceDetailModel' => __DIR__ . '/../..' . '/app/Models/ExperienceDetailModel.php',
+        'App\\Models\\FamilyDetailModel' => __DIR__ . '/../..' . '/app/Models/FamilyDetailModel.php',
+        'App\\Models\\PlacementOffersModel' => __DIR__ . '/../..' . '/app/Models/PlacementOffersModel.php',
+        'App\\Models\\ProjectsPublicationsModel' => __DIR__ . '/../..' . '/app/Models/ProjectsPublicationsModel.php',
+        'App\\Models\\StudentLanguageModel' => __DIR__ . '/../..' . '/app/Models/StudentLanguageModel.php',
         'App\\Models\\StudentModel' => __DIR__ . '/../..' . '/app/Models/StudentModel.php',
         'CodeIgniter\\API\\ResponseTrait' => __DIR__ . '/..' . '/codeigniter4/framework/system/API/ResponseTrait.php',
         'CodeIgniter\\Autoloader\\Autoloader' => __DIR__ . '/..' . '/codeigniter4/framework/system/Autoloader/Autoloader.php',
@@ -2690,11 +2697,13 @@ class ComposerStaticInit8d7a526c6adc2b3d6e7f376a24ad4666
         'PhpParser\\Lexer\\TokenEmulator\\KeywordEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/KeywordEmulator.php',
         'PhpParser\\Lexer\\TokenEmulator\\MatchTokenEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/MatchTokenEmulator.php',
         'PhpParser\\Lexer\\TokenEmulator\\NullsafeTokenEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/NullsafeTokenEmulator.php',
+        'PhpParser\\Lexer\\TokenEmulator\\PipeOperatorEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/PipeOperatorEmulator.php',
         'PhpParser\\Lexer\\TokenEmulator\\PropertyTokenEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/PropertyTokenEmulator.php',
         'PhpParser\\Lexer\\TokenEmulator\\ReadonlyFunctionTokenEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/ReadonlyFunctionTokenEmulator.php',
         'PhpParser\\Lexer\\TokenEmulator\\ReadonlyTokenEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/ReadonlyTokenEmulator.php',
         'PhpParser\\Lexer\\TokenEmulator\\ReverseEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/ReverseEmulator.php',
         'PhpParser\\Lexer\\TokenEmulator\\TokenEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/TokenEmulator.php',
+        'PhpParser\\Lexer\\TokenEmulator\\VoidCastEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/VoidCastEmulator.php',
         'PhpParser\\Modifiers' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Modifiers.php',
         'PhpParser\\NameContext' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/NameContext.php',
         'PhpParser\\Node' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node.php',
@@ -2762,6 +2771,7 @@ class ComposerStaticInit8d7a526c6adc2b3d6e7f376a24ad4666
         'PhpParser\\Node\\Expr\\BinaryOp\\Mul' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/BinaryOp/Mul.php',
         'PhpParser\\Node\\Expr\\BinaryOp\\NotEqual' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/BinaryOp/NotEqual.php',
         'PhpParser\\Node\\Expr\\BinaryOp\\NotIdentical' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/BinaryOp/NotIdentical.php',
+        'PhpParser\\Node\\Expr\\BinaryOp\\Pipe' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/BinaryOp/Pipe.php',
         'PhpParser\\Node\\Expr\\BinaryOp\\Plus' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/BinaryOp/Plus.php',
         'PhpParser\\Node\\Expr\\BinaryOp\\Pow' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/BinaryOp/Pow.php',
         'PhpParser\\Node\\Expr\\BinaryOp\\ShiftLeft' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/BinaryOp/ShiftLeft.php',
@@ -2780,6 +2790,7 @@ class ComposerStaticInit8d7a526c6adc2b3d6e7f376a24ad4666
         'PhpParser\\Node\\Expr\\Cast\\Object_' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/Cast/Object_.php',
         'PhpParser\\Node\\Expr\\Cast\\String_' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/Cast/String_.php',
         'PhpParser\\Node\\Expr\\Cast\\Unset_' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/Cast/Unset_.php',
+        'PhpParser\\Node\\Expr\\Cast\\Void_' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/Cast/Void_.php',
         'PhpParser\\Node\\Expr\\ClassConstFetch' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/ClassConstFetch.php',
         'PhpParser\\Node\\Expr\\Clone_' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/Clone_.php',
         'PhpParser\\Node\\Expr\\Closure' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/Closure.php',
@@ -3209,10 +3220,10 @@ class ComposerStaticInit8d7a526c6adc2b3d6e7f376a24ad4666
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit8d7a526c6adc2b3d6e7f376a24ad4666::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit8d7a526c6adc2b3d6e7f376a24ad4666::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit8d7a526c6adc2b3d6e7f376a24ad4666::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit8d7a526c6adc2b3d6e7f376a24ad4666::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitff2b2b0ec3c0bc932cacb348541666bc::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitff2b2b0ec3c0bc932cacb348541666bc::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitff2b2b0ec3c0bc932cacb348541666bc::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitff2b2b0ec3c0bc932cacb348541666bc::$classMap;
 
         }, null, ClassLoader::class);
     }

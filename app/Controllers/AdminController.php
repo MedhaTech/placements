@@ -188,6 +188,7 @@ public function saveJobRequirements()
     $data['title'] = 'Bulk Upload';
     return view('admin/upload_excel'); // adjust path if needed
 }
+
 public function uploadExcel()
 {
     $file = $this->request->getFile('excel_file');
@@ -200,6 +201,15 @@ public function uploadExcel()
 
         for ($i = 2; $i <= count($sheet); $i++) {
             $row = $sheet[$i];
+
+            $email = trim($row['E']); // personal_email column
+
+            // 🔍 Check if this email already exists in DB
+            $existing = $model->where('personal_email', $email)->first();
+
+            if ($existing) {
+                continue; // Skip if duplicate found
+            }
 
             $password = trim($row['F'] ?? '');
             $mobile_no = trim($row['C'] ?? '');
@@ -215,7 +225,7 @@ public function uploadExcel()
                 'full_name' => trim($row['B']),
                 'mobile_no' => $mobile_no,
                 'whatsapp_no' => trim($row['D']),
-                'personal_email' => trim($row['E']),
+                'personal_email' => $email,
                 'password' => $password,
                 'official_email' => trim($row['G']),
                 'gender' => trim($row['H']),
@@ -231,18 +241,18 @@ public function uploadExcel()
                 'aadhar_number' => trim($row['R']),
                 'appar_id' => trim($row['S']),
                 'profile_summary' => trim($row['T']),
-                'created_by'            => 'admin',
-                'created_on'            => date('Y-m-d H:i:s'),
-                'updated_by'            => 'admin',
-                'updated_on'            => date('Y-m-d H:i:s'),
-                'linkedin'              => trim($row['Y']),
-                'github'                => trim($row['Z']),
+                'created_by' => 'admin',
+                'created_on' => date('Y-m-d H:i:s'),
+                'updated_by' => 'admin',
+                'updated_on' => date('Y-m-d H:i:s'),
+                'linkedin' => trim($row['Y']),
+                'github' => trim($row['Z']),
             ];
 
             $model->insert($data);
         }
 
-        return redirect()->back()->with('success', 'Excel data uploaded successfully.');
+        return redirect()->back()->with('success', 'Excel data uploaded successfully (duplicates skipped).');
     } else {
         return redirect()->back()->with('error', 'Please upload a valid Excel file.');
     }
