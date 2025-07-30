@@ -51,13 +51,21 @@ class StudentController extends Controller
     }
 
 
-    public function studentDashboard()
-    {
-        if (!session()->get('isStudentLoggedIn')) {
-            return redirect()->to('/student');
-        }
-        return view('student/dashboard');
+public function studentDashboard()
+{
+    if (!session()->get('isStudentLoggedIn')) {
+        return redirect()->to('/student');
     }
+    $studentId = session()->get('student_id'); // Adjust if your session key is different
+
+    $model = new StudentModel();
+
+    $data['jobOpenings'] = $model->getAllJobs();           // List of all current job openings
+    $data['appliedJobs'] = $model->getAppliedJobs($studentId);
+
+    return view('student/dashboard', $data); // ✅ FIXED LINE
+}
+
 
     public function studentLogout()
     {
@@ -1428,5 +1436,18 @@ public function deleteCertification()
     $model->delete($id);
     return redirect()->back()->with('success', 'Certification deleted.');
 }
+public function applyJob()
+{
+    $jobId = $this->request->getPost('job_id');
+    $studentId = session()->get('student_id');
+
+    $this->db->table('applications')->insert([
+        'student_id' => $studentId,
+        'job_id' => $jobId
+    ]);
+
+    return redirect()->to('student/dashboard');
+}
+
 
 }

@@ -141,3 +141,4 @@ $routes->get('enroll-company', 'AdminController::enrollCompanyForm');
 $routes->post('submit-company-registration', 'AdminController::submitCompanyRegistration');
 
 
+$routes->post('student/apply', 'StudentController::applyJob');
