@@ -20,6 +20,7 @@
                     </a>
                     <ul class="list-unstyled sub-menu">
                     <li><a href="<?= base_url('enroll-company') ?>">Enroll</a></li>
+                    <li><a href="<?= base_url('registered-companies') ?>">Companies</a></li>
                     </ul>
                 </li>
 
