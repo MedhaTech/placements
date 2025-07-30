@@ -141,4 +141,14 @@ $routes->get('enroll-company', 'AdminController::enrollCompanyForm');
 $routes->post('submit-company-registration', 'AdminController::submitCompanyRegistration');
 $routes->get('registered-companies', 'AdminController::showRegisteredCompanies');
 
+// app/Config/Routes.php
+$routes->post('companies/delete', 'AdminController::deleteCompany', ['as' => 'companies_delete']);
+
+// If your admin routes are grouped, use that group instead
+$routes->post('companies/toggle-status', 'AdminController::toggleCompanyStatus', ['as' => 'companies_toggle_status']);
+
+// app/Config/Routes.php
+$routes->post('companies/update', 'AdminController::updateCompany', ['as' => 'companies_update']);
+
+
 
