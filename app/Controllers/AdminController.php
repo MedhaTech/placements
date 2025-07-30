@@ -9,6 +9,7 @@ use App\Models\StudentModel;
 use App\Models\CompanyModel;
 use App\Models\RecruiterModel;
 use App\Models\HrContactModel;  
+use App\Models\JobRequirementModel;
 
 
 class AdminController extends Controller
@@ -230,164 +231,152 @@ public function enrollCompanyForm()
 }
 
 public function submitCompanyRegistration()
-    {
-        helper(['form']);
+{
+    helper(['form']);
 
-        // --- Basic validation ---
-        $rules = [
-            'company_name'   => 'required|min_length[2]',
-            'company_address'=> 'required',
-            'poc_name'       => 'required',
-            'poc_designation'=> 'required',
-            'poc_email'      => 'required|valid_email',
-            'poc_contact'    => 'required',
+    // --- Basic validation ---
+    $rules = [
+        'company_name'    => 'required|min_length[2]',
+        'company_address' => 'required',
+        'poc_name'        => 'required',
+        'poc_designation' => 'required',
+        'poc_email'       => 'required|valid_email',
+        'poc_contact'     => 'required',
+    ];
+
+    if (!$this->validate($rules)) {
+        return redirect()
+            ->back()
+            ->with('errors', $this->validator->getErrors())
+            ->withInput();
+    }
+
+    // --- Collect POST data ---
+    $companyName    = $this->request->getPost('company_name');
+    $website        = $this->request->getPost('company_website');
+    $industrySector = $this->request->getPost('industry_sector');
+    $address        = $this->request->getPost('company_address');
+
+    // POC (we’ll store POC as one of the recruiters)
+    $poc = [
+        'full_name'      => $this->request->getPost('poc_name'),
+        'designation'    => $this->request->getPost('poc_designation'),
+        'email'          => $this->request->getPost('poc_email'),
+        'contact_number' => $this->request->getPost('poc_contact'),
+        'signature'      => null,
+    ];
+
+    // Recruiters list from the dynamic fields
+    $recruiters = $this->request->getPost('recruiters') ?? [];
+    $recruiterRows = [];
+
+    foreach ($recruiters as $rec) {
+        if (!empty($rec['name']) || !empty($rec['email'])) {
+            $recruiterRows[] = [
+                'full_name'      => $rec['name'] ?? null,
+                'designation'    => $rec['designation'] ?? null,
+                'email'          => $rec['email'] ?? null,
+                'contact_number' => $rec['contact'] ?? null,
+                'signature'      => $rec['signature'] ?? null,
+            ];
+        }
+    }
+
+    // Make sure POC is included as a recruiter (first item)
+    array_unshift($recruiterRows, $poc);
+
+    // Job requirements arrays
+    $jobProfiles = (array) $this->request->getPost('job_profiles');
+    $vacancies   = (array) $this->request->getPost('vacancies');
+    $locations   = (array) $this->request->getPost('locations');
+    $ctcPackages = (array) $this->request->getPost('salary');
+    $eligibility = (array) $this->request->getPost('eligibility');
+
+    $jobRows = [];
+    $max = max(count($jobProfiles), count($vacancies), count($locations), count($ctcPackages), count($eligibility));
+    for ($i = 0; $i < $max; $i++) {
+        $profile = trim((string)($jobProfiles[$i] ?? ''));
+        if ($profile === '') {
+            continue; // skip empty rows
+        }
+        $jobRows[] = [
+            'job_profile'          => $profile,
+            'vacancies'            => isset($vacancies[$i]) ? (int)$vacancies[$i] : null,
+            'job_location'         => $locations[$i]   ?? null,
+            'ctc_package'          => $ctcPackages[$i] ?? null,
+            'eligibility_criteria' => $eligibility[$i] ?? null,
         ];
+    }
 
-        if (!$this->validate($rules)) {
-            return redirect()
-                ->back()
-                ->with('errors', $this->validator->getErrors())
-                ->withInput();
+    $db = db_connect();
+    $db->transBegin();
+
+    try {
+        // 1) Insert company
+        $companyModel = new CompanyModel();
+        $companyModel->insert([
+            'company_name'      => $companyName,
+            'industry_sector'   => $industrySector,
+            'website'           => $website,
+            'address'           => $address,
+            'num_of_recruiters' => count($recruiterRows), // includes POC
+        ]);
+
+        $companyId = $companyModel->getInsertID();
+        if (!$companyId) {
+            $dbError = $db->error();
+            log_message('error', 'Company insert failed. DB Error: {err}', ['err' => json_encode($dbError)]);
+            throw new \RuntimeException('Failed to create company (no insert ID).');
         }
 
-        // --- Collect POST data ---
-        $companyName      = $this->request->getPost('company_name');
-        $website          = $this->request->getPost('company_website');
-        $industrySector   = $this->request->getPost('industry_sector');
-        $address          = $this->request->getPost('company_address');
+        // 2) Insert HR / POC into hr_contacts
+        $hrModel = new \App\Models\HrContactModel();
+        $hrModel->insert([
+            'company_id'      => $companyId,
+            'poc_name'        => $this->request->getPost('poc_name'),
+            'poc_designation' => $this->request->getPost('poc_designation'),
+            'poc_email'       => $this->request->getPost('poc_email'),
+            'poc_contact'     => $this->request->getPost('poc_contact'),
+        ]);
 
-        // POC (we’ll store POC as one of the recruiters)
-        $poc = [
-            'full_name'      => $this->request->getPost('poc_name'),
-            'designation'    => $this->request->getPost('poc_designation'),
-            'email'          => $this->request->getPost('poc_email'),
-            'contact_number' => $this->request->getPost('poc_contact'),
-            'signature'      => null, // no field in form; leave null or map if you add it
-        ];
+        // 3) Insert recruiters (batch)
+        $recruiterModel = new RecruiterModel();
+        foreach ($recruiterRows as &$r) {
+            $r['company_id'] = $companyId;
+        }
+        unset($r);
 
-        // Recruiters list from the dynamic fields
-        $recruiters = $this->request->getPost('recruiters') ?? [];
-        // Normalize into flat array with our DB column names
-        $recruiterRows = [];
-
-        foreach ($recruiters as $rec) {
-            if (!empty($rec['name']) || !empty($rec['email'])) {
-                $recruiterRows[] = [
-                    'full_name'      => $rec['name'] ?? null,
-                    'designation'    => $rec['designation'] ?? null,
-                    'email'          => $rec['email'] ?? null,
-                    'contact_number' => $rec['contact'] ?? null,
-                    'signature'      => $rec['signature'] ?? null,
-                ];
-            }
+        if (!empty($recruiterRows)) {
+            $recruiterModel->insertBatch($recruiterRows);
         }
 
-        // Make sure POC is included as a recruiter (first item)
-        array_unshift($recruiterRows, $poc);
+        // 4) Insert job requirements (batch) // NEW
+        if (!empty($jobRows)) { // NEW
+            foreach ($jobRows as &$j) { // NEW
+                $j['company_id'] = $companyId; // NEW
+            } // NEW
+            unset($j); // NEW
 
-        // Count recruiters for companies.num_of_recruiters
-        $numRecruiters = count($recruiterRows);
+            // Use the dedicated model // NEW
+            $jobModel = new \App\Models\JobRequirementModel(); // NEW
+            $jobModel->insertBatch($jobRows); // NEW
+        } // NEW
 
-        // Job requirements arrays (optional)
-        $jobProfiles = $this->request->getPost('job_profiles');
-        $vacancies   = $this->request->getPost('vacancies');
-        $locations   = $this->request->getPost('locations');
-        $ctcPackages = $this->request->getPost('salary');
-        $eligibility = $this->request->getPost('eligibility');
+        $db->transCommit();
 
-        $jobRows = [];
-        if (is_array($jobProfiles)) {
-            for ($i = 0; $i < count($jobProfiles); $i++) {
-                if (trim((string)$jobProfiles[$i]) !== '') {
-                    $jobRows[] = [
-                        'job_profile'          => $jobProfiles[$i],
-                        'vacancies'            => $vacancies[$i]   ?? null,
-                        'job_location'         => $locations[$i]   ?? null,
-                        'ctc_package'          => $ctcPackages[$i] ?? null,
-                        'eligibility_criteria' => $eligibility[$i] ?? null,
-                    ];
-                }
-            }
-        }
+        return redirect()
+            ->to('/admin/dashboard')
+            ->with('success', 'Company registration saved successfully!');
+    } catch (\Throwable $e) {
+        $db->transRollback();
+        log_message('error', 'Company Registration failed: {msg}', ['msg' => $e->getMessage()]);
+        return redirect()
+            ->back()
+            ->with('errors', ['save' => 'Failed to save. Please try again.'])
+            ->withInput();
+    }
+}
 
-        $db = db_connect();
-        $db->transBegin();
-
-        try {
-            // 1) Insert company
-            $companyModel = new CompanyModel();
-
-            // Insert first, then fetch ID (more reliable for errors/logging)
-            $companyModel->insert([
-                'company_name'       => $companyName,
-                'industry_sector'    => $industrySector,
-                'website'            => $website,
-                'address'            => $address,
-                // IMPORTANT: since HR is in a separate table, do NOT include POC in this count
-                'num_of_recruiters'  => count($recruiterRows),
-            ]);
-
-            $companyId = $companyModel->getInsertID();
-            if (!$companyId) {
-                $dbError = $db->error();
-                log_message('error', 'Company insert failed. DB Error: {err}', ['err' => json_encode($dbError)]);
-                throw new \RuntimeException('Failed to create company (no insert ID).');
-            }
-
-            // 2) Insert HR / POC into hr_contacts
-            $hrModel = new \App\Models\HrContactModel();
-            $hrModel->insert([
-                'company_id'     => $companyId,
-                'poc_name'       => $this->request->getPost('poc_name'),
-                'poc_designation'=> $this->request->getPost('poc_designation'),
-                'poc_email'      => $this->request->getPost('poc_email'),
-                'poc_contact'    => $this->request->getPost('poc_contact'),
-            ]);
-            // (Optional) $hrId = $hrModel->getInsertID();
-
-            // 3) Insert recruiters (batch)
-            $recruiterModel = new RecruiterModel();
-            foreach ($recruiterRows as &$r) {
-                $r['company_id'] = $companyId;
-            }
-            unset($r);
-
-            if (!empty($recruiterRows)) {
-                $recruiterModel->insertBatch($recruiterRows);
-                // Optional: verify success via $recruiterModel->db->affectedRows()
-            }
-
-            // 4) Insert job requirements (if any/table exists)
-            if (!empty($jobRows)) {
-                foreach ($jobRows as &$j) {
-                    $j['company_id'] = $companyId;
-                }
-                unset($j);
-
-                // Use your AdminModel helper OR JobRequirementModel
-                // $adminModel = new \App\Models\AdminModel();
-                // $adminModel->insertBatchJobRequirements($jobRows);
-
-                // or, if you created JobRequirementModel:
-                // $jobModel = new \App\Models\JobRequirementModel();
-                // $jobModel->insertBatch($jobRows);
-            }
-
-            $db->transCommit();
-
-            return redirect()
-                ->to('/admin/dashboard')
-                ->with('success', 'Company registration saved successfully!');
-        } catch (\Throwable $e) {
-            $db->transRollback();
-            log_message('error', 'Company Registration failed: {msg}', ['msg' => $e->getMessage()]);
-            return redirect()
-                ->back()
-                ->with('errors', ['save' => 'Failed to save. Please try again.'])
-                ->withInput();
-        }
-
-            }
 public function showRegisteredCompanies()
 {
     $db = db_connect();
@@ -406,6 +395,8 @@ public function showRegisteredCompanies()
             'c.website AS company_website',
             'c.address AS company_address',
             'c.industry_sector',
+            'c.is_active',
+            'h.hr_id AS hr_id', 
             'h.poc_name',
             'h.poc_email',
             'h.poc_designation',
@@ -468,6 +459,141 @@ public function showRegisteredCompanies()
         'jobRequirements' => $jobRequirementsByCompany,
         'recruiters'      => $recruitersByCompany,
     ]);
+}
+
+public function deleteCompany()
+    {
+        // CSRF is validated automatically if enabled in Filters
+        $id = (int) $this->request->getPost('id');
+
+        if ($id <= 0) {
+            return redirect()->back()->with('error', 'Invalid company ID.');
+        }
+
+        $db = db_connect();
+
+        try {
+            $db->transBegin();
+
+            // If you don't have ON DELETE CASCADE FKs, delete children first:
+            $db->table('recruiters')->where('company_id', $id)->delete();
+            $db->table('hr_contacts')->where('company_id', $id)->delete();
+            $db->table('job_requirements')->where('company_id', $id)->delete();
+
+            // Delete the company row
+            $db->table('companies')->where('company_id', $id)->delete();
+
+            if ($db->transStatus() === false) {
+                $db->transRollback();
+                return redirect()->back()->with('error', 'Failed to delete the company. Please try again.');
+            }
+
+            $db->transCommit();
+
+            return redirect()
+                ->to(site_url('registered-companies')) // <-- change to your listing route
+                ->with('success', 'Company deleted successfully.');
+
+        } catch (\Throwable $e) {
+            if ($db->transStatus()) {
+                $db->transRollback();
+            }
+            // Log the error if you have logging set up
+            log_message('error', 'Delete company failed: {msg}', ['msg' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'Unexpected error while deleting the company.');
+        }
+    }
+
+    public function toggleCompanyStatus()
+{
+    $id = (int)$this->request->getPost('id');
+    $current = $this->request->getPost('current_status');
+
+    if ($id <= 0) {
+        return redirect()->back()->with('error', 'Invalid company ID.');
+    }
+
+    // Normalize current to boolean
+    $isActive = false;
+    if (is_numeric($current)) {
+        $isActive = ((int)$current === 1);
+    } elseif (is_string($current)) {
+        $val = strtolower(trim($current));
+        $isActive = in_array($val, ['active','1','yes','true'], true);
+    }
+
+    // Flip it
+    $newStatusBool = $isActive ? 0 : 1;
+
+    // If your table uses "status" text values:
+    // $data = ['status' => $newStatusBool ? 'Active' : 'Inactive'];
+    // If it uses "is_active" tinyint:
+    $data = ['is_active' => $newStatusBool];
+
+    $db = db_connect();
+    $ok = $db->table('companies')->where('company_id', $id)->update($data);
+
+    if (! $ok) {
+        return redirect()->back()->with('error', 'Could not update status.');
+    }
+    return redirect()->back()->with('success', 'Status updated.');
+}
+
+// app/Controllers/Admin/AdminController.php
+public function updateCompany()
+{
+    $id = (int) $this->request->getPost('id');
+    if ($id <= 0) {
+        return redirect()->back()->with('error', 'Invalid company ID.');
+    }
+
+    $companyData = [
+        'company_name'     => trim((string)$this->request->getPost('company_name')),
+        'website'          => trim((string)$this->request->getPost('company_website')),
+        'address'          => trim((string)$this->request->getPost('company_address')),
+        'industry_sector'  => trim((string)$this->request->getPost('industry_sector')),
+        'is_active'        => (int) ($this->request->getPost('is_active') ? 1 : 0),
+    ];
+
+    // HR POC (optional – only if you show these fields)
+    $hrId     = (int) ($this->request->getPost('hr_id') ?? 0);
+    $pocData  = [
+        'poc_name'        => trim((string)$this->request->getPost('poc_name')),
+        'poc_email'       => trim((string)$this->request->getPost('poc_email')),
+        'poc_designation' => trim((string)$this->request->getPost('poc_designation')),
+        'poc_contact'     => trim((string)$this->request->getPost('poc_contact')),
+    ];
+
+    $db = db_connect();
+    try {
+        $db->transBegin();
+
+        // Update companies
+        $db->table('companies')->where('company_id', $id)->update($companyData);
+
+        // Update POC if hr_id is present; otherwise insert a new POC row (optional)
+        if ($hrId > 0) {
+            $db->table('hr_contacts')->where('hr_id', $hrId)->update($pocData);
+        } else {
+            // If you want to ensure at least one POC exists:
+            $pocData['company_id'] = $id;
+            $db->table('hr_contacts')->insert($pocData);
+        }
+
+        if (! $db->transStatus()) {
+            $db->transRollback();
+            return redirect()->back()->with('error', 'Failed to update company.');
+        }
+        $db->transCommit();
+
+        return redirect()->to(site_url('registered-companies'))->with('success', 'Company updated successfully.');
+    } catch (\Throwable $e) {
+        if ($db->transStatus()) {
+            $db->transRollback();
+        }
+        log_message('error', 'Update company failed: {msg}', ['msg' => $e->getMessage()]);
+        return redirect()->back()->with('error', 'Unexpected error while updating company.');
+    }
 }
 
 public function searchStudent()
@@ -1028,5 +1154,6 @@ public function adminViewProfile($student_id)
 }
   
 }
+
 
 
