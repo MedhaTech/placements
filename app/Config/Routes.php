@@ -139,5 +139,6 @@ $routes->post('/student/delete-certification', 'StudentController::deleteCertifi
 //Admin company registration
 $routes->get('enroll-company', 'AdminController::enrollCompanyForm'); 
 $routes->post('submit-company-registration', 'AdminController::submitCompanyRegistration');
+$routes->get('registered-companies', 'AdminController::showRegisteredCompanies');
 
 
