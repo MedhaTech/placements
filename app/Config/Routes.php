@@ -142,3 +142,4 @@ $routes->post('submit-company-registration', 'AdminController::submitCompanyRegi
 $routes->get('registered-companies', 'AdminController::showRegisteredCompanies');
 
 
+$routes->post('student/apply', 'StudentController::applyJob');
