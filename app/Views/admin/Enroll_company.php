@@ -29,7 +29,6 @@
        <h5>Company Information</h5>
 
         <!-- First row: Company Name & Website -->
-      <div class="company-block border p-3 mb-3">
         <div class="row">
           <div class="col-md-6">
             <div class="mb-3">
@@ -54,12 +53,11 @@
             </div>
           </div>
         </div>
-      </div>  
+      
 
 
         <!-- HR Info -->
         <h5>Information of HR</h5>
-      <div class="recruiter-block border p-3 mb-3">
         <div class="row">
           <div class="col-md-6">
             <div class="mb-3">
@@ -85,47 +83,47 @@
               <label class="form-label">Contact Number</label>
               <input type="tel" class="form-control" name="poc_contact" required>
             </div>
-            <div class="mb-3">
-              <label class="form-label">No. of Recruiters</label>
-              <input type="number" class="form-control" name="num_recruiters" id="recruiter-count" value="1" readonly>
-            </div>
           </div>
         </div>
-      </div>
+      
 
         <!-- Recruiter Fields -->
         <h5>Recruiters in Drive</h5>
         <div id="recruiter-list">
             <?php $recruiters = old('recruiters') ?? [[]]; ?>
             <?php foreach ($recruiters as $i => $rec): ?>
-                <div class="recruiter-block border p-3 mb-3">
-                    <div class="row">
-                        <div class="col-md-6 mb-2">
-                            <input type="text" class="form-control" name="recruiters[<?= $i ?>][name]" placeholder="Full Name" value="<?= esc($rec['name'] ?? '') ?>" required>
-                        </div>
-                        <div class="col-md-6 mb-2">
-                            <input type="email" class="form-control" name="recruiters[<?= $i ?>][email]" placeholder="Official Email ID" value="<?= esc($rec['email'] ?? '') ?>" required>
-                        </div>
-                        <div class="col-md-6 mb-2">
-                            <input type="text" class="form-control" name="recruiters[<?= $i ?>][designation]" placeholder="Designation" value="<?= esc($rec['designation'] ?? '') ?>" required>
-                        </div>
-                        <div class="col-md-6 mb-2">
-                            <input type="tel" class="form-control" name="recruiters[<?= $i ?>][contact]" placeholder="Contact Number" value="<?= esc($rec['contact'] ?? '') ?>" required>
-                        </div>
-                        <div class="col-md-6 mb-2">
-                            <input type="text" class="form-control" name="recruiters[<?= $i ?>][signature]" placeholder="Signature" value="<?= esc($rec['signature'] ?? '') ?>" required>
-                        </div>
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" name="recruiters[<?= $i ?>][name]" value="<?= esc($rec['name'] ?? '') ?>" required>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label">Official Email ID</label>
+                        <input type="email" class="form-control" name="recruiters[<?= $i ?>][email]" value="<?= esc($rec['email'] ?? '') ?>" required>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label">Designation</label>
+                        <input type="text" class="form-control" name="recruiters[<?= $i ?>][designation]" value="<?= esc($rec['designation'] ?? '') ?>" required>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label">Contact Number</label>
+                        <input type="tel" class="form-control" name="recruiters[<?= $i ?>][contact]" value="<?= esc($rec['contact'] ?? '') ?>" required>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label">Signature</label>
+                        <input type="text" class="form-control" name="recruiters[<?= $i ?>][signature]" value="<?= esc($rec['signature'] ?? '') ?>" required>
                     </div>
                 </div>
             <?php endforeach; ?>
         </div>
-
+        <div class="d-flex justify-content-between mt-3">
         <button type="button" class="btn btn-outline-secondary mb-0" onclick="addRecruiter()">+ Add Recruiter</button>
-        
-
-        <h4 class="mb-4">Job Recruiters</h4> <!-- ✅ Changed heading -->
+        </div>
+           
+          <!-- Job Requirment Fields -->
+        <h4 class="mb-4">Job Requirement</h4> <!-- ✅ Changed heading -->
         <div id="job-requirements-list">
-          <div class="job-entry border p-3 mb-3"> <!-- ✅ Removed bg-light -->
+          
             
             <div class="row">
               <div class="col-md-6 mb-3">
@@ -149,7 +147,6 @@
                 <input type="text" name="eligibility[]" class="form-control form-control-sm" required>
               </div>
             </div>
-          </div>
         </div>
 
         <div class="d-flex justify-content-between mt-3">
@@ -165,41 +162,84 @@
     let recruiterIndex = 1;
 
     function addRecruiter() {
+        recruiterIndex++;
+
         const container = document.getElementById('recruiter-list');
-        const countField = document.getElementById('recruiter-count');
+
         const block = document.createElement('div');
-        block.classList.add('recruiter-block', 'border', 'p-3', 'mb-3');
+        block.classList.add('recruiter-block', 'border', 'p-3', 'mb-3', 'bg-light');
+
         block.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold mb-0">Add Recruiter <span class="recruiter-number">${recruiterIndex}</span></h6>
+                <button type="button" class="btn p-0 text-danger" onclick="removeRecruiter(this)" title="Remove">
+                    <i class="fa fa-times fs-5"></i>
+                </button>
+            </div>
             <div class="row">
                 <div class="col-md-6 mb-2">
-                    <input type="text" class="form-control" name="recruiters[${recruiterIndex}][name]" placeholder="Full Name" required>
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-control" name="recruiters[${recruiterIndex - 1}][name]" required>
                 </div>
                 <div class="col-md-6 mb-2">
-                    <input type="email" class="form-control" name="recruiters[${recruiterIndex}][email]" placeholder="Official Email ID" required>
+                    <label class="form-label">Official Email ID</label>
+                    <input type="email" class="form-control" name="recruiters[${recruiterIndex - 1}][email]" required>
                 </div>
                 <div class="col-md-6 mb-2">
-                    <input type="text" class="form-control" name="recruiters[${recruiterIndex}][designation]" placeholder="Designation" required>
+                    <label class="form-label">Designation</label>
+                    <input type="text" class="form-control" name="recruiters[${recruiterIndex - 1}][designation]" required>
                 </div>
                 <div class="col-md-6 mb-2">
-                    <input type="tel" class="form-control" name="recruiters[${recruiterIndex}][contact]" placeholder="Contact Number" required>
+                    <label class="form-label">Contact Number</label>
+                    <input type="tel" class="form-control" name="recruiters[${recruiterIndex - 1}][contact]" required>
                 </div>
                 <div class="col-md-6 mb-2">
-                    <input type="text" class="form-control" name="recruiters[${recruiterIndex}][signature]" placeholder="Signature" required>
+                    <label class="form-label">Signature</label>
+                    <input type="text" class="form-control" name="recruiters[${recruiterIndex - 1}][signature]" required>
                 </div>
             </div>
         `;
+
         container.appendChild(block);
-        recruiterIndex++;
-        countField.value = recruiterIndex;
+        updateRecruiterNumbers();
+    }
+
+    function removeRecruiter(button) {
+        const block = button.closest('.recruiter-block');
+        block.remove();
+        updateRecruiterNumbers();
+    }
+
+    function updateRecruiterNumbers() {
+        const blocks = document.querySelectorAll('#recruiter-list .recruiter-block');
+        blocks.forEach((block, index) => {
+            const numberSpan = block.querySelector('.recruiter-number');
+            if (numberSpan) {
+                numberSpan.textContent = index + 2; // Starts from 2
+            }
+        });
     }
 </script>
+
+
 <script>
+  let jobCount = 1; // Start at 1 so the first block added becomes "Job Requirement 2"
+
   function addJobRequirement() {
+    jobCount++; // Increments to 2, 3, etc.
+
     const container = document.getElementById('job-requirements-list');
+
     const block = document.createElement('div');
     block.classList.add('job-entry', 'border', 'rounded', 'p-3', 'mb-3', 'bg-light');
+
     block.innerHTML = `
-      <h6 class="mb-3 fw-bold">Job Requirement</h6>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="fw-bold mb-0">Add Job Requirement <span class="job-number">${jobCount}</span></h6>
+        <button type="button" class="btn p-0 text-danger" onclick="removeJobRequirement(this)" title="Remove">
+          <i class="fa fa-times fs-5"></i>
+        </button>
+      </div>
       <div class="row">
         <div class="col-md-6 mb-3">
           <label class="form-label">Job Profile</label>
@@ -223,9 +263,26 @@
         </div>
       </div>
     `;
+
     container.appendChild(block);
+    updateJobNumbers();
+  }
+
+  function removeJobRequirement(button) {
+    const block = button.closest('.job-entry');
+    block.remove();
+    updateJobNumbers();
+  }
+
+  function updateJobNumbers() {
+    const blocks = document.querySelectorAll('#job-requirements-list .job-entry');
+    blocks.forEach((block, index) => {
+      const numberSpan = block.querySelector('.job-number');
+      if (numberSpan) {
+        numberSpan.textContent = index + 2; // Start from 2
+      }
+    });
   }
 </script>
-
 
 <?= $this->endSection() ?>
