@@ -164,7 +164,18 @@ public function uploadExcel()
         for ($i = 2; $i <= count($sheet); $i++) {
             $row = $sheet[$i];
 
-            $email = trim($row['E']); // personal_email column
+            // ✅ Mandatory field check - SKIP if any are missing
+            if (
+                empty($row['A']) || // reg_no
+                empty($row['B']) || // full_name
+                empty($row['C']) || // mobile_no
+                empty($row['E']) || // personal_email
+                empty($row['G'])    // official_email
+            ) {
+                continue; // Skip this row
+            }
+
+            $email = trim($row['E']);
 
             // 🔍 Check if this email already exists in DB
             $existing = $model->where('personal_email', $email)->first();
@@ -174,7 +185,7 @@ public function uploadExcel()
             }
 
             $password = trim($row['F'] ?? '');
-            $mobile_no = trim($row['C'] ?? '');
+            $mobile_no = trim($row['C']);
 
             if ($password === '') {
                 $password = password_hash($mobile_no, PASSWORD_DEFAULT);
@@ -186,29 +197,29 @@ public function uploadExcel()
                 'reg_no' => trim($row['A']),
                 'full_name' => trim($row['B']),
                 'mobile_no' => $mobile_no,
-                'whatsapp_no' => trim($row['D']),
+                'whatsapp_no' => trim($row['D'] ?? ''),
                 'personal_email' => $email,
                 'password' => $password,
                 'official_email' => trim($row['G']),
-                'gender' => trim($row['H']),
-                'date_of_birth' => trim($row['I']),
-                'native_place' => trim($row['J']),
-                'communication_address' => trim($row['K']),
-                'communication_state' => trim($row['L']),
-                'communication_pincode' => trim($row['M']),
-                'permanent_address' => trim($row['N']),
-                'permanent_state' => trim($row['O']),
-                'permanent_pincode' => trim($row['P']),
-                'pan_number' => trim($row['Q']),
-                'aadhar_number' => trim($row['R']),
-                'appar_id' => trim($row['S']),
-                'profile_summary' => trim($row['T']),
+                'gender' => trim($row['H'] ?? ''),
+                'date_of_birth' => trim($row['I'] ?? ''),
+                'native_place' => trim($row['J'] ?? ''),
+                'communication_address' => trim($row['K'] ?? ''),
+                'communication_state' => trim($row['L'] ?? ''),
+                'communication_pincode' => trim($row['M'] ?? ''),
+                'permanent_address' => trim($row['N'] ?? ''),
+                'permanent_state' => trim($row['O'] ?? ''),
+                'permanent_pincode' => trim($row['P'] ?? ''),
+                'pan_number' => trim($row['Q'] ?? ''),
+                'aadhar_number' => trim($row['R'] ?? ''),
+                'appar_id' => trim($row['S'] ?? ''),
+                'profile_summary' => trim($row['T'] ?? ''),
+                'linkedin' => trim($row['Y'] ?? ''),
+                'github' => trim($row['Z'] ?? ''),
                 'created_by' => 'admin',
                 'created_on' => date('Y-m-d H:i:s'),
                 'updated_by' => 'admin',
                 'updated_on' => date('Y-m-d H:i:s'),
-                'linkedin' => trim($row['Y']),
-                'github' => trim($row['Z']),
             ];
 
             $model->insert($data);
