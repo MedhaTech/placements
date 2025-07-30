@@ -216,6 +216,10 @@ public function getAppliedJobs($studentId)
         ->getResultArray();
 }
 
+public function getStudentIdByRegNo($regNo)
+{
+    return $this->where('reg_no', $regNo)->first(); // Assuming `reg_no` is a unique column
+}
 
 
 

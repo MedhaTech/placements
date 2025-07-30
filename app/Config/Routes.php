@@ -141,5 +141,10 @@ $routes->get('enroll-company', 'AdminController::enrollCompanyForm');
 $routes->post('submit-company-registration', 'AdminController::submitCompanyRegistration');
 $routes->get('registered-companies', 'AdminController::showRegisteredCompanies');
 
-
+//upcoming jobs card 
 $routes->post('student/apply', 'StudentController::applyJob');
+
+//search functionality in admin panel to search by reg no
+$routes->get('admin/search-student', 'AdminController::searchStudent');
+$routes->get('student/profile-preview/(:num)', 'AdminController::adminViewProfile/$1');
+$routes->setAutoRoute(true); // If this is false, manual routes are required
