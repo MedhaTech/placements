@@ -15,9 +15,14 @@
          </ul>
          <!-- /.navbar-left -->
          <!-- Search Form -->
-         <form class="navbar-search d-none d-sm-block" role="search"><i class="material-icons list-icon">search</i>
-             <input type="search" class="search-query" placeholder="Search anything..."> <a href="javascript:void(0);" class="remove-focus"><i class="material-icons md-24">close</i></a>
-         </form>
+    <form class="navbar-search d-none d-sm-block" method="get" action="<?= site_url('admin/search-student') ?>" role="search">
+        <i class="material-icons list-icon">search</i>
+        <input type="search" name="reg_no" class="search-query" placeholder="Search by Reg. No..." required>
+        <a href="javascript:void(0);" class="remove-focus">
+            <i class="material-icons md-24">close</i>
+        </a>
+    </form>
+
          <!-- /.navbar-search -->
          <div class="spacer"></div>
          <!-- Right Menu -->

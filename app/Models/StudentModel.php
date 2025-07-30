@@ -191,6 +191,38 @@ public function getUploadedDocumentTypes($studentId)
     // Convert to simple array of UPPERCASE document types
     return array_column($result, 'document_type');
 }
+public function getJobOpenings()
+{
+    return $this->db->table('job_requirements')->get()->getResultArray();
+}
+
+public function getAllJobs()
+{
+    return $this->db->table('job_requirements')
+        ->join('companies', 'job_requirements.company_id = companies.company_id')
+        ->select('job_requirements.*, companies.company_name')
+        ->get()
+        ->getResultArray();
+}
+
+public function getAppliedJobs($studentId)
+{
+    return $this->db->table('applications') // or your table name
+        ->join('job_requirements', 'applications.job_id = job_requirements.requirement_id')
+        ->join('companies', 'job_requirements.company_id = companies.company_id')
+        ->where('applications.student_id', $studentId)
+        ->select('job_requirements.*, companies.company_name')
+        ->get()
+        ->getResultArray();
+}
+
+public function getStudentIdByRegNo($regNo)
+{
+    return $this->where('reg_no', $regNo)->first(); // Assuming `reg_no` is a unique column
+}
+
+
+
 
 }
 

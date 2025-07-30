@@ -143,12 +143,13 @@ $routes->get('registered-companies', 'AdminController::showRegisteredCompanies')
 
 // app/Config/Routes.php
 $routes->post('companies/delete', 'AdminController::deleteCompany', ['as' => 'companies_delete']);
-
-// If your admin routes are grouped, use that group instead
 $routes->post('companies/toggle-status', 'AdminController::toggleCompanyStatus', ['as' => 'companies_toggle_status']);
-
-// app/Config/Routes.php
 $routes->post('companies/update', 'AdminController::updateCompany', ['as' => 'companies_update']);
 
+//upcoming jobs card 
+$routes->post('student/apply', 'StudentController::applyJob');
 
-
+//search functionality in admin panel to search by reg no
+$routes->get('admin/search-student', 'AdminController::searchStudent');
+$routes->get('student/profile-preview/(:num)', 'AdminController::adminViewProfile/$1');
+$routes->setAutoRoute(true); // If this is false, manual routes are required
