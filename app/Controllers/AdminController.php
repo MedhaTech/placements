@@ -609,22 +609,31 @@ public function updateCompany()
 
 public function searchStudent()
 {
-    $regNo = $this->request->getGet('reg_no');
+    $searchInput = $this->request->getGet('keyword'); // ✅ match with input name
 
-    if (empty($regNo)) {
-        return redirect()->back()->with('error', 'Please enter a registration number.');
+    if (empty(trim($searchInput))) {
+        return redirect()->back()->with('error', 'Please enter a search value.');
     }
 
     $studentModel = new \App\Models\StudentModel();
-    $student = $studentModel->getStudentIdByRegNo($regNo);
+
+    $student = $studentModel
+        ->groupStart()
+            ->like('reg_no', $searchInput)
+            ->orLike('personal_email', $searchInput)
+            ->orLike('official_email', $searchInput)
+            ->orLike('mobile_no', $searchInput)
+        ->groupEnd()
+        ->first();
 
     if ($student) {
-        // Admins can preview any student's profile
         return redirect()->to('/student/profile-preview/' . $student['id']);
     } else {
         return redirect()->back()->with('error', 'Student not found.');
     }
+
 }
+
 public function adminViewProfile($student_id)
 {
     $db = \Config\Database::connect();
@@ -1162,6 +1171,33 @@ public function adminViewProfile($student_id)
         'studentLanguages' => $languages,
     ]);
 
+}
+public function addRequirement()
+{
+    $companyId = $this->request->getPost('company_id');
+    $companyName = $this->request->getPost('company_name');
+    $requirements = $this->request->getPost('requirements');
+
+    // 🔒 Basic validation
+    if (empty($companyId) || empty($requirements)) {
+        return redirect()->back()->with('error', 'Missing required fields.');
+    }
+
+    $jobModel = new JobRequirementModel(); // replace with your actual model
+
+    foreach ($requirements as $req) {
+        $jobModel->insert([
+            'company_id' => $companyId,
+            'job_profile' => $req['job_profile'],
+            'vacancies' => $req['vacancies'],
+            'job_location' => $req['job_location'],
+            'ctc_package' => $req['ctc_package'],
+            'eligibility_criteria' => $req['eligibility_criteria'],
+            'created_on' => date('Y-m-d H:i:s')
+        ]);
+    }
+
+    return redirect()->back()->with('success', 'Requirements added successfully.');
 }
   
 }

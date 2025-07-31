@@ -67,9 +67,9 @@
                     <tr>
                         <th>Company ID</th>
                         <th>Company Name</th>
-                        <th>HR Email &amp; Mobile</th>
-                        <th>No. of Requirements<br><small>(# Job Profiles)</small></th>
-                        <th>Total Vacancies</th>
+                        <th>HR Info</th>
+                        <th>#Job Profiles</th>
+                        <th>#Vacancies</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -107,43 +107,300 @@
                         $formattedId = 'CID' . str_pad((string)$id, 3, '0', STR_PAD_LEFT);
                     ?>
                     <tr>
-                        <!-- View Modal -->
-                        <div class="modal fade" id="viewCompany<?= esc($id); ?>" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog modal-lg modal-dialog-centered">
-                                <div class="modal-content border-0">
-                                    <div class="modal-header bg-primary text-white py-2">
-                                        <h5 class="modal-title font-weight-bold mb-0 text-white">Company Details</h5>
-                                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">&times;</button>
+                        <!-- Row cells -->
+                        <td>#<?= esc($formattedId); ?></td>
+                        <td><?= esc($name); ?></td>
+                        <td>
+                            <?= esc($hrEmail ?: '-'); ?><br>
+                            <?= esc($hrMobile ?: '-'); ?>
+                        </td>
+                        <td><?= esc($reqCount); ?></td>
+                        <td><?= esc($vacancies); ?></td>
+                        <td class="text-center">
+                            <a data-toggle="modal" data-target="#viewCompany<?= esc($id); ?>" class="btn btn-sm btn-light" title="View">
+                                <i class="fa fa-eye text-info"></i>
+                            </a>
+                            <a data-toggle="modal" data-target="#editCompany<?= esc($id); ?>" class="btn btn-sm btn-light" title="Edit">
+                                <i class="fa fa-edit text-primary"></i>
+                            </a>
+
+
+                            
+
+                            <!-- NEW: Toggle Active/Inactive -->
+                            <form method="post" action="<?= site_url('companies/toggle-status'); ?>" style="display:inline;">
+                                <?= csrf_field(); ?>
+                                <input type="hidden" name="id" value="<?= esc($id); ?>">
+                                <input type="hidden" name="current_status" value="<?= esc($statusRaw ?? ''); ?>">
+                                <button type="submit" class="btn btn-sm btn-light"
+                                        title="<?= $isActive ? 'Inactivate' : 'Activate'; ?>">
+                                    <i class="fa <?= $isActive ? 'fa-ban text-warning' : 'fa-check text-success'; ?>"></i>
+                                </button>
+                            </form>
+
+                            <a data-toggle="modal" data-target="#deleteCompany<?= esc($id); ?>" class="btn btn-sm btn-light" title="Delete">
+                                <i class="fa fa-trash text-danger"></i>
+                            </a>
+
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                <?php else : ?>
+                    <tr><td colspan="6" class="text-center">No companies found.</td></tr>
+                <?php endif; ?>
+                </tbody>
+            </table>
+              <div class="modal fade" id="addRequirementModal" tabindex="-1" role="dialog" aria-labelledby="addRequirementModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <form method="post" action="<?= site_url('companies/add-requirement'); ?>">
+                                <?= csrf_field(); ?>
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title text-white" id="addRequirementModalLabel">Add Job Requirements</h5>
+                                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
                                     </div>
-                                    <div class="modal-body px-4 pt-3 pb-4">
-                                        <div class="row">
-                                            <!-- LEFT COLUMN -->
-                                            <div class="col-md-6">
-                                                <div><strong>Company ID :</strong> #<?= esc($formattedId); ?></div>
-                                                <div><strong>Company Name :</strong> <?= esc($name); ?></div>
-                                                <div><strong>No. of Requirements :</strong> <?= esc($reqCount); ?></div>
-                                                <div><strong>Total Vacancies :</strong> <?= esc($vacancies); ?></div>
-                                            </div>
-                                            <!-- RIGHT COLUMN -->
-                                            <div class="col-md-6">
-                                                <div><strong>HR Email :</strong> <?= esc($hrEmail); ?></div>
-                                                <div><strong>HR Mobile :</strong> <?= esc($hrMobile); ?></div>
-                                                <?php if (!empty($row['industry_sector'])) : ?>
-                                                    <div><strong>Industry :</strong> <?= esc($row['industry_sector']); ?></div>
-                                                <?php endif; ?>
-                                                <?php if (!empty($row['company_website'])) : ?>
-                                                    <div><strong>Website :</strong> <?= esc($row['company_website']); ?></div>
-                                                <?php endif; ?>
-                                                <?php if (!empty($row['company_address'])) : ?>
-                                                    <div class="mt-2"><strong>Address :</strong></div>
-                                                    <div class="ml-2"><?= esc($row['company_address']); ?></div>
-                                                <?php endif; ?>
-                                            </div>
+                                    <div class="modal-body">
+                                    <!-- Auto-filled Company Info -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                        <label class="font-weight-bold">Company ID</label>
+                                        <input type="text" name="company_id" id="req_company_id" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-md-6">
+                                        <label class="font-weight-bold">Company Name</label>
+                                        <input type="text" name="company_name" id="req_company_name" class="form-control" readonly>
                                         </div>
                                     </div>
+
+                                    <div id="requirementContainer">
+                                        <!-- Requirement Block (cloned for multiple) -->
+                                        <div class="requirement-block card shadow-sm border p-3 mb-3 position-relative">
+                                        <button type="button" class="btn btn-sm btn-danger position-absolute remove-block" style="top: 10px; right: 10px;"><i class="fa fa-times"></i></button>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                            <label>Job Profile</label>
+                                            <input type="text" name="requirements[0][job_profile]" class="form-control" required>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                            <label>Vacancies</label>
+                                            <input type="number" name="requirements[0][vacancies]" class="form-control" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                            <label>Location</label>
+                                            <input type="text" name="requirements[0][job_location]" class="form-control" required>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                            <label>CTC Package</label>
+                                            <input type="text" name="requirements[0][ctc_package]" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Eligibility Criteria</label>
+                                            <textarea name="requirements[0][eligibility_criteria]" class="form-control" rows="2"></textarea>
+                                        </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Add More Button -->
+                                    <button type="button" id="addMoreRequirement" class="btn btn-outline-primary btn-sm">+ Add More</button>
+                                    </div>
+                                    <div class="modal-footer">
+                                    <button type="submit" class="btn btn-success">Submit Requirements</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
                                 </div>
+                                </form>
                             </div>
+                            </div>
+        </div>
+    </div>
+</div>
+
+<!-- DataTables -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#companyTable').DataTable();
+    });
+</script>
+
+<script>
+  $(document).on('click', '.open-add-requirement', function () {
+    const companyId = $(this).data('company-id');
+    const companyName = $(this).data('company-name');
+    $('#req_company_id').val(companyId);
+    $('#req_company_name').val(companyName);
+    $('#addRequirementModal').modal('show');
+  });
+
+  let requirementIndex = 1;
+  $(document).on('click', '#addMoreRequirement', function () {
+    const block = $(".requirement-block").first().clone();
+    block.find('input, textarea').each(function () {
+      const name = $(this).attr('name');
+      const newName = name.replace(/\[\d+\]/, '[' + requirementIndex + ']');
+      $(this).attr('name', newName).val('');
+    });
+    block.appendTo('#requirementContainer');
+    requirementIndex++;
+  });
+
+  $(document).on('click', '.remove-block', function () {
+    if ($('.requirement-block').length > 1) {
+      $(this).closest('.requirement-block').remove();
+    }
+  });
+</script>
+
+<!-- Add Plus Button in Actions -->
+<script>
+  $(document).ready(function () {
+    $('table#companyTable tbody tr').each(function () {
+      const companyId = $(this).find('td:first').text().replace('#CID', '').trim();
+      const companyName = $(this).find('td:nth-child(2)').text().trim();
+      const plusBtn = `
+        <a href="#" class="btn btn-sm btn-light open-add-requirement" data-company-id="${companyId}" data-company-name="${companyName}" title="Add Job Requirement">
+          <i class="fa fa-plus text-success"></i>
+        </a>`;
+      $(this).find('td:last').prepend(plusBtn);
+    });
+  });
+</script>
+<!-- Toast -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css">
+
+<!-- jQuery -->
+
+
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<?php if (!empty($companies) && is_array($companies)) : ?>
+    <?php foreach ($companies as $row) :
+        $id        = (int)($row['id'] ?? 0);
+        $name      = $row['company_name'] ?? '';
+        $hrEmail   = $row['poc_email'] ?? '';
+        $hrMobile  = $row['poc_contact'] ?? '';
+        $reqCount  = isset($jobRequirements[$id]) ? count($jobRequirements[$id]) : 0;
+        $vacancies = 0;
+        if (!empty($jobRequirements[$id])) {
+            foreach ($jobRequirements[$id] as $jr) {
+                $vacancies += (int)($jr['vacancies'] ?? 0);
+            }
+        }
+        $statusRaw = $row['status'] ?? ($row['is_active'] ?? null);
+        $isActive = false;
+        if (is_numeric($statusRaw)) {
+            $isActive = ((int)$statusRaw === 1);
+        } elseif (is_string($statusRaw)) {
+            $val = strtolower(trim($statusRaw));
+            $isActive = in_array($val, ['active', '1', 'yes', 'true'], true);
+        }
+        $formattedId = 'CID' . str_pad((string)$id, 3, '0', STR_PAD_LEFT);
+    ?>
+                        <!-- View Modal -->
+    <div class="modal fade" id="viewCompany<?= esc($id); ?>" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-scrollable">
+            <div class="modal-content border-0">
+                <div class="modal-header bg-primary text-white py-2">
+                    <h5 class="modal-title font-weight-bold mb-0 text-white">Company Details</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">&times;</button>
+                </div>
+                <div class="modal-body px-4 pt-3 pb-4">
+                    <h6 class="font-weight-bold text-secondary">Company Info</h6>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div><strong>Company ID:</strong> #<?= esc($formattedId); ?></div>
+                            <div><strong>Company Name:</strong> <?= esc($name); ?></div>
+                            <div><strong>Industry:</strong> <?= esc($row['industry_sector'] ?? '-'); ?></div>
+                            <div><strong>Website:</strong> <?= esc($row['company_website'] ?? '-'); ?></div>
                         </div>
+                        <div class="col-md-6">
+                            <div><strong>Total Requirements:</strong> <?= esc($reqCount); ?></div>
+                            <div><strong>Total Vacancies:</strong> <?= esc($vacancies); ?></div>
+                            <div><strong>Status:</strong> <?= $isActive ? 'Active' : 'Inactive'; ?></div>
+                            <div><strong>Address:</strong> <?= esc($row['company_address'] ?? '-'); ?></div>
+                        </div>
+                    </div>
+
+                    <h6 class="font-weight-bold text-secondary">HR Contact (POC)</h6>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div><strong>Name:</strong> <?= esc($row['poc_name'] ?? '-'); ?></div>
+                            <div><strong>Email:</strong> <?= esc($hrEmail ?: '-'); ?></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div><strong>Designation:</strong> <?= esc($row['poc_designation'] ?? '-'); ?></div>
+                            <div><strong>Mobile:</strong> <?= esc($hrMobile ?: '-'); ?></div>
+                        </div>
+                    </div>
+
+                    <h6 class="font-weight-bold text-secondary">Recruiters</h6>
+                    <?php if (!empty($recruiters[$id])): ?>
+                        <div class="table-responsive mb-3">
+                            <table class="table table-sm table-bordered mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Mobile</th>
+                                        <th>Designation</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($recruiters[$id] as $r): ?>
+                                        <tr>
+                                            <td><?= esc($r['name'] ?? '-'); ?></td>
+                                            <td><?= esc($r['email'] ?? '-'); ?></td>
+                                            <td><?= esc($r['contact'] ?? '-'); ?></td>
+                                            <td><?= esc($r['designation'] ?? '-'); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php else: ?>
+                        <p class="text-muted">No recruiters found for this company.</p>
+                    <?php endif; ?>
+
+                    <h6 class="font-weight-bold text-secondary">Job Requirements</h6>
+                    <?php if (!empty($jobRequirements[$id])): ?>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Job Profile</th>
+                                        <th>Vacancies</th>
+                                        <th>CTC</th>
+                                        <th>Eligibility</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($jobRequirements[$id] as $jr): ?>
+                                        <tr>
+                                            <td><?= esc($jr['job_profile'] ?? '-'); ?></td>
+                                            <td><?= esc($jr['vacancies'] ?? '0'); ?></td>
+                                            <td><?= esc($jr['salary'] ?? '-'); ?></td>
+                                            <td><?= esc($jr['eligibility'] ?? '-'); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php else: ?>
+                        <p class="text-muted">No job requirements listed.</p>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
 
                         <!-- Delete Modal -->
                         <div class="modal fade" id="deleteCompany<?= esc($id); ?>" tabindex="-1" role="dialog" aria-hidden="true">
@@ -292,61 +549,8 @@
                             </form>
                           </div>
                         </div>
-                        <!-- Row cells -->
-                        <td>#<?= esc($formattedId); ?></td>
-                        <td><?= esc($name); ?></td>
-                        <td>
-                            <?= esc($hrEmail ?: '-'); ?><br>
-                            <?= esc($hrMobile ?: '-'); ?>
-                        </td>
-                        <td><?= esc($reqCount); ?></td>
-                        <td><?= esc($vacancies); ?></td>
-                        <td class="text-center">
-                            <a data-toggle="modal" data-target="#viewCompany<?= esc($id); ?>" class="btn btn-sm btn-light" title="View">
-                                <i class="fa fa-eye text-info"></i>
-                            </a>
-                            <a data-toggle="modal" data-target="#editCompany<?= esc($id); ?>" class="btn btn-sm btn-light" title="Edit">
-                                <i class="fa fa-edit text-primary"></i>
-                            </a>
-
-                            <!-- NEW: Toggle Active/Inactive -->
-                            <form method="post" action="<?= site_url('companies/toggle-status'); ?>" style="display:inline;">
-                                <?= csrf_field(); ?>
-                                <input type="hidden" name="id" value="<?= esc($id); ?>">
-                                <input type="hidden" name="current_status" value="<?= esc($statusRaw ?? ''); ?>">
-                                <button type="submit" class="btn btn-sm btn-light"
-                                        title="<?= $isActive ? 'Inactivate' : 'Activate'; ?>">
-                                    <i class="fa <?= $isActive ? 'fa-ban text-warning' : 'fa-check text-success'; ?>"></i>
-                                </button>
-                            </form>
-
-                            <a data-toggle="modal" data-target="#deleteCompany<?= esc($id); ?>" class="btn btn-sm btn-light" title="Delete">
-                                <i class="fa fa-trash text-danger"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                <?php else : ?>
-                    <tr><td colspan="6" class="text-center">No companies found.</td></tr>
-                <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- DataTables -->
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
-<script>
-    $(document).ready(function () {
-        $('#companyTable').DataTable();
-    });
-</script>
-
-<!-- Toast -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css">
+    <?php endforeach; ?>
+<?php endif; ?>
 
 <script>
     let recruiterIndex = 1;
@@ -397,6 +601,5 @@
         block.remove();
     }
 </script>
-
 
 <?= $this->endSection(); ?>
