@@ -67,9 +67,9 @@
                     <tr>
                         <th>Company ID</th>
                         <th>Company Name</th>
-                        <th>HR Email &amp; Mobile</th>
-                        <th>No. of Requirements<br><small>(# Job Profiles)</small></th>
-                        <th>Total Vacancies</th>
+                        <th>HR Info</th>
+                        <th>#Job Profiles</th>
+                        <th>#Vacancies</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -124,6 +124,9 @@
                                 <i class="fa fa-edit text-primary"></i>
                             </a>
 
+
+                            
+
                             <!-- NEW: Toggle Active/Inactive -->
                             <form method="post" action="<?= site_url('companies/toggle-status'); ?>" style="display:inline;">
                                 <?= csrf_field(); ?>
@@ -138,6 +141,7 @@
                             <a data-toggle="modal" data-target="#deleteCompany<?= esc($id); ?>" class="btn btn-sm btn-light" title="Delete">
                                 <i class="fa fa-trash text-danger"></i>
                             </a>
+
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -146,6 +150,72 @@
                 <?php endif; ?>
                 </tbody>
             </table>
+              <div class="modal fade" id="addRequirementModal" tabindex="-1" role="dialog" aria-labelledby="addRequirementModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <form method="post" action="<?= site_url('companies/add-requirement'); ?>">
+                                <?= csrf_field(); ?>
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title text-white" id="addRequirementModalLabel">Add Job Requirements</h5>
+                                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>
+                                    <div class="modal-body">
+                                    <!-- Auto-filled Company Info -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                        <label class="font-weight-bold">Company ID</label>
+                                        <input type="text" name="company_id" id="req_company_id" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-md-6">
+                                        <label class="font-weight-bold">Company Name</label>
+                                        <input type="text" name="company_name" id="req_company_name" class="form-control" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div id="requirementContainer">
+                                        <!-- Requirement Block (cloned for multiple) -->
+                                        <div class="requirement-block card shadow-sm border p-3 mb-3 position-relative">
+                                        <button type="button" class="btn btn-sm btn-danger position-absolute remove-block" style="top: 10px; right: 10px;"><i class="fa fa-times"></i></button>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                            <label>Job Profile</label>
+                                            <input type="text" name="requirements[0][job_profile]" class="form-control" required>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                            <label>Vacancies</label>
+                                            <input type="number" name="requirements[0][vacancies]" class="form-control" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                            <label>Location</label>
+                                            <input type="text" name="requirements[0][job_location]" class="form-control" required>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                            <label>CTC Package</label>
+                                            <input type="text" name="requirements[0][ctc_package]" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Eligibility Criteria</label>
+                                            <textarea name="requirements[0][eligibility_criteria]" class="form-control" rows="2"></textarea>
+                                        </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Add More Button -->
+                                    <button type="button" id="addMoreRequirement" class="btn btn-outline-primary btn-sm">+ Add More</button>
+                                    </div>
+                                    <div class="modal-footer">
+                                    <button type="submit" class="btn btn-success">Submit Requirements</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                                </form>
+                            </div>
+                            </div>
         </div>
     </div>
 </div>
@@ -153,16 +223,65 @@
 <!-- DataTables -->
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
         $('#companyTable').DataTable();
     });
 </script>
 
+<script>
+  $(document).on('click', '.open-add-requirement', function () {
+    const companyId = $(this).data('company-id');
+    const companyName = $(this).data('company-name');
+    $('#req_company_id').val(companyId);
+    $('#req_company_name').val(companyName);
+    $('#addRequirementModal').modal('show');
+  });
+
+  let requirementIndex = 1;
+  $(document).on('click', '#addMoreRequirement', function () {
+    const block = $(".requirement-block").first().clone();
+    block.find('input, textarea').each(function () {
+      const name = $(this).attr('name');
+      const newName = name.replace(/\[\d+\]/, '[' + requirementIndex + ']');
+      $(this).attr('name', newName).val('');
+    });
+    block.appendTo('#requirementContainer');
+    requirementIndex++;
+  });
+
+  $(document).on('click', '.remove-block', function () {
+    if ($('.requirement-block').length > 1) {
+      $(this).closest('.requirement-block').remove();
+    }
+  });
+</script>
+
+<!-- Add Plus Button in Actions -->
+<script>
+  $(document).ready(function () {
+    $('table#companyTable tbody tr').each(function () {
+      const companyId = $(this).find('td:first').text().replace('#CID', '').trim();
+      const companyName = $(this).find('td:nth-child(2)').text().trim();
+      const plusBtn = `
+        <a href="#" class="btn btn-sm btn-light open-add-requirement" data-company-id="${companyId}" data-company-name="${companyName}" title="Add Job Requirement">
+          <i class="fa fa-plus text-success"></i>
+        </a>`;
+      $(this).find('td:last').prepend(plusBtn);
+    });
+  });
+</script>
 <!-- Toast -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css">
-<!-- All View Modals -->
+
+<!-- jQuery -->
+
+
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
 <?php if (!empty($companies) && is_array($companies)) : ?>
     <?php foreach ($companies as $row) :
         $id        = (int)($row['id'] ?? 0);
@@ -186,6 +305,7 @@
         }
         $formattedId = 'CID' . str_pad((string)$id, 3, '0', STR_PAD_LEFT);
     ?>
+                        <!-- View Modal -->
     <div class="modal fade" id="viewCompany<?= esc($id); ?>" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-scrollable">
             <div class="modal-content border-0">

@@ -153,3 +153,5 @@ $routes->post('student/apply', 'StudentController::applyJob');
 $routes->get('admin/search-student', 'AdminController::searchStudent');
 $routes->get('student/profile-preview/(:num)', 'AdminController::adminViewProfile/$1');
 $routes->setAutoRoute(true); // If this is false, manual routes are required
+
+$routes->post('companies/add-requirement', 'AdminController::addRequirement');

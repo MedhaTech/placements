@@ -17,7 +17,7 @@
          <!-- Search Form -->
     <form class="navbar-search d-none d-sm-block" method="get" action="<?= site_url('admin/search-student') ?>" role="search">
         <i class="material-icons list-icon">search</i>
-        <input type="search" name="reg_no" class="search-query" placeholder="Search by Reg. No..." required>
+        <input type="search" name="keyword" class="search-query" placeholder="Search by Reg. No, Email or Mobile..." required>
         <a href="javascript:void(0);" class="remove-focus">
             <i class="material-icons md-24">close</i>
         </a>
