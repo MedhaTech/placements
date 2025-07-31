@@ -206,7 +206,7 @@
                             <div><strong>Total Requirements:</strong> <?= esc($reqCount); ?></div>
                             <div><strong>Total Vacancies:</strong> <?= esc($vacancies); ?></div>
                             <div><strong>Status:</strong> <?= $isActive ? 'Active' : 'Inactive'; ?></div>
-                            <div><strong>Address:</strong><br><?= esc($row['company_address'] ?? '-'); ?></div>
+                            <div><strong>Address:</strong> <?= esc($row['company_address'] ?? '-'); ?></div>
                         </div>
                     </div>
 
