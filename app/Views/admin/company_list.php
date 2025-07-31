@@ -194,9 +194,24 @@
                                       </div>
 
                                       <div class="form-group">
-                                        <label class="mb-1 font-weight-600">Industry Sector</label>
-                                        <input type="text" name="industry_sector" class="form-control" value="<?= esc($row['industry_sector'] ?? ''); ?>">
+                                        <label class="mb-1 font-weight-600">Address</label>
+                                        <textarea name="company_address" class="form-control" rows="3"><?= esc($row['company_address'] ?? ''); ?></textarea>
                                       </div>
+
+                                      
+                                       <div class="form-group">
+                                        <label class="mb-1 font-weight-600">HR POC Name</label>
+                                        <input type="text" name="poc_name" class="form-control" value="<?= esc($row['poc_name'] ?? ''); ?>">
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label class="mb-1 font-weight-600">HR POC Designation</label>
+                                        <input type="text" name="poc_designation" class="form-control" value="<?= esc($row['poc_designation'] ?? ''); ?>">
+                                      </div>
+                                    </div>
+
+                                    <!-- RIGHT -->
+                                    <div class="col-md-6">
 
                                       <div class="form-group">
                                         <label class="mb-1 font-weight-600">Website</label>
@@ -204,25 +219,8 @@
                                       </div>
 
                                       <div class="form-group">
-                                        <label class="mb-1 font-weight-600">Active</label><br>
-                                        <?php $isActive = isset($row['is_active']) && (int)$row['is_active'] === 1; ?>
-                                        <label class="mb-0">
-                                          <input type="checkbox" name="is_active" value="1" <?= $isActive ? 'checked' : ''; ?>>
-                                          <span class="ml-1"><?= $isActive ? 'Active' : 'Inactive'; ?></span>
-                                        </label>
-                                      </div>
-                                    </div>
-
-                                    <!-- RIGHT -->
-                                    <div class="col-md-6">
-                                      <div class="form-group">
-                                        <label class="mb-1 font-weight-600">Address</label>
-                                        <textarea name="company_address" class="form-control" rows="3"><?= esc($row['company_address'] ?? ''); ?></textarea>
-                                      </div>
-
-                                      <div class="form-group">
-                                        <label class="mb-1 font-weight-600">HR POC Name</label>
-                                        <input type="text" name="poc_name" class="form-control" value="<?= esc($row['poc_name'] ?? ''); ?>">
+                                        <label class="mb-1 font-weight-600">Industry Sector</label>
+                                        <input type="text" name="industry_sector" class="form-control" value="<?= esc($row['industry_sector'] ?? ''); ?>">
                                       </div>
 
                                       <div class="form-group">
@@ -234,12 +232,55 @@
                                         <label class="mb-1 font-weight-600">HR POC Mobile</label>
                                         <input type="text" name="poc_contact" class="form-control" value="<?= esc($row['poc_contact'] ?? ''); ?>">
                                       </div>
-
                                       <div class="form-group">
-                                        <label class="mb-1 font-weight-600">HR POC Designation</label>
-                                        <input type="text" name="poc_designation" class="form-control" value="<?= esc($row['poc_designation'] ?? ''); ?>">
+                                        <label class="mb-1 font-weight-600">Active</label><br>
+                                        <?php $isActive = isset($row['is_active']) && (int)$row['is_active'] === 1; ?>
+                                        <label class="mb-0">
+                                          <input type="checkbox" name="is_active" value="1" <?= $isActive ? 'checked' : ''; ?>>
+                                          <span class="ml-1"><?= $isActive ? 'Active' : 'Inactive'; ?></span>
+                                        </label>
                                       </div>
+
                                     </div>
+                                    <hr>
+
+
+                                <!-- Recruiter Fields -->
+
+                                        <div id="recruiter-list">
+                                            <?php if (!empty($recruiters)) : ?>
+                                                <?php foreach ($recruiters as $index => $recruiter) : ?>
+                                                     <div class="modal-body px-2 pt-3 pb-1">
+                                                        <div class="row">
+                                                            <div class="col-md-6 mb-3">
+                                                                <label>Full Name</label>
+                                                                <input type="text" name="recruiters[<?= $index ?>][full_name]" value="<?= esc($recruiter['full_name'] ?? '') ?>" class="form-control" />
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label>Email</label>
+                                                                <input type="email" name="recruiters[<?= $index ?>][email]" value="<?= esc($recruiter['email'] ?? '') ?>" class="form-control" />
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label>Contact Number</label>
+                                                                <input type="text" name="recruiters[<?= $index ?>][contact_number]" value="<?= esc($recruiter['contact_number'] ?? '') ?>" class="form-control" />
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label>Designation</label>
+                                                                <input type="text" name="recruiters[<?= $index ?>][designation]" value="<?= esc($recruiter['designation'] ?? '') ?>" class="form-control" />
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label>Signature</label>
+                                                                <input type="text" name="recruiters[<?= $index ?>][signature]" value="<?= esc($recruiter['signature'] ?? '') ?>" class="form-control" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </div>
+
+                                       <div class="d-flex justify-content-between mt-3">
+                                        <button type="button" class="btn btn-outline-secondary mb-0" onclick="addRecruiter()">+ Add Recruiter</button>
+                                      </div>
                                   </div>
                                 </div>
 
@@ -306,5 +347,56 @@
 <!-- Toast -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css">
+
+<script>
+    let recruiterIndex = 1;
+
+    function addRecruiter() {
+        recruiterIndex++;
+
+        const container = document.getElementById('recruiter-list');
+
+        const block = document.createElement('div');
+        block.classList.add('recruiter-block', 'border', 'p-3', 'mb-3', 'bg-light');
+
+        block.innerHTML = `
+            <div class="d-flex justify-content-end mb-3">
+                <button type="button" class="btn p-0 text-danger" onclick="removeRecruiter(this)" title="Remove">
+                    <i class="fa fa-times fs-5"></i>
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-control" name="recruiters[${recruiterIndex - 1}][name]" required>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label class="form-label">Official Email ID</label>
+                    <input type="email" class="form-control" name="recruiters[${recruiterIndex - 1}][email]" required>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label class="form-label">Designation</label>
+                    <input type="text" class="form-control" name="recruiters[${recruiterIndex - 1}][designation]" required>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label class="form-label">Contact Number</label>
+                    <input type="tel" class="form-control" name="recruiters[${recruiterIndex - 1}][contact]" required>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label class="form-label">Signature</label>
+                    <input type="text" class="form-control" name="recruiters[${recruiterIndex - 1}][signature]" required>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(block);
+    }
+
+    function removeRecruiter(button) {
+        const block = button.closest('.recruiter-block');
+        block.remove();
+    }
+</script>
+
 
 <?= $this->endSection(); ?>
