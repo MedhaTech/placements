@@ -1034,7 +1034,7 @@ $globalData = new GlobalData();
 
       <!--documents-->
       <div id="documents" class="section-card">
-        <h5>Documents 
+        <h5>Documents
           <a href="#" data-bs-toggle="modal" data-bs-target="#documentUploadModal">Upload</a>
         </h5>
         <?php
@@ -1054,10 +1054,25 @@ $globalData = new GlobalData();
           <?php foreach ($requiredDocs as $docType): ?>
             <div class="doc-item">
               <?= strtoupper($docType) ?>
-              <?php if (in_array(strtoupper($docType), $uploadedDocs)): ?>
+              <!-- <?php if (in_array(strtoupper($docType), $uploadedDocs)): ?>
                 <i class="fa fa-circle-check text-success ms-2"></i>
               <?php else: ?>
                 <i class="fa fa-circle-xmark text-danger ms-2"></i>
+              <?php endif; ?> -->
+              <?php if (in_array(strtoupper($docType), $uploadedDocs)): ?>
+                  <i class="fa fa-circle-check text-success ms-2"></i>
+
+                  <?php
+                    $documentPath = $studentModel->getStudentDocumentPath(session()->get('student_id'), strtoupper($docType));
+                    $fullPath = FCPATH . $documentPath;
+                    if (!empty($documentPath) && file_exists($fullPath)):
+                  ?>
+                    <a href="<?= base_url($documentPath) ?>" download class="ms-2 text-decoration-none" title="Download <?= strtoupper($docType) ?>">
+                      <i class="fa fa-download text-primary"></i>
+                    </a>
+                  <?php endif; ?>
+                <?php else: ?>
+                  <i class="fa fa-circle-xmark text-danger ms-2"></i>
               <?php endif; ?>
             </div>
           <?php endforeach; ?>

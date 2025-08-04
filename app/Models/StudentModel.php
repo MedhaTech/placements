@@ -221,6 +221,18 @@ public function getStudentIdByRegNo($regNo)
     return $this->where('reg_no', $regNo)->first(); // Assuming `reg_no` is a unique column
 }
 
+public function getStudentDocumentPath($studentId, $documentType)
+{
+    $row = $this->db->table('students_documents') // Change to your actual table
+        ->select('file_path')
+        ->where('student_id', $studentId)
+        ->where('document_type', strtoupper($documentType))
+        ->get()
+        ->getRow();
+
+    return $row ? $row->file_path : null;
+}
+
 
 
 

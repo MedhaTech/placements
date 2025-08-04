@@ -963,6 +963,16 @@ public function updateAcademicInfo()
 
 }
 
+public function getStudentDocumentPath($studentId, $documentType)
+{
+    return $this->db->table('students_documents') // Change table name if needed
+        ->select('file_path') // Change column name if needed
+        ->where('student_id', $studentId)
+        ->where('document_type', $documentType)
+        ->get()
+        ->getRow('file_path');
+}
+
  public function uploadExcelForm()
 {
     return view('student/upload_excel'); // adjust path if needed
