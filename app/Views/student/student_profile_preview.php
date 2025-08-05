@@ -1054,26 +1054,34 @@ $globalData = new GlobalData();
           <?php foreach ($requiredDocs as $docType): ?>
             <div class="doc-item">
               <?= strtoupper($docType) ?>
-              <!-- <?php if (in_array(strtoupper($docType), $uploadedDocs)): ?>
-                <i class="fa fa-circle-check text-success ms-2"></i>
-              <?php else: ?>
-                <i class="fa fa-circle-xmark text-danger ms-2"></i>
-              <?php endif; ?> -->
-              <?php if (in_array(strtoupper($docType), $uploadedDocs)): ?>
-                  <i class="fa fa-circle-check text-success ms-2"></i>
+            
+                <?php if (in_array(strtoupper($docType), $uploadedDocs)): ?>
+    <i class="fa fa-circle-check text-success ms-2"></i>
 
-                  <?php
-                    $documentPath = $studentModel->getStudentDocumentPath(session()->get('student_id'), strtoupper($docType));
-                    $fullPath = FCPATH . $documentPath;
-                    if (!empty($documentPath) && file_exists($fullPath)):
-                  ?>
-                    <a href="<?= base_url($documentPath) ?>" download class="ms-2 text-decoration-none" title="Download <?= strtoupper($docType) ?>">
-                      <i class="fa fa-download text-primary"></i>
-                    </a>
-                  <?php endif; ?>
-                <?php else: ?>
-                  <i class="fa fa-circle-xmark text-danger ms-2"></i>
-              <?php endif; ?>
+    <?php
+      $documentPath = $studentModel->getStudentDocumentPath(session()->get('student_id'), strtoupper($docType));
+      $fullPath = FCPATH . $documentPath;
+      if (!empty($documentPath) && file_exists($fullPath)):
+    ?>
+      <!-- Download Icon -->
+      <a href="<?= base_url($documentPath) ?>" download class="ms-2 text-decoration-none" title="Download <?= strtoupper($docType) ?>">
+        <i class="fa fa-download text-primary"></i>
+      </a>
+
+      <!-- View Icon -->
+      <a href="#" class="ms-2 text-decoration-none" 
+   title="View <?= strtoupper($docType) ?>" 
+   data-bs-toggle="modal" 
+   data-bs-target="#viewDocumentModal" 
+   data-doc-url="<?= base_url($documentPath) ?>" 
+   data-doc-name="<?= strtoupper($docType) ?>">
+  <i class="fa fa-eye text-info"></i>
+</a>
+    <?php endif; ?>
+<?php else: ?>
+    <i class="fa fa-circle-xmark text-danger ms-2"></i>
+<?php endif; ?>
+
             </div>
           <?php endforeach; ?>
         </div>
@@ -1104,6 +1112,20 @@ $globalData = new GlobalData();
   </div>
 </div>
 
+<!-- View Document Modal -->
+<div class="modal fade" id="viewDocumentModal" tabindex="-1" aria-labelledby="viewDocumentModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewDocumentModalLabel">View Document</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <iframe id="documentViewer" src="" width="100%" height="600px" frameborder="0"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Add Skill Modal -->
 <div class="modal fade" id="addSkillModal" tabindex="-1">
@@ -2793,6 +2815,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
   modal.show();
 }
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const viewLinks = document.querySelectorAll('[data-doc-url]');
+  const viewer = document.getElementById('documentViewer');
+  const modalTitle = document.getElementById('viewDocumentModalLabel');
+
+  viewLinks.forEach(link => {
+    link.addEventListener('click', function () {
+      const docUrl = this.getAttribute('data-doc-url');
+      const docName = this.getAttribute('data-doc-name');
+      viewer.src = docUrl;
+      modalTitle.textContent = 'View Document - ' + docName;
+    });
+  });
+
+  // Clear iframe and title when modal is closed
+  document.getElementById('viewDocumentModal').addEventListener('hidden.bs.modal', function () {
+    viewer.src = '';
+    modalTitle.textContent = 'View Document';
+  });
+});
 </script>
 
 <script>
